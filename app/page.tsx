@@ -4,21 +4,22 @@ import { useState } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HeroSection from './components/HeroSection';
-import CategoryCard from './components/CategoryCard';
+import StrategicVerticals from './components/StrategicVerticals';
+import TrustEngine from './components/TrustEngine';
 import ProductCard from './components/ProductCard';
 import StatsSection from './components/StatsSection';
 import QuoteRequestModal from './components/QuoteRequestModal';
-import { products, categories, stats } from '../lib/data';
+import { products, stats } from '../lib/data';
 import Link from 'next/link';
 
 // Trusted partners/brands
 const trustedBrands = [
-  { name: 'BASF', logo: 'BASF' },
-  { name: 'Dow Chemical', logo: 'DOW' },
-  { name: 'LyondellBasell', logo: 'LYONDELL' },
-  { name: 'DuPont', logo: 'DUPONT' },
-  { name: 'SABIC', logo: 'SABIC' },
-  { name: 'Covestro', logo: 'COVESTRO' },
+  { name: 'BASF', logo: '/logo_basf_1769368980780.png' },
+  { name: 'Dow Chemical', logo: '/logo_dow_1769368995716.png' },
+  { name: 'LyondellBasell', logo: '/logo_lyondellbasell_1769369007816.png' },
+  { name: 'DuPont', logo: '/logo_dupont_1769369022483.png' },
+  { name: 'SABIC', logo: '/logo_sabic_1769369039208.png' },
+  { name: 'Covestro', logo: '/logo_covestro_1769369053388.png' },
 ];
 
 export default function Home() {
@@ -30,9 +31,6 @@ export default function Home() {
     setIsQuoteModalOpen(true);
   };
 
-  // Products with discounts/hot deals
-  const hotDeals = products.filter(p => p.badge === 'Popular' || p.badge === 'Bestseller').slice(0, 4);
-
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header />
@@ -41,225 +39,18 @@ export default function Home() {
         {/* Hero */}
         <HeroSection />
 
-        {/* Promotional Banner */}
-        <section style={{
-          background: 'linear-gradient(135deg, #0066CC 0%, #00A3A3 100%)',
-          padding: '1rem 0',
-        }}>
-          <div className="container">
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '1rem',
-              flexWrap: 'wrap',
-              textAlign: 'center',
-            }}>
-              <span style={{
-                display: 'inline-flex',
-                padding: '0.375rem 0.875rem',
-                background: 'rgba(255, 255, 255, 0.2)',
-                backdropFilter: 'blur(10px)',
-                borderRadius: '9999px',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                color: 'white',
-              }}>
-                🔥 LIMITED TIME
-              </span>
-              <p style={{
-                fontSize: '1rem',
-                fontWeight: 500,
-                color: 'white',
-                margin: 0,
-              }}>
-                Get up to <strong>20% OFF</strong> on bulk orders • Free shipping on orders over $5,000
-              </p>
-              <Link 
-                href="/products" 
-                style={{
-                  padding: '0.5rem 1.25rem',
-                  background: 'white',
-                  color: 'var(--color-blue)',
-                  fontWeight: 600,
-                  fontSize: '0.875rem',
-                  borderRadius: '0.5rem',
-                  textDecoration: 'none',
-                  transition: 'all 0.2s',
-                }}
-                className="promo-cta"
-              >
-                Shop Now →
-              </Link>
-            </div>
-          </div>
-        </section>
+        {/* Strategic Verticals */}
+        <StrategicVerticals />
 
-        {/* Hot Deals Section */}
-        <section className="section" style={{ background: 'var(--color-gray-50)' }}>
-          <div className="container">
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '2rem',
-              flexWrap: 'wrap',
-              gap: '1rem',
-            }}>
-              <div>
-                <div style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.375rem 0.875rem',
-                  background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
-                  borderRadius: '9999px',
-                  marginBottom: '0.75rem',
-                }}>
-                  <span style={{ fontSize: '1rem' }}>🔥</span>
-                  <span style={{
-                    fontSize: '0.8125rem',
-                    fontWeight: 600,
-                    color: 'white',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                  }}>
-                    Hot Deals
-                  </span>
-                </div>
-                <h2 style={{
-                  fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
-                  fontWeight: 700,
-                  color: 'var(--color-navy)',
-                  marginBottom: '0.5rem',
-                }}>
-                  Limited Time Offers
-                </h2>
-                <p style={{
-                  fontSize: '1rem',
-                  color: 'var(--color-gray-500)',
-                }}>
-                  Exclusive discounts on high-demand chemicals • While stocks last
-                </p>
-              </div>
-              <Link 
-                href="/products?tag=hotdeals"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.875rem 1.5rem',
-                  background: 'var(--color-white)',
-                  border: '2px solid var(--color-gray-200)',
-                  borderRadius: '0.75rem',
-                  color: 'var(--color-navy)',
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                  transition: 'all var(--transition-fast)',
-                }}
-                className="view-all-deals"
-              >
-                View All Deals
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: '1.5rem',
-            }}>
-              {hotDeals.map((product) => (
-                <div key={product.id} style={{ position: 'relative' }}>
-                  {/* Discount Badge - Top Right Corner to avoid overlap */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '0.75rem',
-                    right: '0.75rem',
-                    zIndex: 10,
-                    padding: '0.5rem 0.75rem',
-                    background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
-                    borderRadius: '0.5rem',
-                    boxShadow: '0 4px 12px rgba(255, 107, 107, 0.3)',
-                  }}>
-                    <span style={{
-                      fontSize: '0.875rem',
-                      fontWeight: 700,
-                      color: 'white',
-                    }}>
-                      -15%
-                    </span>
-                  </div>
-                  <ProductCard
-                    id={product.id}
-                    name={product.name}
-                    category={product.category}
-                    description={product.description}
-                    image={product.image}
-                    badge={product.badge}
-                    onRequestQuote={() => handleRequestQuote(product.name)}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Categories */}
-        <section className="section">
-          <div className="container">
-            <div style={{
-              textAlign: 'center',
-              marginBottom: '3rem',
-            }}>
-              <h2 style={{
-                fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
-                fontWeight: 700,
-                color: 'var(--color-navy)',
-                marginBottom: '0.75rem',
-              }}>
-                Chemical & Raw Material Categories
-              </h2>
-              <p style={{
-                fontSize: '1rem',
-                color: 'var(--color-gray-500)',
-                maxWidth: '32rem',
-                margin: '0 auto',
-              }}>
-                Explore our comprehensive range of industrial chemicals and raw materials.
-              </p>
-            </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-              gap: '1.5rem',
-            }}>
-              {categories.map((category) => (
-                <CategoryCard
-                  key={category.id}
-                  id={category.id}
-                  name={category.name}
-                  description={category.description}
-                  productCount={category.productCount}
-                  icon={category.icon}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Stats */}
-        <StatsSection stats={stats} />
+        {/* Trust Engine */}
+        <TrustEngine />
 
         {/* Trusted Partners - Auto-scrolling Carousel */}
         <section style={{
           padding: '4rem 0',
-          background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #F0FDFA 100%)',
-          borderTop: '1px solid rgba(0, 163, 163, 0.2)',
-          borderBottom: '1px solid rgba(0, 163, 163, 0.2)',
+          background: 'var(--color-background-light)',
+          borderTop: '1px solid var(--color-gray-200)',
+          borderBottom: '1px solid var(--color-gray-200)',
           overflow: 'hidden',
           position: 'relative',
         }}>
@@ -300,7 +91,7 @@ export default function Home() {
                 top: 0,
                 bottom: 0,
                 width: '150px',
-                background: 'linear-gradient(90deg, var(--color-gray-50) 0%, transparent 100%)',
+                background: 'linear-gradient(90deg, var(--color-background-light) 0%, transparent 100%)',
                 zIndex: 2,
               }} />
               <div style={{
@@ -309,7 +100,7 @@ export default function Home() {
                 top: 0,
                 bottom: 0,
                 width: '150px',
-                background: 'linear-gradient(90deg, transparent 0%, var(--color-gray-50) 100%)',
+                background: 'linear-gradient(90deg, transparent 0%, var(--color-background-light) 100%)',
                 zIndex: 2,
               }} />
 
@@ -337,17 +128,19 @@ export default function Home() {
                     }}
                     className="brand-logo-card"
                   >
-                    <span style={{
-                      fontSize: '1.375rem',
-                      fontWeight: 700,
-                      background: 'linear-gradient(135deg, #0066CC 0%, #00A3A3 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text',
-                      letterSpacing: '0.05em',
-                    }}>
-                      {brand.logo}
-                    </span>
+                    <img 
+                      src={brand.logo} 
+                      alt={brand.name} 
+                      style={{
+                        height: '3rem',
+                        width: 'auto',
+                        objectFit: 'contain',
+                        filter: 'grayscale(100%)',
+                        opacity: 0.7,
+                        transition: 'all 0.3s ease',
+                      }}
+                      className="brand-logo-img"
+                    />
                   </div>
                 ))}
                 {/* Duplicate set for seamless infinite scroll */}
@@ -368,14 +161,19 @@ export default function Home() {
                     }}
                     className="brand-logo-card"
                   >
-                    <span style={{
-                      fontSize: '1.375rem',
-                      fontWeight: 700,
-                      color: 'var(--color-gray-400)',
-                      letterSpacing: '0.05em',
-                    }}>
-                      {brand.logo}
-                    </span>
+                    <img 
+                      src={brand.logo} 
+                      alt={brand.name} 
+                      style={{
+                        height: '3rem',
+                        width: 'auto',
+                        objectFit: 'contain',
+                        filter: 'grayscale(100%)',
+                        opacity: 0.7,
+                        transition: 'all 0.3s ease',
+                      }}
+                      className="brand-logo-img"
+                    />
                   </div>
                 ))}
               </div>
@@ -383,8 +181,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Featured Products */}
-        <section className="section" style={{ background: 'var(--color-gray-50)' }}>
+        {/* Featured Products / Industrial Catalog Preview */}
+        <section className="section" style={{ background: 'var(--color-white)' }}>
           <div className="container">
             <div style={{
               display: 'flex',
@@ -401,7 +199,7 @@ export default function Home() {
                   color: 'var(--color-navy)',
                   marginBottom: '0.75rem',
                 }}>
-                  Popular Chemicals & Materials
+                  Industrial Catalog Preview
                 </h2>
                 <p style={{
                   fontSize: '1rem',
@@ -409,7 +207,7 @@ export default function Home() {
                   maxWidth: '32rem',
                   margin: '0 auto',
                 }}>
-                  Most-requested products from verified chemical suppliers worldwide.
+                  Explore our comprehensive range of approved industrial inputs.
                 </p>
               </div>
               <Link 
@@ -418,14 +216,14 @@ export default function Home() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  color: 'var(--color-blue)',
+                  color: 'var(--primary)',
                   fontWeight: 600,
                   textDecoration: 'none',
                   transition: 'gap var(--transition-fast)',
                 }}
                 className="view-all-link"
               >
-                View All Products
+                Access Full Catalog
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
@@ -437,7 +235,7 @@ export default function Home() {
               gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
               gap: '1.5rem',
             }}>
-              {products.slice(0, 8).map((product) => (
+              {products.slice(0, 4).map((product) => (
                 <ProductCard
                   key={product.id}
                   id={product.id}
@@ -453,9 +251,56 @@ export default function Home() {
           </div>
         </section>
 
+        {/* About Us (The Vision) */}
+         <section className="section" style={{ background: 'var(--color-navy)', color: 'white' }}>
+          <div className="container">
+            <div style={{
+              maxWidth: '48rem',
+              margin: '0 auto',
+              textAlign: 'center',
+            }}>
+              <h2 style={{
+                fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
+                fontWeight: 700,
+                color: 'white',
+                marginBottom: '1.5rem',
+                lineHeight: 1.2,
+              }}>
+                Reimagining the African Supply Chain for the Global Industrialist.
+              </h2>
+              <p style={{
+                fontSize: '1.125rem',
+                color: 'rgba(255, 255, 255, 0.8)',
+                marginBottom: '2rem',
+                lineHeight: 1.8,
+              }}>
+                For too long, Africa’s industrial wealth has been trapped in fragmented, opaque channels. 
+                WG Trade was founded by industry experts to change that. We aren't just a marketplace; 
+                we are a digital pipeline. By centralizing the continent’s most critical resources and 
+                de-risking the trade process, we are building the most resilient and transparent industrial 
+                supply chain of the 2020s.
+              </p>
+              <Link 
+                href="/about"
+                className="btn btn-primary"
+                style={{
+                  padding: '1rem 2rem',
+                  fontSize: '1.0625rem',
+                  fontWeight: 600,
+                }}
+              >
+                 Read Our Manifesto
+              </Link>
+            </div>
+          </div>
+        </section>
+        
+        {/* Stats */}
+        <StatsSection stats={stats} />
+
         {/* CTA Banner */}
         <section style={{
-          background: 'linear-gradient(135deg, var(--color-navy) 0%, var(--color-blue) 100%)',
+          background: 'linear-gradient(135deg, var(--color-navy) 0%, var(--primary-900) 100%)',
           position: 'relative',
           overflow: 'hidden',
         }}>
@@ -463,8 +308,8 @@ export default function Home() {
             position: 'absolute',
             inset: 0,
             backgroundImage: `
-              radial-gradient(circle at 20% 50%, rgba(0, 163, 163, 0.15) 0%, transparent 50%),
-              radial-gradient(circle at 80% 50%, rgba(0, 163, 163, 0.15) 0%, transparent 50%)
+              radial-gradient(circle at 20% 50%, rgba(29, 201, 98, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 50%, rgba(29, 201, 98, 0.1) 0%, transparent 50%)
             `,
           }} />
           <div className="container" style={{
@@ -499,103 +344,29 @@ export default function Home() {
               }}>
                 <button 
                   onClick={() => setIsQuoteModalOpen(true)}
-                  className="btn btn-teal"
+                  className="btn btn-primary"
                   style={{
                     padding: '1rem 2rem',
                     fontSize: '1.0625rem',
                   }}
                 >
-                  Request a Quote
+                  Submit a Request for Quote (RfQ)
                 </button>
                 <Link 
-                  href="/contact"
+                  href="/products"
                   className="btn btn-ghost"
                   style={{
                     padding: '1rem 2rem',
                     fontSize: '1.0625rem',
                     color: 'white',
                     borderColor: 'rgba(255, 255, 255, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    borderRadius: '0.5rem',
                   }}
                 >
-                  Contact Sales
+                  Access the Industrial Catalog
                 </Link>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works */}
-        <section className="section">
-          <div className="container">
-            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-              <h2 style={{
-                fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
-                fontWeight: 700,
-                color: 'var(--color-navy)',
-                marginBottom: '0.75rem',
-              }}>
-                How It Works
-              </h2>
-              <p style={{
-                fontSize: '1rem',
-                color: 'var(--color-gray-500)',
-              }}>
-                Simple steps to source your chemicals
-              </p>
-            </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: '2rem',
-            }}>
-              {[
-                { step: '01', title: 'Browse & Search', desc: 'Explore our extensive catalog of industrial chemicals and raw materials.' },
-                { step: '02', title: 'Request Quote', desc: 'Submit your requirements and get competitive quotes from verified suppliers.' },
-                { step: '03', title: 'Compare & Order', desc: 'Review offers, negotiate terms, and place your order with confidence.' },
-              ].map((item) => (
-                <div key={item.step} style={{
-                  textAlign: 'center',
-                  padding: '2rem 1.5rem',
-                }}>
-                  <div style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '4rem',
-                    height: '4rem',
-                    background: 'linear-gradient(135deg, rgba(0, 102, 204, 0.1) 0%, rgba(0, 163, 163, 0.1) 100%)',
-                    borderRadius: '1rem',
-                    marginBottom: '1.5rem',
-                  }}>
-                    <span style={{
-                      fontSize: '1.5rem',
-                      fontWeight: 700,
-                      background: 'linear-gradient(135deg, var(--color-blue) 0%, var(--color-teal) 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text',
-                    }}>
-                      {item.step}
-                    </span>
-                  </div>
-                  <h3 style={{
-                    fontSize: '1.125rem',
-                    fontWeight: 600,
-                    color: 'var(--color-navy)',
-                    marginBottom: '0.5rem',
-                  }}>
-                    {item.title}
-                  </h3>
-                  <p style={{
-                    fontSize: '0.9375rem',
-                    color: 'var(--color-gray-500)',
-                    lineHeight: 1.6,
-                  }}>
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
             </div>
           </div>
         </section>
@@ -627,24 +398,14 @@ export default function Home() {
           background: var(--color-white);
           transform: scale(1.05);
           box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
-          border-color: var(--color-blue);
+          border-color: var(--primary);
         }
         
-        .brand-logo-card:hover span {
-          color: var(--color-navy);
+        .brand-logo-card:hover .brand-logo-img {
+          filter: grayscale(0%) !important;
+          opacity: 1 !important;
         }
 
-        .promo-cta:hover {
-          background: rgba(255, 255, 255, 0.9);
-          transform: translateY(-2px);
-        }
-        .view-all-deals:hover {
-          border-color: var(--color-blue);
-          background: var(--color-blue);
-          color: white;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 16px rgba(0, 102, 204, 0.2);
-        }
         .view-all-link:hover {
           gap: 0.75rem;
         }

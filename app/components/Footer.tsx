@@ -55,7 +55,7 @@ export default function Footer() {
               <div style={{
                 width: '2.5rem',
                 height: '2.5rem',
-                background: 'linear-gradient(135deg, var(--color-blue) 0%, var(--color-teal) 100%)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
                 borderRadius: '0.5rem',
                 display: 'flex',
                 alignItems: 'center',
@@ -71,7 +71,7 @@ export default function Footer() {
                 color: 'var(--color-white)',
                 letterSpacing: '-0.02em',
               }}>
-                Med<span style={{ color: 'var(--color-teal-light)' }}>Procure</span>
+                WG<span style={{ color: 'var(--primary)' }}>Trade</span>
               </span>
             </Link>
             <p style={{
@@ -267,7 +267,7 @@ export default function Footer() {
             color: 'var(--color-gray-400)',
             fontSize: '0.875rem',
           }}>
-            © {currentYear} WasteGrid Procure. All rights reserved.
+            © {currentYear} WG Trade. All rights reserved.
           </p>
         </div>
       </div>

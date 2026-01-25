@@ -28,8 +28,8 @@ export default function HeroSection() {
         inset: 0,
         opacity: 0.15,
         backgroundImage: `
-          radial-gradient(circle at 20% 80%, rgba(0, 163, 163, 0.3) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(0, 163, 163, 0.3) 0%, transparent 50%)
+          radial-gradient(circle at 20% 80%, rgba(29, 201, 98, 0.3) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(29, 201, 98, 0.3) 0%, transparent 50%)
         `,
       }} />
 
@@ -59,14 +59,14 @@ export default function HeroSection() {
               width: '0.5rem',
               height: '0.5rem',
               borderRadius: '50%',
-              background: 'var(--color-teal-light)',
+              background: 'var(--primary)',
             }} />
             <span style={{
               fontSize: '0.875rem',
               fontWeight: 500,
               color: 'var(--color-white)',
             }}>
-              Trusted by 800+ Manufacturing Companies
+              Powering the Global Industrial Economy
             </span>
           </div>
 
@@ -79,9 +79,9 @@ export default function HeroSection() {
             marginBottom: '1.5rem',
             letterSpacing: '-0.02em',
           }}>
-            Source Industrial Chemicals
+            Powering the Global Industrial
             <br />
-            <span style={{ color: 'var(--color-teal-light)' }}>with Confidence</span>
+            <span style={{ color: 'var(--primary)' }}>Economy from the Source.</span>
           </h1>
 
           {/* Subheading */}
@@ -90,11 +90,11 @@ export default function HeroSection() {
             color: 'rgba(255, 255, 255, 0.9)',
             lineHeight: 1.7,
             marginBottom: '2.5rem',
-            maxWidth: '36rem',
+            maxWidth: '42rem',
             margin: '0 auto 2.5rem',
           }}>
-            Connect with verified chemical suppliers worldwide. Request quotes for polymers, 
-            solvents, pigments, additives, and specialty chemicals — all in one platform.
+            The digital standard for verified African critical minerals, industrial chemicals, and raw materials. 
+            WG Trade provides the transparency, logistics, and certified purity required for the 21st-century supply chain.
           </p>
 
           {/* Search Bar */}

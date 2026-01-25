@@ -46,7 +46,7 @@ export default function Header() {
           <div style={{
             width: '2.5rem',
             height: '2.5rem',
-            background: 'linear-gradient(135deg, var(--color-blue) 0%, var(--color-teal) 100%)',
+            background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
             borderRadius: '0.5rem',
             display: 'flex',
             alignItems: 'center',
@@ -62,7 +62,7 @@ export default function Header() {
             color: 'var(--color-navy)',
             letterSpacing: '-0.02em',
           }}>
-            WasteGrid<span style={{ color: 'var(--color-blue)' }}>Procure</span>
+            WG<span style={{ color: 'var(--primary)' }}>Trade</span>
           </span>
         </Link>
 
