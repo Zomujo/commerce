@@ -1,18 +1,17 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
+import { StrategicVertical } from '@/types/api';
 
 interface CategoryCardProps {
-  id: string;
-  name: string;
-  description: string;
-  productCount: number;
-  icon: string;
+  category: StrategicVertical;
 }
 
 // Map category IDs to image filenames
 const categoryImages: Record<string, string> = {
+  'critical-minerals': '/minerals.png',
+  'industrial-chemicals': '/solvents.png',
+  'bulk-raw-materials': '/polymers.png',
+  // Fallbacks for potential other IDs
   polymers: '/polymers.png',
   solvents: '/solvents.png',
   pigments: '/pigments.png',
@@ -21,12 +20,15 @@ const categoryImages: Record<string, string> = {
   specialty: '/specialty.png',
 };
 
-export default function CategoryCard({ id, name, description, productCount }: CategoryCardProps) {
-  const imageUrl = categoryImages[id] || '/polymers.png';
+export default function CategoryCard({ category }: CategoryCardProps) {
+  const imageUrl = categoryImages[category.id] || '/polymers.png';
+  
+  // Use DB description or fallback
+  const description = category.description || category.tagline || 'Industrial grade materials';
 
   return (
     <Link 
-      href={`/categories/${id}`}
+      href={`/categories/${category.id}`}
       style={{
         display: 'block',
         textDecoration: 'none',
@@ -84,7 +86,7 @@ export default function CategoryCard({ id, name, description, productCount }: Ca
             fontWeight: 600,
             color: 'var(--color-navy)',
           }}>
-            {productCount}+ Products
+            {category.productCount || 0}+ Products
           </div>
 
           {/* Title */}
@@ -96,7 +98,7 @@ export default function CategoryCard({ id, name, description, productCount }: Ca
             lineHeight: 1.2,
             textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
           }}>
-            {name}
+            {category.name}
           </h3>
 
           {/* Description */}

@@ -1,26 +1,49 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import QuoteRequestModal from '../components/QuoteRequestModal';
-import { products, categories } from '../../lib/data';
+import { ApiClient } from '@/lib/api-client';
+import { Product, StrategicVertical } from '@/types/api';
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<string | undefined>();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [productsData, verticalsData] = await Promise.all([
+          ApiClient.getProducts({ limit: 100 }),
+          ApiClient.getVerticals().catch(() => []),
+        ]);
+        setProducts(productsData.content);
+        setVerticals(verticalsData);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const matchesCategory = selectedCategory === 'all' || product.categoryId === selectedCategory;
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || product.vertical?.id === selectedCategory;
+      const matchesSearch = !searchQuery || 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (product.description || '').toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, products]);
 
   const handleRequestQuote = (productName?: string) => {
     setSelectedProduct(productName);
@@ -156,20 +179,20 @@ export default function ProductsPage() {
                         {products.length}
                       </span>
                     </button>
-                    {categories.map((category) => {
-                      const count = products.filter(p => p.categoryId === category.id).length;
+                    {verticals.map((vertical) => {
+                      const count = products.filter(p => p.vertical?.id === vertical.id).length;
                       return (
                         <button
-                          key={category.id}
-                          onClick={() => setSelectedCategory(category.id)}
+                          key={vertical.id}
+                          onClick={() => setSelectedCategory(vertical.id)}
                           style={{
                             padding: '0.625rem 0.875rem',
                             borderRadius: '0.5rem',
                             border: 'none',
-                            background: selectedCategory === category.id ? 'rgba(0, 102, 204, 0.1)' : 'transparent',
-                            color: selectedCategory === category.id ? 'var(--color-blue)' : 'var(--color-gray-600)',
+                            background: selectedCategory === vertical.id ? 'rgba(0, 102, 204, 0.1)' : 'transparent',
+                            color: selectedCategory === vertical.id ? 'var(--color-blue)' : 'var(--color-gray-600)',
                             fontSize: '0.875rem',
-                            fontWeight: selectedCategory === category.id ? 600 : 400,
+                            fontWeight: selectedCategory === vertical.id ? 600 : 400,
                             textAlign: 'left',
                             cursor: 'pointer',
                             transition: 'all var(--transition-fast)',
@@ -178,7 +201,7 @@ export default function ProductsPage() {
                             alignItems: 'center',
                           }}
                         >
-                          {category.name}
+                          {vertical.name}
                           <span style={{
                             fontSize: '0.75rem',
                             color: 'var(--color-gray-400)',
@@ -219,12 +242,7 @@ export default function ProductsPage() {
                     {filteredProducts.map((product) => (
                       <ProductCard
                         key={product.id}
-                        id={product.id}
-                        name={product.name}
-                        category={product.category}
-                        description={product.description}
-                        image={product.image}
-                        badge={product.badge}
+                        product={product}
                         onRequestQuote={() => handleRequestQuote(product.name)}
                       />
                     ))}

@@ -277,14 +277,19 @@ export default function ProductDetailPage() {
                 {relatedProducts.map((relatedProduct) => (
                   <ProductCard
                     key={relatedProduct.id}
-                    id={relatedProduct.id}
-                    name={relatedProduct.name}
-                    category={relatedProduct.category}
-                    description={relatedProduct.description}
-                    image={relatedProduct.image}
-                    badge={relatedProduct.badge}
+                    product={{
+                      id: relatedProduct.id,
+                      name: relatedProduct.name,
+                      description: relatedProduct.description,
+                      image: relatedProduct.image || '',
+                      badge: relatedProduct.badge,
+                      vertical: { id: relatedProduct.categoryId, name: relatedProduct.category },
+                      originCountry: '',
+                      purityGrade: '',
+                      certifications: [],
+                      createdAt: '',
+                    }}
                     onRequestQuote={() => {
-                      // Navigate to the product page instead of opening modal
                       window.location.href = `/products/${relatedProduct.id}`;
                     }}
                   />

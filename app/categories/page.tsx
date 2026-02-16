@@ -1,12 +1,31 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CategoryCard from '../components/CategoryCard';
-import { categories } from '../../lib/data';
+import { ApiClient } from '@/lib/api-client';
+import { StrategicVertical } from '@/types/api';
 
 export default function CategoriesPage() {
+  const [categories, setCategories] = useState<StrategicVertical[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await ApiClient.getVerticals();
+        setCategories(data);
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header />
@@ -52,11 +71,7 @@ export default function CategoriesPage() {
               {categories.map((category) => (
                 <CategoryCard
                   key={category.id}
-                  id={category.id}
-                  name={category.name}
-                  description={category.description}
-                  productCount={category.productCount}
-                  icon={category.icon}
+                  category={category}
                 />
               ))}
             </div>

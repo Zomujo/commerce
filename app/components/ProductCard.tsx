@@ -2,25 +2,21 @@
 
 import Link from 'next/link';
 
+import { Product } from '@/types/api';
+
 interface ProductCardProps {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  image?: string;
-  badge?: string;
+  product: Product;
   onRequestQuote?: () => void;
 }
 
 export default function ProductCard({ 
-  id, 
-  name, 
-  category, 
-  description, 
-  image, 
-  badge,
+  product,
   onRequestQuote 
 }: ProductCardProps) {
+  const { id, name, description, image, badge } = product;
+  // Handle vertical object or string depending on API response structure, 
+  // though our type says vertical is StrategicVertical object.
+  const categoryName = product.vertical?.name || 'Industrial';
   return (
     <div className="card" style={{
       display: 'flex',
@@ -105,7 +101,7 @@ export default function ProductCard({
           letterSpacing: '0.05em',
           marginBottom: '0.5rem',
         }}>
-          {category}
+          {categoryName}
         </span>
 
         {/* Name */}

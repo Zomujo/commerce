@@ -1,16 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HeroSection from './components/HeroSection';
 import StrategicVerticals from './components/StrategicVerticals';
 import TrustEngine from './components/TrustEngine';
 import ProductCard from './components/ProductCard';
+import CategoryCard from './components/CategoryCard';
 import StatsSection from './components/StatsSection';
 import QuoteRequestModal from './components/QuoteRequestModal';
-import { products, stats } from '../lib/data';
+import { stats } from '../lib/data';
 import Link from 'next/link';
+import { ApiClient } from '@/lib/api-client';
+import { Product, StrategicVertical } from '@/types/api';
 
 // Trusted partners/brands
 const trustedBrands = [
@@ -25,6 +28,29 @@ const trustedBrands = [
 export default function Home() {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<string | undefined>();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [popularProducts, fetchedVerticals] = await Promise.all([
+          ApiClient.getPopularProducts(4),
+          // Fallback to manual fetch if getVerticals is not implemented yet or separate
+          ApiClient.getVerticals().catch(() => []) 
+        ]);
+        setProducts(popularProducts);
+        setVerticals(fetchedVerticals);
+      } catch (error) {
+        console.error('Failed to fetch home data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleRequestQuote = (productName?: string) => {
     setSelectedProduct(productName);
@@ -40,7 +66,34 @@ export default function Home() {
         <HeroSection />
 
         {/* Strategic Verticals */}
-        <StrategicVerticals />
+
+        {/* Strategic Verticals Section */}
+        <section className="section" style={{ background: 'var(--color-background-light)' }}>
+          <div className="container">
+            <h2 style={{
+              fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
+              fontWeight: 700,
+              color: 'var(--color-navy)',
+              marginBottom: '2rem',
+              textAlign: 'center'
+            }}>Strategic Verticals</h2>
+             <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '2rem',
+            }}>
+              {verticals.length > 0 ? verticals.map((vertical) => (
+                <CategoryCard
+                  key={vertical.id}
+                  category={vertical}
+                />
+              )) : (
+                // Loading Skeleton or Fallback
+                <p>Loading market verticals...</p>
+              )}
+            </div>
+          </div>
+        </section>
 
         {/* Trust Engine */}
         <TrustEngine />
@@ -235,18 +288,15 @@ export default function Home() {
               gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
               gap: '1.5rem',
             }}>
-              {products.slice(0, 4).map((product) => (
+              {products.length > 0 ? products.map((product) => (
                 <ProductCard
                   key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  category={product.category}
-                  description={product.description}
-                  image={product.image}
-                  badge={product.badge}
+                  product={product}
                   onRequestQuote={() => handleRequestQuote(product.name)}
                 />
-              ))}
+              )) : (
+                 <p>Loading products...</p>
+              )}
             </div>
           </div>
         </section>
