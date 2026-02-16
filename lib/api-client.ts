@@ -1,4 +1,4 @@
-import { ApiResponse, Page, Product, QuoteRequest, StrategicVertical, ContactMessage } from '@/types/api';
+import { ApiResponse, Page, Product, QuoteRequest, StrategicVertical, ContactMessage, PlatformStats } from '@/types/api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
 
@@ -72,5 +72,9 @@ export const ApiClient = {
       method: 'POST',
       body: JSON.stringify(data),
     });
+  },
+
+  getStats: async (): Promise<PlatformStats> => {
+    return fetchHelper<PlatformStats>('/stats');
   },
 };

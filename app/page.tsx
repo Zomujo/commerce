@@ -10,10 +10,9 @@ import ProductCard from './components/ProductCard';
 import CategoryCard from './components/CategoryCard';
 import StatsSection from './components/StatsSection';
 import QuoteRequestModal from './components/QuoteRequestModal';
-import { stats } from '../lib/data';
 import Link from 'next/link';
 import { ApiClient } from '@/lib/api-client';
-import { Product, StrategicVertical } from '@/types/api';
+import { Product, StrategicVertical, PlatformStats } from '@/types/api';
 
 // Trusted partners/brands
 const trustedBrands = [
@@ -30,18 +29,20 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<string | undefined>();
   const [products, setProducts] = useState<Product[]>([]);
   const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
+  const [stats, setStats] = useState<PlatformStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [popularProducts, fetchedVerticals] = await Promise.all([
+        const [popularProducts, fetchedVerticals, fetchedStats] = await Promise.all([
           ApiClient.getPopularProducts(4),
-          // Fallback to manual fetch if getVerticals is not implemented yet or separate
-          ApiClient.getVerticals().catch(() => []) 
+          ApiClient.getVerticals().catch(() => []),
+          ApiClient.getStats().catch(() => null)
         ]);
         setProducts(popularProducts);
         setVerticals(fetchedVerticals);
+        setStats(fetchedStats);
       } catch (error) {
         console.error('Failed to fetch home data:', error);
       } finally {
@@ -56,6 +57,18 @@ export default function Home() {
     setSelectedProduct(productName);
     setIsQuoteModalOpen(true);
   };
+
+  const platformStats = stats ? [
+    { label: 'Products Available', value: stats.productCount },
+    { label: 'Verified Suppliers', value: stats.verifiedSuppliers },
+    { label: 'Countries Served', value: stats.countriesServed },
+    { label: 'Support Availability', value: stats.supportAvailability },
+  ] : [
+    { label: 'Products Available', value: '100+' },
+    { label: 'Verified Suppliers', value: '20+' },
+    { label: 'Countries Served', value: '60+' },
+    { label: 'Support Availability', value: '24/7' },
+  ];
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -234,6 +247,10 @@ export default function Home() {
           </div>
         </section>
 
+
+
+
+
         {/* Featured Products / Industrial Catalog Preview */}
         <section className="section" style={{ background: 'var(--color-white)' }}>
           <div className="container">
@@ -346,7 +363,7 @@ export default function Home() {
         </section>
         
         {/* Stats */}
-        <StatsSection stats={stats} />
+        <StatsSection stats={platformStats} />
 
         {/* CTA Banner */}
         <section style={{

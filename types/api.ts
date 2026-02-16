@@ -55,6 +55,13 @@ export interface ContactMessage {
   message: string;
 }
 
+export interface PlatformStats {
+  productCount: string;
+  verifiedSuppliers: string;
+  countriesServed: string;
+  supportAvailability: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
