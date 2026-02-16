@@ -16,6 +16,10 @@ export default function QuoteRequestModal({ isOpen, onClose, productName }: Quot
     company: '',
     phone: '',
     product: productName || '',
+    quantity: '',
+    deliveryLocation: '',
+    incoterms: '',
+    preferredCurrency: '',
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,13 +45,17 @@ export default function QuoteRequestModal({ isOpen, onClose, productName }: Quot
         company: formData.company,
         phone: formData.phone,
         productName: formData.product,
+        quantity: formData.quantity || undefined,
+        deliveryLocation: formData.deliveryLocation || undefined,
+        incoterms: formData.incoterms || undefined,
+        preferredCurrency: formData.preferredCurrency || undefined,
         message: formData.message,
       });
 
       setIsSuccess(true);
       setTimeout(() => {
         setIsSuccess(false);
-        setFormData({ name: '', email: '', company: '', phone: '', product: '', message: '' });
+        setFormData({ name: '', email: '', company: '', phone: '', product: '', quantity: '', deliveryLocation: '', incoterms: '', preferredCurrency: '', message: '' });
         onClose();
       }, 2000);
     } catch (err) {
@@ -58,7 +66,7 @@ export default function QuoteRequestModal({ isOpen, onClose, productName }: Quot
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
@@ -272,6 +280,110 @@ export default function QuoteRequestModal({ isOpen, onClose, productName }: Quot
                   />
                 </div>
 
+                {/* Quantity & Delivery Location Row */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '1rem',
+                }} className="form-row">
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      color: 'var(--color-navy)',
+                      marginBottom: '0.5rem',
+                    }}>
+                      Quantity
+                    </label>
+                    <input
+                      type="text"
+                      name="quantity"
+                      value={formData.quantity}
+                      onChange={handleChange}
+                      className="input"
+                      placeholder="e.g., 500 MT"
+                    />
+                  </div>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      color: 'var(--color-navy)',
+                      marginBottom: '0.5rem',
+                    }}>
+                      Delivery Location
+                    </label>
+                    <input
+                      type="text"
+                      name="deliveryLocation"
+                      value={formData.deliveryLocation}
+                      onChange={handleChange}
+                      className="input"
+                      placeholder="e.g., Tema Port, Ghana"
+                    />
+                  </div>
+                </div>
+
+                {/* Incoterms & Currency Row */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '1rem',
+                }} className="form-row">
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      color: 'var(--color-navy)',
+                      marginBottom: '0.5rem',
+                    }}>
+                      Incoterms
+                    </label>
+                    <select
+                      name="incoterms"
+                      value={formData.incoterms}
+                      onChange={handleChange}
+                      className="input"
+                    >
+                      <option value="">Select...</option>
+                      <option value="EXW">EXW — Ex Works</option>
+                      <option value="FOB">FOB — Free on Board</option>
+                      <option value="CIF">CIF — Cost, Insurance & Freight</option>
+                      <option value="CFR">CFR — Cost & Freight</option>
+                      <option value="DDP">DDP — Delivered Duty Paid</option>
+                      <option value="DAP">DAP — Delivered at Place</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      color: 'var(--color-navy)',
+                      marginBottom: '0.5rem',
+                    }}>
+                      Preferred Currency
+                    </label>
+                    <select
+                      name="preferredCurrency"
+                      value={formData.preferredCurrency}
+                      onChange={handleChange}
+                      className="input"
+                    >
+                      <option value="">Select...</option>
+                      <option value="USD">USD — US Dollar</option>
+                      <option value="EUR">EUR — Euro</option>
+                      <option value="GBP">GBP — British Pound</option>
+                      <option value="GHS">GHS — Ghanaian Cedi</option>
+                      <option value="NGN">NGN — Nigerian Naira</option>
+                      <option value="ZAR">ZAR — South African Rand</option>
+                    </select>
+                  </div>
+                </div>
+
                 {/* Message */}
                 <div>
                   <label style={{
@@ -281,15 +393,15 @@ export default function QuoteRequestModal({ isOpen, onClose, productName }: Quot
                     color: 'var(--color-navy)',
                     marginBottom: '0.5rem',
                   }}>
-                    Message
+                    Additional Details
                   </label>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     className="input"
-                    rows={4}
-                    placeholder="Tell us about your requirements, quantity needed, timeline, etc."
+                    rows={3}
+                    placeholder="Any other requirements, certifications needed, timeline, etc."
                     style={{ resize: 'vertical' }}
                   />
                 </div>

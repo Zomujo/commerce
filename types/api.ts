@@ -27,15 +27,51 @@ export interface Product {
   updatedAt?: string;
 }
 
+export enum QuoteStatus {
+  PENDING = 'PENDING',
+  REVIEWED = 'REVIEWED',
+  QUOTED = 'QUOTED',
+  REJECTED = 'REJECTED'
+}
+
+export enum Incoterms {
+  FOB = 'FOB',
+  CIF = 'CIF',
+  CFR = 'CFR',
+  EXW = 'EXW'
+}
+
+export enum Currency {
+  USD = 'USD',
+  EUR = 'EUR',
+  GHS = 'GHS'
+}
+
 export interface QuoteRequest {
   id: string; // UUID
-  fullName: string;
+  name: string;
   email: string;
-  companyName: string;
-  phoneNumber?: string;
-  details: string;
-  status: 'PENDING' | 'REVIEWED' | 'QUOTED' | 'REJECTED';
+  company: string;
+  phone?: string;
+  
+  // Product Interest
+  product?: Product;
+  productName?: string;
+  vertical?: StrategicVertical;
+
+  // Requirements
+  quantity?: string;
+  deliveryLocation?: string;
+  incoterms?: Incoterms;
+  preferredCurrency?: Currency;
+  message?: string;
+
+  // Status & Admin
+  status: QuoteStatus;
+  adminNotes?: string;
+  assignedTo?: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export enum ContactSubject {
@@ -46,13 +82,27 @@ export enum ContactSubject {
   OTHER = 'OTHER',
 }
 
+export enum MessageStatus {
+  NEW = 'NEW',
+  READ = 'READ',
+  REPLIED = 'REPLIED',
+  ARCHIVED = 'ARCHIVED'
+}
+
 export interface ContactMessage {
+  id: string;
   name: string;
   email: string;
   company?: string;
   phone?: string;
   subject: ContactSubject;
   message: string;
+  
+  // Status & Admin
+  status: MessageStatus;
+  adminNotes?: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface PlatformStats {
