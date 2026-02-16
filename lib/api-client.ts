@@ -1,4 +1,4 @@
-import { ApiResponse, Page, Product, QuoteRequest, StrategicVertical } from '@/types/api';
+import { ApiResponse, Page, Product, QuoteRequest, StrategicVertical, ContactMessage } from '@/types/api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
 
@@ -54,13 +54,21 @@ export const ApiClient = {
   },
 
   submitQuote: async (data: {
-    fullName: string;
+    name: string;
     email: string;
-    companyName: string;
-    phoneNumber?: string;
-    details: string;
+    company?: string;
+    phone?: string;
+    productName?: string;
+    message?: string;
   }): Promise<QuoteRequest> => {
     return fetchHelper<QuoteRequest>('/quotes', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  submitContact: async (data: ContactMessage): Promise<void> => {
+    return fetchHelper<void>('/contact', {
       method: 'POST',
       body: JSON.stringify(data),
     });

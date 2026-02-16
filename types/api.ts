@@ -38,6 +38,23 @@ export interface QuoteRequest {
   createdAt: string;
 }
 
+export enum ContactSubject {
+  QUOTE = 'QUOTE',
+  PRODUCT = 'PRODUCT',
+  SUPPORT = 'SUPPORT',
+  PARTNERSHIP = 'PARTNERSHIP',
+  OTHER = 'OTHER',
+}
+
+export interface ContactMessage {
+  name: string;
+  email: string;
+  company?: string;
+  phone?: string;
+  subject: ContactSubject;
+  message: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   message: string;

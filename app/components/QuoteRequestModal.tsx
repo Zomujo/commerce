@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ApiClient } from '@/lib/api-client';
 
 interface QuoteRequestModalProps {
   isOpen: boolean;
@@ -19,25 +20,42 @@ export default function QuoteRequestModal({ isOpen, onClose, productName }: Quot
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Sync productName prop into form when it changes
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, product: productName || '' }));
+  }, [productName]);
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    
-    // Reset after showing success
-    setTimeout(() => {
-      setIsSuccess(false);
-      setFormData({ name: '', email: '', company: '', phone: '', product: '', message: '' });
-      onClose();
-    }, 2000);
+    try {
+      await ApiClient.submitQuote({
+        name: formData.name,
+        email: formData.email,
+        company: formData.company,
+        phone: formData.phone,
+        productName: formData.product,
+        message: formData.message,
+      });
+
+      setIsSuccess(true);
+      setTimeout(() => {
+        setIsSuccess(false);
+        setFormData({ name: '', email: '', company: '', phone: '', product: '', message: '' });
+        onClose();
+      }, 2000);
+    } catch (err) {
+      console.error('Quote submission failed:', err);
+      setError(err instanceof Error ? err.message : 'Failed to submit quote. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -276,6 +294,21 @@ export default function QuoteRequestModal({ isOpen, onClose, productName }: Quot
                   />
                 </div>
               </div>
+
+              {/* Error Message */}
+              {error && (
+                <div style={{
+                  marginTop: '1rem',
+                  padding: '0.75rem 1rem',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                  borderRadius: '0.5rem',
+                  color: '#dc2626',
+                  fontSize: '0.875rem',
+                }}>
+                  {error}
+                </div>
+              )}
 
               {/* Submit Button */}
               <button

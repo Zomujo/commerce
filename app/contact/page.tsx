@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { ApiClient } from '@/lib/api-client';
+import { ContactSubject } from '@/types/api';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -15,16 +17,30 @@ export default function ContactPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    try {
+      await ApiClient.submitContact({
+        name: formData.name,
+        email: formData.email,
+        company: formData.company,
+        phone: formData.phone,
+        subject: formData.subject.toUpperCase() as ContactSubject,
+        message: formData.message,
+      });
+      setIsSuccess(true);
+      setFormData({ name: '', email: '', company: '', phone: '', subject: '', message: '' });
+    } catch (err) {
+      console.error('Contact submission failed:', err);
+      setError(err instanceof Error ? err.message : 'Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -232,7 +248,6 @@ export default function ContactPage() {
                     <button 
                       onClick={() => {
                         setIsSuccess(false);
-                        setFormData({ name: '', email: '', company: '', phone: '', subject: '', message: '' });
                       }}
                       className="btn btn-secondary"
                     >
@@ -249,6 +264,21 @@ export default function ContactPage() {
                     }}>
                       Send us a Message
                     </h2>
+                    
+                    {error && (
+                      <div style={{
+                        marginBottom: '1.5rem',
+                        padding: '0.75rem 1rem',
+                        background: 'rgba(239, 68, 68, 0.1)',
+                        border: '1px solid rgba(239, 68, 68, 0.2)',
+                        borderRadius: '0.5rem',
+                        color: '#dc2626',
+                        fontSize: '0.875rem',
+                      }}>
+                        {error}
+                      </div>
+                    )}
+
                     <form onSubmit={handleSubmit}>
                       <div style={{
                         display: 'grid',
@@ -277,6 +307,7 @@ export default function ContactPage() {
                               className="input"
                               placeholder="John Doe"
                               required
+                              minLength={2}
                             />
                           </div>
                           <div>
@@ -353,7 +384,7 @@ export default function ContactPage() {
                             fontWeight: 500,
                             color: 'var(--color-navy)',
                             marginBottom: '0.5rem',
-                          }}>
+                            }}>
                             Subject *
                           </label>
                           <select
@@ -389,8 +420,9 @@ export default function ContactPage() {
                             onChange={handleChange}
                             className="input"
                             rows={5}
-                            placeholder="How can we help you?"
+                            placeholder="How can we help you? (Minimum 10 characters)"
                             required
+                            minLength={10}
                             style={{ resize: 'vertical' }}
                           />
                         </div>
