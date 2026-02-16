@@ -1,27 +1,82 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams, notFound } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ProductCard from '../../components/ProductCard';
 import QuoteRequestModal from '../../components/QuoteRequestModal';
-import { products } from '../../../lib/data';
+import { ApiClient } from '@/lib/api-client';
+import { Product } from '@/types/api';
 
 export default function ProductDetailPage() {
   const params = useParams();
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const product = products.find(p => p.id === params.id);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!params.id) return;
+      try {
+        setIsLoading(true);
+        const data = await ApiClient.getProductById(params.id as string);
+        setProduct(data);
 
-  if (!product) {
-    notFound();
+        // Fetch related products from same vertical
+        if (data.vertical?.id) {
+          try {
+            const related = await ApiClient.getProducts({
+              vertical: data.vertical.id,
+              limit: 5,
+            });
+            setRelatedProducts(
+              related.content.filter((p) => p.id !== data.id).slice(0, 4)
+            );
+          } catch {
+            // Non-critical, ignore
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch product:', err);
+        setError('Product not found');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [params.id]);
+
+  if (isLoading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <p style={{ fontSize: '1.125rem', color: 'var(--color-gray-500)' }}>Loading product...</p>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
-  const relatedProducts = products
-    .filter(p => p.categoryId === product.categoryId && p.id !== product.id)
-    .slice(0, 4);
+  if (error || !product) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem' }}>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-navy)' }}>Product Not Found</h1>
+          <p style={{ color: 'var(--color-gray-500)' }}>The product you're looking for doesn't exist.</p>
+          <Link href="/products" className="btn btn-primary">Browse Products</Link>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  const categoryName = product.vertical?.name || 'Industrial';
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -98,7 +153,6 @@ export default function ProductDetailPage() {
                     }}
                   />
                 ) : (
-                  // Fallback placeholder
                   <div style={{
                     width: '100%',
                     height: '100%',
@@ -128,7 +182,7 @@ export default function ProductDetailPage() {
               {/* Info */}
               <div>
                 <span className="badge badge-blue" style={{ marginBottom: '0.75rem' }}>
-                  {product.category}
+                  {categoryName}
                 </span>
                 <h1 style={{
                   fontSize: 'clamp(1.5rem, 3vw, 2rem)',
@@ -148,8 +202,78 @@ export default function ProductDetailPage() {
                   {product.description}
                 </p>
 
-                {/* Features */}
-                {product.features && (
+                {/* Product Details Grid */}
+                <div style={{ marginBottom: '2rem' }}>
+                  <h3 style={{
+                    fontSize: '0.9375rem',
+                    fontWeight: 600,
+                    color: 'var(--color-navy)',
+                    marginBottom: '0.75rem',
+                  }}>
+                    Product Details
+                  </h3>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: '0.625rem',
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      fontSize: '0.9375rem',
+                      color: 'var(--color-gray-600)',
+                    }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20,6 9,17 4,12" />
+                      </svg>
+                      Purity: {product.purityGrade}
+                    </div>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      fontSize: '0.9375rem',
+                      color: 'var(--color-gray-600)',
+                    }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20,6 9,17 4,12" />
+                      </svg>
+                      Origin: {product.originCountry}
+                    </div>
+                    {product.qaPartner && (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        fontSize: '0.9375rem',
+                        color: 'var(--color-gray-600)',
+                      }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20,6 9,17 4,12" />
+                        </svg>
+                        QA: {product.qaPartner}
+                      </div>
+                    )}
+                    {product.originSite && (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        fontSize: '0.9375rem',
+                        color: 'var(--color-gray-600)',
+                      }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20,6 9,17 4,12" />
+                        </svg>
+                        Site: {product.originSite}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Certifications */}
+                {product.certifications && product.certifications.length > 0 && (
                   <div style={{ marginBottom: '2rem' }}>
                     <h3 style={{
                       fontSize: '0.9375rem',
@@ -157,25 +281,53 @@ export default function ProductDetailPage() {
                       color: 'var(--color-navy)',
                       marginBottom: '0.75rem',
                     }}>
-                      Key Features
+                      Certifications
+                    </h3>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      {product.certifications.map((cert, index) => (
+                        <span key={index} style={{
+                          padding: '0.25rem 0.75rem',
+                          background: 'rgba(0, 163, 163, 0.1)',
+                          color: 'var(--color-teal)',
+                          fontSize: '0.8125rem',
+                          fontWeight: 600,
+                          borderRadius: '9999px',
+                          border: '1px solid rgba(0, 163, 163, 0.2)',
+                        }}>
+                          {cert}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Specifications */}
+                {product.specifications && Object.keys(product.specifications).length > 0 && (
+                  <div style={{ marginBottom: '2rem' }}>
+                    <h3 style={{
+                      fontSize: '0.9375rem',
+                      fontWeight: 600,
+                      color: 'var(--color-navy)',
+                      marginBottom: '0.75rem',
+                    }}>
+                      Specifications
                     </h3>
                     <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(2, 1fr)',
-                      gap: '0.625rem',
+                      background: 'var(--color-gray-50)',
+                      borderRadius: '0.75rem',
+                      padding: '1rem',
+                      border: '1px solid var(--color-gray-200)',
                     }}>
-                      {product.features.map((feature, index) => (
-                        <div key={index} style={{
+                      {Object.entries(product.specifications).map(([key, value]) => (
+                        <div key={key} style={{
                           display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                          fontSize: '0.9375rem',
-                          color: 'var(--color-gray-600)',
+                          justifyContent: 'space-between',
+                          padding: '0.5rem 0',
+                          borderBottom: '1px solid var(--color-gray-200)',
+                          fontSize: '0.875rem',
                         }}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20,6 9,17 4,12" />
-                          </svg>
-                          {feature}
+                          <span style={{ color: 'var(--color-gray-500)', fontWeight: 500 }}>{key}</span>
+                          <span style={{ color: 'var(--color-navy)', fontWeight: 600 }}>{value}</span>
                         </div>
                       ))}
                     </div>
@@ -277,18 +429,7 @@ export default function ProductDetailPage() {
                 {relatedProducts.map((relatedProduct) => (
                   <ProductCard
                     key={relatedProduct.id}
-                    product={{
-                      id: relatedProduct.id,
-                      name: relatedProduct.name,
-                      description: relatedProduct.description,
-                      image: relatedProduct.image || '',
-                      badge: relatedProduct.badge,
-                      vertical: { id: relatedProduct.categoryId, name: relatedProduct.category },
-                      originCountry: '',
-                      purityGrade: '',
-                      certifications: [],
-                      createdAt: '',
-                    }}
+                    product={relatedProduct}
                     onRequestQuote={() => {
                       window.location.href = `/products/${relatedProduct.id}`;
                     }}
