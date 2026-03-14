@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Auth } from '@/lib/auth';
+import { ApiClient } from '@/lib/api-client';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -10,10 +12,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('admin_token');
-    if (!token && pathname !== '/admin/login') {
-      router.push('/admin/login');
-      return;
+    if (pathname !== '/admin/login') {
+      if (!Auth.isAuthenticated() || Auth.getRole() !== 'ADMIN') {
+        router.push('/admin/login');
+        return;
+      }
     }
     setIsLoading(false);
   }, [pathname, router]);
@@ -65,7 +68,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="px-3 py-4 border-t border-white/10">
-          <button onClick={() => { localStorage.removeItem('admin_token'); router.push('/admin/login'); }}
+          <button onClick={async () => { await ApiClient.logout(); Auth.clear(); router.push('/admin/login'); }}
             className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:bg-red-500/10 hover:text-red-300 transition-colors cursor-pointer"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>

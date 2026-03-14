@@ -1,8 +1,66 @@
-import { ApiResponse, Page, Product, QuoteRequest, StrategicVertical, ContactMessage, PlatformStats, QuoteStatus, MessageStatus } from '@/types/api';
+import { ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, VerificationStatus } from '@/types/api';
+import { Auth } from './auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
 
-async function fetchHelper<T>(endpoint: string, options?: RequestInit): Promise<T> {
+async function fetchHelper<T>(endpoint: string, options?: RequestInit, token?: string): Promise<T> {
+  const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
+
+  const res = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeader,
+      ...options?.headers,
+    },
+  });
+
+  if (res.status === 401 && token) {
+    // Attempt silent token refresh
+    const refreshToken = Auth.getRefreshToken();
+    if (refreshToken) {
+      try {
+        const refreshRes = await fetch(`${API_URL}/auth/refresh`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken }),
+        });
+        if (refreshRes.ok) {
+          const refreshData: ApiResponse<AuthResponse> = await refreshRes.json();
+          Auth.updateAccessToken(refreshData.data.accessToken);
+          // Retry original request with new token
+          const retryRes = await fetch(`${API_URL}${endpoint}`, {
+            ...options,
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${refreshData.data.accessToken}`,
+              ...options?.headers,
+            },
+          });
+          if (retryRes.ok) {
+            const retryData: ApiResponse<T> = await retryRes.json();
+            return retryData.data;
+          }
+        }
+      } catch {
+        // refresh failed — fall through to error
+      }
+    }
+    Auth.clear();
+    window.location.href = '/admin/login';
+    throw new Error('Session expired. Please log in again.');
+  }
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || `API Error: ${res.status} ${res.statusText}`);
+  }
+
+  const response: ApiResponse<T> = await res.json();
+  return response.data;
+}
+
+async function fetchAuthEndpoint<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers: {
@@ -21,6 +79,40 @@ async function fetchHelper<T>(endpoint: string, options?: RequestInit): Promise<
 }
 
 export const ApiClient = {
+  // Auth
+  login: async (data: LoginRequest): Promise<AuthResponse> => {
+    return fetchAuthEndpoint<AuthResponse>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  register: async (data: RegisterRequest): Promise<AuthResponse> => {
+    return fetchAuthEndpoint<AuthResponse>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  refreshToken: async (data: RefreshTokenRequest): Promise<AuthResponse> => {
+    return fetchAuthEndpoint<AuthResponse>('/auth/refresh', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  logout: async (): Promise<void> => {
+    const token = Auth.getAccessToken();
+    await fetch(`${API_URL}/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    }).catch(() => {});
+  },
+
+  // Public
   getProducts: async (params?: {
     vertical?: string;
     search?: string;
@@ -49,7 +141,6 @@ export const ApiClient = {
   },
 
   getVerticals: async (): Promise<StrategicVertical[]> => {
-    // Assuming you have an endpoint for this, referencing VerticalController
     return fetchHelper<StrategicVertical[]>('/verticals');
   },
 
@@ -85,60 +176,114 @@ export const ApiClient = {
   // Admin - Quotes
   getQuotes: async (status?: QuoteStatus, page = 0, limit = 20): Promise<Page<QuoteRequest>> => {
     const statusParam = status ? `&status=${status}` : '';
-    return fetchHelper<Page<QuoteRequest>>(`/admin/quotes?page=${page}&limit=${limit}${statusParam}`);
+    return fetchHelper<Page<QuoteRequest>>(`/admin/quotes?page=${page}&limit=${limit}${statusParam}`, {}, Auth.getAccessToken() ?? undefined);
   },
 
   getQuoteById: async (id: string): Promise<QuoteRequest> => {
-    return fetchHelper<QuoteRequest>(`/admin/quotes/${id}`);
+    return fetchHelper<QuoteRequest>(`/admin/quotes/${id}`, {}, Auth.getAccessToken() ?? undefined);
   },
 
   updateQuoteStatus: async (id: string, status: QuoteStatus, note?: string): Promise<QuoteRequest> => {
     return fetchHelper<QuoteRequest>(`/admin/quotes/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status, note }),
-    });
+    }, Auth.getAccessToken() ?? undefined);
   },
 
   addQuoteNote: async (id: string, note: string): Promise<QuoteRequest> => {
     return fetchHelper<QuoteRequest>(`/admin/quotes/${id}/note`, {
       method: 'PATCH',
-      body: note, // Controller expects @RequestBody String
-      headers: { 'Content-Type': 'text/plain' }, // Force text/plain if needed, but fetchHelper might override. 
-      // Actually fetchHelper defaults to application/json. 
-      // If backend accepts JSON string, JSON.stringify(note) is correct.
-      // If backend expects raw text, we might need a distinct helper or override.
-      // Let's assume JSON string for now as it's safer with valid JSON.
-    });
+      body: note,
+      headers: { 'Content-Type': 'text/plain' },
+    }, Auth.getAccessToken() ?? undefined);
   },
 
   assignQuote: async (id: string, email: string): Promise<QuoteRequest> => {
     return fetchHelper<QuoteRequest>(`/admin/quotes/${id}/assign`, {
       method: 'PATCH',
-      body: email, 
-    });
+      body: email,
+    }, Auth.getAccessToken() ?? undefined);
   },
 
   // Admin - Contacts
   getContacts: async (status?: MessageStatus, page = 0, limit = 20): Promise<Page<ContactMessage>> => {
     const statusParam = status ? `&status=${status}` : '';
-    return fetchHelper<Page<ContactMessage>>(`/admin/contacts?page=${page}&limit=${limit}${statusParam}`);
+    return fetchHelper<Page<ContactMessage>>(`/admin/contacts?page=${page}&limit=${limit}${statusParam}`, {}, Auth.getAccessToken() ?? undefined);
   },
 
   getContactById: async (id: string): Promise<ContactMessage> => {
-    return fetchHelper<ContactMessage>(`/admin/contacts/${id}`);
+    return fetchHelper<ContactMessage>(`/admin/contacts/${id}`, {}, Auth.getAccessToken() ?? undefined);
   },
 
   updateContactStatus: async (id: string, status: MessageStatus, note?: string): Promise<ContactMessage> => {
     return fetchHelper<ContactMessage>(`/admin/contacts/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status, note }),
-    });
+    }, Auth.getAccessToken() ?? undefined);
   },
 
   addContactNote: async (id: string, note: string): Promise<ContactMessage> => {
     return fetchHelper<ContactMessage>(`/admin/contacts/${id}/note`, {
       method: 'PATCH',
       body: note,
-    });
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  // Supplier
+  getMySuppliers: async (): Promise<SupplierSummary[]> => {
+    return fetchHelper<SupplierSummary[]>('/suppliers', {}, Auth.getAccessToken() ?? undefined);
+  },
+
+  getSupplierById: async (id: string): Promise<SupplierProfile> => {
+    return fetchHelper<SupplierProfile>(`/suppliers/${id}`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
+  createSupplier: async (data: CreateSupplierRequest): Promise<SupplierProfile> => {
+    return fetchHelper<SupplierProfile>('/suppliers', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  updateSupplier: async (id: string, data: UpdateSupplierRequest): Promise<SupplierProfile> => {
+    return fetchHelper<SupplierProfile>(`/suppliers/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  getSupplierProducts: async (supplierId: string): Promise<SupplierProductResponse[]> => {
+    return fetchHelper<SupplierProductResponse[]>(`/suppliers/${supplierId}/products`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
+  createSupplierProduct: async (supplierId: string, data: CreateProductRequest): Promise<SupplierProductResponse> => {
+    return fetchHelper<SupplierProductResponse>(`/suppliers/${supplierId}/products`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  updateSupplierProduct: async (id: string, data: Partial<CreateProductRequest>): Promise<SupplierProductResponse> => {
+    return fetchHelper<SupplierProductResponse>(`/suppliers/products/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  // Admin - Suppliers
+  getAdminSuppliers: async (status?: VerificationStatus, page = 0, limit = 20): Promise<Page<SupplierSummary>> => {
+    const statusParam = status ? `&status=${status}` : '';
+    return fetchHelper<Page<SupplierSummary>>(`/admin/suppliers?page=${page}&limit=${limit}${statusParam}`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
+  getAdminSupplierById: async (id: string): Promise<SupplierProfile> => {
+    return fetchHelper<SupplierProfile>(`/admin/suppliers/${id}`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
+  updateSupplierStatus: async (id: string, status: VerificationStatus): Promise<SupplierProfile> => {
+    return fetchHelper<SupplierProfile>(`/admin/suppliers/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    }, Auth.getAccessToken() ?? undefined);
   },
 };

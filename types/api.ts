@@ -112,6 +112,137 @@ export interface PlatformStats {
   supportAvailability: string;
 }
 
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  tokenType: string;
+  email: string;
+  fullName: string;
+  role: 'ADMIN' | 'SALES' | 'SUPPLIER';
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  fullName: string;
+}
+
+export interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+export type VerificationStatus = 'PENDING' | 'VERIFIED' | 'SUSPENDED';
+
+export interface Verification {
+  siteAuditPassed: boolean;
+  siteAuditDate?: string;
+  financialSolvencyCheck: boolean;
+  esgCompliance: boolean;
+  documentsVerified: boolean;
+  operationalCapacityVerified: boolean;
+}
+
+export interface SupplierSummary {
+  id: string;
+  companyName: string;
+  country: string;
+  contactEmail: string;
+  contactPhone?: string;
+  verificationStatus: VerificationStatus;
+  userId: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface SupplierProfile {
+  id: string;
+  companyName: string;
+  country: string;
+  contactEmail: string;
+  contactPhone?: string;
+  description?: string;
+  website?: string;
+  logoUrl?: string;
+  certifications: string[];
+  verification: Verification;
+  verificationStatus: VerificationStatus;
+  userId: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface CreateSupplierRequest {
+  companyName: string;
+  country: string;
+  contactEmail: string;
+  contactPhone?: string;
+  description?: string;
+  website?: string;
+  logoUrl?: string;
+  certifications?: string[];
+}
+
+export interface UpdateSupplierRequest {
+  companyName?: string;
+  country?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  description?: string;
+  website?: string;
+  logoUrl?: string;
+  certifications?: string[];
+}
+
+export interface SupplierProductResponse {
+  id: string;
+  name: string;
+  description?: string;
+  verticalId: string;
+  originCountry: string;
+  originSite?: string;
+  purityGrade: string;
+  certifications: string[];
+  specifications: Record<string, string>;
+  image: string;
+  badge?: string;
+  createdAt: string;
+}
+
+export interface CreateProductRequest {
+  name: string;
+  verticalId: string;
+  description?: string;
+  originCountry: string;
+  originSite?: string;
+  purityGrade: string;
+  certifications?: string[];
+  coaUrl?: string;
+  qaPartner?: string;
+  specifications?: Record<string, string>;
+  image: string;
+  badge?: string;
+}
+
+export interface UpdateProductRequest {
+  name?: string;
+  verticalId?: string;
+  description?: string;
+  originCountry?: string;
+  originSite?: string;
+  purityGrade?: string;
+  certifications?: string[];
+  coaUrl?: string;
+  qaPartner?: string;
+  specifications?: Record<string, string>;
+  image?: string;
+  badge?: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
