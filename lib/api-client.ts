@@ -46,8 +46,9 @@ async function fetchHelper<T>(endpoint: string, options?: RequestInit, token?: s
         // refresh failed — fall through to error
       }
     }
+    const role = Auth.getRole();
     Auth.clear();
-    window.location.href = '/admin/login';
+    window.location.href = role === 'SUPPLIER' ? '/supplier/login' : '/admin/login';
     throw new Error('Session expired. Please log in again.');
   }
 
@@ -238,12 +239,22 @@ export const ApiClient = {
   },
 
   // Files
-  getUploadUrl: async (filename: string, contentType: string): Promise<{ uploadUrl: string; name: string }> => {
-    return fetchHelper<{ uploadUrl: string; name: string }>(`/files/upload-url?filename=${encodeURIComponent(filename)}&contentType=${encodeURIComponent(contentType)}`, {}, Auth.getAccessToken() ?? undefined);
+  getUploadUrl: async (filename: string, contentType: string): Promise<{ uploadUrl: string; fileUrl: string }> => {
+    const token = Auth.getAccessToken();
+    const res = await fetch(`${API_URL}/files/upload-url?filename=${encodeURIComponent(filename)}&contentType=${encodeURIComponent(contentType)}`, {
+      headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    });
+    if (!res.ok) throw new Error(`Upload URL error: ${res.status}`);
+    return res.json();
   },
 
-  viewFile: async (name: string): Promise<{ url: string }> => {
-    return fetchHelper<{ url: string }>(`/files/view/${encodeURIComponent(name)}`, {}, Auth.getAccessToken() ?? undefined);
+  viewFile: async (name: string): Promise<string> => {
+    const token = Auth.getAccessToken();
+    const res = await fetch(`${API_URL}/files/view/${encodeURIComponent(name)}`, {
+      headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    });
+    if (!res.ok) throw new Error(`View file error: ${res.status}`);
+    return res.text();
   },
 
   // Supplier

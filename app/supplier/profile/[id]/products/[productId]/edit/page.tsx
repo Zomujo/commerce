@@ -51,7 +51,7 @@ export default function EditProductPage() {
           coaUrl: '',
           qaPartner: '',
           badge: product.badge || '',
-          certifications: product.certifications.join(', '),
+          certifications: (product.certifications ?? []).join(', '),
         });
       } catch (err) {
         console.error('Failed to load product:', err);
@@ -71,7 +71,7 @@ export default function EditProductPage() {
     setSubmitting(true);
     setError('');
     try {
-      await imageRef.current?.upload();
+      const uploadedImage = await imageRef.current?.upload() ?? form.image;
       const certs = form.certifications
         ? form.certifications.split(',').map((c) => c.trim()).filter(Boolean)
         : [];
@@ -80,7 +80,7 @@ export default function EditProductPage() {
         verticalId: form.verticalId,
         originCountry: form.originCountry,
         purityGrade: form.purityGrade,
-        image: form.image,
+        image: uploadedImage,
         ...(form.description && { description: form.description }),
         ...(form.originSite && { originSite: form.originSite }),
         ...(form.coaUrl && { coaUrl: form.coaUrl }),

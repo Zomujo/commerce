@@ -44,7 +44,7 @@ export default function AddProductPage() {
     setSubmitting(true);
     setError('');
     try {
-      await imageRef.current?.upload();
+      const uploadedImage = await imageRef.current?.upload() ?? form.image;
       const certs = form.certifications
         ? form.certifications.split(',').map((c) => c.trim()).filter(Boolean)
         : [];
@@ -53,7 +53,7 @@ export default function AddProductPage() {
         verticalId: form.verticalId,
         originCountry: form.originCountry,
         purityGrade: form.purityGrade,
-        image: form.image,
+        image: uploadedImage,
         ...(form.description && { description: form.description }),
         ...(form.originSite && { originSite: form.originSite }),
         ...(form.coaUrl && { coaUrl: form.coaUrl }),

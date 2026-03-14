@@ -4,7 +4,7 @@ import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { ApiClient } from '@/lib/api-client';
 
 export interface FileUploadHandle {
-  upload: () => Promise<void>;
+  upload: () => Promise<string | null>;
 }
 
 interface FileUploadProps {
@@ -25,21 +25,32 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
 
     useImperativeHandle(ref, () => ({
       upload: async () => {
-        if (!pendingFile) return;
+        if (!pendingFile) {
+          console.log('[FileUpload] No pending file, skipping upload');
+          return null;
+        }
         setUploading(true);
         setError('');
         try {
+          console.log('[FileUpload] Getting upload URL for:', pendingFile.name, pendingFile.type);
           const { uploadUrl, fileUrl } = await ApiClient.getUploadUrl(pendingFile.name, pendingFile.type);
-          await fetch(uploadUrl, {
+          console.log('[FileUpload] Got upload URL:', uploadUrl, '| fileUrl:', fileUrl);
+
+          const putRes = await fetch(uploadUrl, {
             method: 'PUT',
             body: pendingFile,
             headers: { 'Content-Type': pendingFile.type },
           });
+          console.log('[FileUpload] GCS PUT response status:', putRes.status);
+
           onChange(fileUrl);
           setPendingFile(null);
+          setPreview('');
+          return fileUrl;
         } catch (err: unknown) {
+          console.error('[FileUpload] Upload error:', err);
           setError(err instanceof Error ? err.message : 'Upload failed');
-          throw err; // let the parent form catch it
+          throw err;
         } finally {
           setUploading(false);
         }

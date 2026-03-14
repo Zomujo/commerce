@@ -63,7 +63,7 @@ export default function SupplierProfilePage() {
           contactPhone: s.contactPhone || '',
           description: s.description || '',
           website: s.website || '',
-          certifications: s.certifications.join(', '),
+          certifications: (s.certifications ?? []).join(', '),
         });
       } catch (err) {
         console.error('Failed to load supplier:', err);
@@ -141,6 +141,11 @@ export default function SupplierProfilePage() {
               <h2 className="font-semibold text-slate-800">Profile Information</h2>
             </div>
             <div className="p-5 grid grid-cols-2 gap-5">
+              {supplier.logoUrl && (
+                <div className="col-span-2 flex items-center gap-4">
+                  <img src={supplier.logoUrl} alt="Company logo" className="w-16 h-16 rounded-xl object-cover border border-slate-200" />
+                </div>
+              )}
               {[
                 ['Company Name', supplier.companyName],
                 ['Country', supplier.country],
@@ -153,11 +158,11 @@ export default function SupplierProfilePage() {
                   <p className="text-sm text-slate-700">{value}</p>
                 </div>
               ))}
-              {supplier.certifications.length > 0 && (
+              {(supplier.certifications ?? []).length > 0 && (
                 <div className="col-span-2">
                   <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Certifications</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {supplier.certifications.map((c) => (
+                    {(supplier.certifications ?? []).map((c) => (
                       <span key={c} className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-xs font-medium">{c}</span>
                     ))}
                   </div>
@@ -220,29 +225,35 @@ export default function SupplierProfilePage() {
               <h2 className="font-semibold text-slate-800">Verification Checklist</h2>
             </div>
             <div className="p-5 space-y-3">
-              {(Object.keys(verificationLabels) as (keyof typeof verificationLabels)[]).map((key) => {
-                if (key === 'siteAuditDate') {
-                  return supplier.verification.siteAuditDate ? (
-                    <div key={key} className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500">{verificationLabels[key]}</span>
-                      <span className="text-slate-700 font-medium">{new Date(supplier.verification.siteAuditDate).toLocaleDateString()}</span>
-                    </div>
-                  ) : null;
-                }
-                const val = supplier.verification[key] as boolean;
-                return (
-                  <div key={key} className="flex items-center gap-2.5">
-                    <span className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${val ? 'bg-emerald-100' : 'bg-slate-100'}`}>
-                      {val ? (
-                        <svg className="w-2.5 h-2.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      ) : (
-                        <svg className="w-2.5 h-2.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                      )}
-                    </span>
-                    <span className={`text-sm ${val ? 'text-slate-700' : 'text-slate-400'}`}>{verificationLabels[key]}</span>
-                  </div>
-                );
-              })}
+              {!supplier.verification ? (
+                <p className="text-sm text-slate-400">Verification not yet started.</p>
+              ) : (
+                <>
+                  {(Object.keys(verificationLabels) as (keyof typeof verificationLabels)[]).map((key) => {
+                    if (key === 'siteAuditDate') {
+                      return supplier.verification!.siteAuditDate ? (
+                        <div key={key} className="flex items-center justify-between text-sm">
+                          <span className="text-slate-500">{verificationLabels[key]}</span>
+                          <span className="text-slate-700 font-medium">{new Date(supplier.verification!.siteAuditDate).toLocaleDateString()}</span>
+                        </div>
+                      ) : null;
+                    }
+                    const val = supplier.verification![key] as boolean;
+                    return (
+                      <div key={key} className="flex items-center gap-2.5">
+                        <span className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${val ? 'bg-emerald-100' : 'bg-slate-100'}`}>
+                          {val ? (
+                            <svg className="w-2.5 h-2.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                          ) : (
+                            <svg className="w-2.5 h-2.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                          )}
+                        </span>
+                        <span className={`text-sm ${val ? 'text-slate-700' : 'text-slate-400'}`}>{verificationLabels[key]}</span>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
             </div>
           </div>
 
