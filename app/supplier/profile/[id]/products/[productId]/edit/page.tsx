@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ApiClient } from '@/lib/api-client';
 import { StrategicVertical } from '@/types/api';
-import FileUpload from '@/app/components/FileUpload';
+import FileUpload, { FileUploadHandle } from '@/app/components/FileUpload';
 import Link from 'next/link';
 
 export default function EditProductPage() {
@@ -13,6 +13,7 @@ export default function EditProductPage() {
   const supplierId = params.id as string;
   const productId = params.productId as string;
 
+  const imageRef = useRef<FileUploadHandle>(null);
   const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,6 +71,7 @@ export default function EditProductPage() {
     setSubmitting(true);
     setError('');
     try {
+      await imageRef.current?.upload();
       const certs = form.certifications
         ? form.certifications.split(',').map((c) => c.trim()).filter(Boolean)
         : [];
@@ -161,6 +163,7 @@ export default function EditProductPage() {
           <textarea value={form.description} onChange={set('description')} rows={3} className={`${inputCls} resize-y`} />
         </div>
         <FileUpload
+          ref={imageRef}
           label="Product Image *"
           value={form.image}
           onChange={(url) => setForm((prev) => ({ ...prev, image: url }))}

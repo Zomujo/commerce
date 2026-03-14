@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ApiClient } from '@/lib/api-client';
-import FileUpload from '@/app/components/FileUpload';
+import FileUpload, { FileUploadHandle } from '@/app/components/FileUpload';
 import Link from 'next/link';
 
 export default function CreateSupplierProfilePage() {
   const router = useRouter();
+  const logoRef = useRef<FileUploadHandle>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [form, setForm] = useState({
@@ -29,6 +30,7 @@ export default function CreateSupplierProfilePage() {
     setSubmitting(true);
     setError('');
     try {
+      await logoRef.current?.upload();
       const certs = form.certifications
         ? form.certifications.split(',').map((c) => c.trim()).filter(Boolean)
         : [];
@@ -99,6 +101,7 @@ export default function CreateSupplierProfilePage() {
             className={`${inputCls} resize-y`} placeholder="Brief description of your business..." />
         </div>
         <FileUpload
+          ref={logoRef}
           label="Company Logo"
           value={form.logoUrl}
           onChange={(url) => setForm((prev) => ({ ...prev, logoUrl: url }))}

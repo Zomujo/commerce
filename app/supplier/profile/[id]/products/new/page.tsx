@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ApiClient } from '@/lib/api-client';
 import { StrategicVertical } from '@/types/api';
-import FileUpload from '@/app/components/FileUpload';
+import FileUpload, { FileUploadHandle } from '@/app/components/FileUpload';
 import Link from 'next/link';
 
 export default function AddProductPage() {
@@ -12,6 +12,7 @@ export default function AddProductPage() {
   const router = useRouter();
   const supplierId = params.id as string;
 
+  const imageRef = useRef<FileUploadHandle>(null);
   const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -43,6 +44,7 @@ export default function AddProductPage() {
     setSubmitting(true);
     setError('');
     try {
+      await imageRef.current?.upload();
       const certs = form.certifications
         ? form.certifications.split(',').map((c) => c.trim()).filter(Boolean)
         : [];
@@ -108,6 +110,7 @@ export default function AddProductPage() {
           </div>
           <div className="sm:col-span-2">
             <FileUpload
+              ref={imageRef}
               label="Product Image *"
               value={form.image}
               onChange={(url) => setForm((prev) => ({ ...prev, image: url }))}
