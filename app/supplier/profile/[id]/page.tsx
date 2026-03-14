@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ApiClient } from '@/lib/api-client';
 import { SupplierProfile, SupplierProductResponse, Verification } from '@/types/api';
+import FileUpload from '@/app/components/FileUpload';
 import Link from 'next/link';
 
 const verificationLabels: Record<keyof Verification, string> = {
@@ -188,17 +189,21 @@ export default function SupplierProfilePage() {
                     <th className="text-left px-5 py-3">Vertical</th>
                     <th className="text-left px-5 py-3">Origin</th>
                     <th className="text-left px-5 py-3">Purity Grade</th>
+                    <th className="text-left px-5 py-3"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {products.length === 0 ? (
-                    <tr><td colSpan={4} className="px-5 py-10 text-center text-slate-400">No products yet. Add your first product.</td></tr>
+                    <tr><td colSpan={5} className="px-5 py-10 text-center text-slate-400">No products yet. Add your first product.</td></tr>
                   ) : products.map((p) => (
                     <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                       <td className="px-5 py-3.5 font-medium text-slate-700">{p.name}</td>
                       <td className="px-5 py-3.5 text-slate-500">{p.verticalId}</td>
                       <td className="px-5 py-3.5 text-slate-500">{p.originCountry}</td>
                       <td className="px-5 py-3.5 text-slate-500">{p.purityGrade}</td>
+                      <td className="px-5 py-3.5">
+                        <Link href={`/supplier/profile/${id}/products/${p.id}/edit`} className="text-xs font-medium text-blue-500 hover:text-blue-600">Edit</Link>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

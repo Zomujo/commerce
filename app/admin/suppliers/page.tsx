@@ -29,6 +29,7 @@ export default function AdminSuppliersPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [filter, setFilter] = useState('');
+  const [emailSearch, setEmailSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchSuppliers = async (p: number, status: string) => {
@@ -59,6 +60,44 @@ export default function AdminSuppliersPage() {
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Suppliers</h1>
           <p className="text-sm text-slate-400 mt-1">{totalElements} total suppliers</p>
         </div>
+      </div>
+
+      {/* Email search */}
+      <div className="flex items-center gap-2 mb-4">
+        <form onSubmit={async (e) => {
+          e.preventDefault();
+          if (!emailSearch.trim()) return;
+          setIsLoading(true);
+          try {
+            const result = await ApiClient.getAdminSuppliersByEmail(emailSearch.trim());
+            setSuppliers([result as unknown as SupplierSummary]);
+            setTotalPages(1);
+            setTotalElements(1);
+          } catch {
+            setSuppliers([]);
+            setTotalPages(0);
+            setTotalElements(0);
+          } finally {
+            setIsLoading(false);
+          }
+        }} className="flex gap-2 w-full max-w-sm">
+          <input
+            type="email"
+            value={emailSearch}
+            onChange={(e) => setEmailSearch(e.target.value)}
+            placeholder="Search by email..."
+            className="flex-1 px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+          />
+          <button type="submit" className="px-3 py-1.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition cursor-pointer">
+            Search
+          </button>
+          {emailSearch && (
+            <button type="button" onClick={() => { setEmailSearch(''); fetchSuppliers(0, filter); }}
+              className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-500 text-sm hover:bg-slate-50 transition cursor-pointer">
+              Clear
+            </button>
+          )}
+        </form>
       </div>
 
       <div className="flex items-center gap-2 mb-5">

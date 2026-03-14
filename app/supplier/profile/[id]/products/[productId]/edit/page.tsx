@@ -7,13 +7,15 @@ import { StrategicVertical } from '@/types/api';
 import FileUpload from '@/app/components/FileUpload';
 import Link from 'next/link';
 
-export default function AddProductPage() {
+export default function EditProductPage() {
   const params = useParams();
   const router = useRouter();
   const supplierId = params.id as string;
+  const productId = params.productId as string;
 
   const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [form, setForm] = useState({
     name: '',
@@ -30,10 +32,35 @@ export default function AddProductPage() {
   });
 
   useEffect(() => {
-    ApiClient.getVerticals()
-      .then(setVerticals)
-      .catch((err) => console.error('Failed to load verticals:', err));
-  }, []);
+    const load = async () => {
+      try {
+        const [product, verts] = await Promise.all([
+          ApiClient.getSupplierProductById(productId),
+          ApiClient.getVerticals(),
+        ]);
+        setVerticals(verts);
+        setForm({
+          name: product.name,
+          verticalId: product.verticalId,
+          originCountry: product.originCountry,
+          purityGrade: product.purityGrade,
+          image: product.image,
+          description: product.description || '',
+          originSite: product.originSite || '',
+          coaUrl: '',
+          qaPartner: '',
+          badge: product.badge || '',
+          certifications: product.certifications.join(', '),
+        });
+      } catch (err) {
+        console.error('Failed to load product:', err);
+        setError('Failed to load product');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
+  }, [productId]);
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((prev) => ({ ...prev, [k]: e.target.value }));
@@ -46,7 +73,7 @@ export default function AddProductPage() {
       const certs = form.certifications
         ? form.certifications.split(',').map((c) => c.trim()).filter(Boolean)
         : [];
-      await ApiClient.createSupplierProduct(supplierId, {
+      await ApiClient.updateSupplierProduct(productId, {
         name: form.name,
         verticalId: form.verticalId,
         originCountry: form.originCountry,
@@ -57,17 +84,19 @@ export default function AddProductPage() {
         ...(form.coaUrl && { coaUrl: form.coaUrl }),
         ...(form.qaPartner && { qaPartner: form.qaPartner }),
         ...(form.badge && { badge: form.badge }),
-        ...(certs.length > 0 && { certifications: certs }),
+        certifications: certs,
       });
       router.push(`/supplier/profile/${supplierId}`);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to create product');
+      setError(err instanceof Error ? err.message : 'Failed to update product');
     } finally {
       setSubmitting(false);
     }
   };
 
   const inputCls = 'w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition';
+
+  if (isLoading) return <div className="flex items-center justify-center py-20 text-slate-400">Loading...</div>;
 
   return (
     <div className="max-w-2xl">
@@ -76,8 +105,8 @@ export default function AddProductPage() {
         Back to Profile
       </Link>
 
-      <h1 className="text-2xl font-bold text-slate-800 tracking-tight mb-1">Add Product</h1>
-      <p className="text-sm text-slate-400 mb-6">Add a product to your supplier profile.</p>
+      <h1 className="text-2xl font-bold text-slate-800 tracking-tight mb-1">Edit Product</h1>
+      <p className="text-sm text-slate-400 mb-6">Update your product details.</p>
 
       {error && (
         <div className="mb-4 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">{error}</div>
@@ -87,7 +116,7 @@ export default function AddProductPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div className="sm:col-span-2">
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Product Name *</label>
-            <input required value={form.name} onChange={set('name')} className={inputCls} placeholder="Lithium Carbonate 99.5%" />
+            <input required value={form.name} onChange={set('name')} className={inputCls} />
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Vertical *</label>
@@ -100,52 +129,49 @@ export default function AddProductPage() {
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Origin Country *</label>
-            <input required value={form.originCountry} onChange={set('originCountry')} className={inputCls} placeholder="Ghana" />
+            <input required value={form.originCountry} onChange={set('originCountry')} className={inputCls} />
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Purity Grade *</label>
-            <input required value={form.purityGrade} onChange={set('purityGrade')} className={inputCls} placeholder="99.5%" />
-          </div>
-          <div className="sm:col-span-2">
-            <FileUpload
-              label="Product Image *"
-              value={form.image}
-              onChange={(url) => setForm((prev) => ({ ...prev, image: url }))}
-            />
+            <input required value={form.purityGrade} onChange={set('purityGrade')} className={inputCls} />
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Origin Site</label>
-            <input value={form.originSite} onChange={set('originSite')} className={inputCls} placeholder="Mine or facility name" />
+            <input value={form.originSite} onChange={set('originSite')} className={inputCls} />
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">CoA URL</label>
-            <input value={form.coaUrl} onChange={set('coaUrl')} className={inputCls} placeholder="https://..." />
+            <input value={form.coaUrl} onChange={set('coaUrl')} className={inputCls} />
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">QA Partner</label>
-            <input value={form.qaPartner} onChange={set('qaPartner')} className={inputCls} placeholder="SGS, Intertek, etc." />
+            <input value={form.qaPartner} onChange={set('qaPartner')} className={inputCls} />
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Badge</label>
-            <input value={form.badge} onChange={set('badge')} className={inputCls} placeholder="e.g. ESG Certified" />
+            <input value={form.badge} onChange={set('badge')} className={inputCls} />
           </div>
-          <div>
+          <div className="sm:col-span-2">
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Certifications</label>
             <input value={form.certifications} onChange={set('certifications')} className={inputCls} placeholder="ISO 9001, REACH (comma-separated)" />
           </div>
         </div>
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Description</label>
-          <textarea value={form.description} onChange={set('description')} rows={3}
-            className={`${inputCls} resize-y`} placeholder="Brief product description..." />
+          <textarea value={form.description} onChange={set('description')} rows={3} className={`${inputCls} resize-y`} />
         </div>
+        <FileUpload
+          label="Product Image *"
+          value={form.image}
+          onChange={(url) => setForm((prev) => ({ ...prev, image: url }))}
+        />
         <div className="pt-2 flex justify-end gap-3">
           <Link href={`/supplier/profile/${supplierId}`} className="px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition">
             Cancel
           </Link>
           <button type="submit" disabled={submitting}
             className="px-5 py-2 rounded-lg bg-emerald-500 text-white text-sm font-semibold hover:bg-emerald-600 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
-            {submitting ? 'Adding...' : 'Add Product'}
+            {submitting ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </form>

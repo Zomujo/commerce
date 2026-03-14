@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ApiClient } from '@/lib/api-client';
+import FileUpload from '@/app/components/FileUpload';
 import Link from 'next/link';
 
 export default function CreateSupplierProfilePage() {
@@ -17,6 +18,7 @@ export default function CreateSupplierProfilePage() {
     description: '',
     website: '',
     certifications: '',
+    logoUrl: '',
   });
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -37,6 +39,7 @@ export default function CreateSupplierProfilePage() {
         ...(form.contactPhone && { contactPhone: form.contactPhone }),
         ...(form.description && { description: form.description }),
         ...(form.website && { website: form.website }),
+        ...(form.logoUrl && { logoUrl: form.logoUrl }),
         ...(certs.length > 0 && { certifications: certs }),
       });
       router.push(`/supplier/profile/${created.id}`);
@@ -95,6 +98,12 @@ export default function CreateSupplierProfilePage() {
           <textarea value={form.description} onChange={set('description')} rows={3}
             className={`${inputCls} resize-y`} placeholder="Brief description of your business..." />
         </div>
+        <FileUpload
+          label="Company Logo"
+          value={form.logoUrl}
+          onChange={(url) => setForm((prev) => ({ ...prev, logoUrl: url }))}
+          placeholder="https:// or upload logo"
+        />
         <div className="pt-2 flex justify-end gap-3">
           <Link href="/supplier" className="px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition">
             Cancel

@@ -144,6 +144,14 @@ export const ApiClient = {
     return fetchHelper<StrategicVertical[]>('/verticals');
   },
 
+  getVerticalById: async (id: string): Promise<StrategicVertical> => {
+    return fetchHelper<StrategicVertical>(`/verticals/${id}`);
+  },
+
+  getPublicQuoteById: async (id: string): Promise<QuoteRequest> => {
+    return fetchHelper<QuoteRequest>(`/quotes/${id}`);
+  },
+
   submitQuote: async (data: {
     name: string;
     email: string;
@@ -229,6 +237,15 @@ export const ApiClient = {
     }, Auth.getAccessToken() ?? undefined);
   },
 
+  // Files
+  getUploadUrl: async (filename: string, contentType: string): Promise<{ uploadUrl: string; name: string }> => {
+    return fetchHelper<{ uploadUrl: string; name: string }>(`/files/upload-url?filename=${encodeURIComponent(filename)}&contentType=${encodeURIComponent(contentType)}`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
+  viewFile: async (name: string): Promise<{ url: string }> => {
+    return fetchHelper<{ url: string }>(`/files/view/${encodeURIComponent(name)}`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
   // Supplier
   getMySuppliers: async (): Promise<SupplierSummary[]> => {
     return fetchHelper<SupplierSummary[]>('/suppliers', {}, Auth.getAccessToken() ?? undefined);
@@ -256,6 +273,10 @@ export const ApiClient = {
     return fetchHelper<SupplierProductResponse[]>(`/suppliers/${supplierId}/products`, {}, Auth.getAccessToken() ?? undefined);
   },
 
+  getSupplierProductById: async (id: string): Promise<SupplierProductResponse> => {
+    return fetchHelper<SupplierProductResponse>(`/suppliers/products/${id}`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
   createSupplierProduct: async (supplierId: string, data: CreateProductRequest): Promise<SupplierProductResponse> => {
     return fetchHelper<SupplierProductResponse>(`/suppliers/${supplierId}/products`, {
       method: 'POST',
@@ -268,6 +289,10 @@ export const ApiClient = {
       method: 'PATCH',
       body: JSON.stringify(data),
     }, Auth.getAccessToken() ?? undefined);
+  },
+
+  getAdminSuppliersByEmail: async (email: string): Promise<SupplierProfile> => {
+    return fetchHelper<SupplierProfile>(`/admin/suppliers/by-email?email=${encodeURIComponent(email)}`, {}, Auth.getAccessToken() ?? undefined);
   },
 
   // Admin - Suppliers
