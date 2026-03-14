@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Auth } from '@/lib/auth';
 import { ApiClient } from '@/lib/api-client';
 
@@ -50,7 +51,13 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
           </div>
         )}
 
-        <div className="flex-1" />
+        <nav className="flex-1 px-3 pt-4 flex flex-col gap-0.5">
+          <Link href="/supplier"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors">
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </Link>
+        </nav>
 
         <div className="px-3 py-4 border-t border-white/10">
           <button onClick={async () => { await ApiClient.logout(); Auth.clear(); router.push('/supplier/login'); }}
