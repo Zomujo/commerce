@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ApiClient } from '@/lib/api-client';
 import { SupplierProfile, SupplierProductResponse, Verification, StrategicVertical } from '@/types/api';
-import { FileUploadHandle } from '@/app/components/FileUpload';
 import Link from 'next/link';
 
 const verificationLabels: Record<keyof Verification, string> = {
