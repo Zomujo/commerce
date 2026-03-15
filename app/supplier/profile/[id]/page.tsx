@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ApiClient } from '@/lib/api-client';
-import { SupplierProfile, SupplierProductResponse, Verification } from '@/types/api';
-import FileUpload from '@/app/components/FileUpload';
+import { SupplierProfile, SupplierProductResponse, Verification, StrategicVertical } from '@/types/api';
+import { FileUploadHandle } from '@/app/components/FileUpload';
 import Link from 'next/link';
 
 const verificationLabels: Record<keyof Verification, string> = {
@@ -17,9 +17,9 @@ const verificationLabels: Record<keyof Verification, string> = {
 };
 
 const statusColor: Record<string, string> = {
-  PENDING: 'bg-amber-50 text-amber-700',
-  VERIFIED: 'bg-emerald-50 text-emerald-700',
-  SUSPENDED: 'bg-red-50 text-red-700',
+  PENDING: 'bg-amber-50 text-amber-700 border-amber-200',
+  VERIFIED: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  SUSPENDED: 'bg-red-50 text-red-700 border-red-200',
 };
 const dotColor: Record<string, string> = {
   PENDING: 'bg-amber-400',
@@ -33,6 +33,7 @@ export default function SupplierProfilePage() {
 
   const [supplier, setSupplier] = useState<SupplierProfile | null>(null);
   const [products, setProducts] = useState<SupplierProductResponse[]>([]);
+  const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -50,12 +51,14 @@ export default function SupplierProfilePage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [s, p] = await Promise.all([
+        const [s, p, v] = await Promise.all([
           ApiClient.getSupplierById(id),
           ApiClient.getSupplierProducts(id),
+          ApiClient.getVerticals(),
         ]);
         setSupplier(s);
         setProducts(p);
+        setVerticals(v);
         setEditForm({
           companyName: s.companyName,
           country: s.country,
@@ -73,6 +76,11 @@ export default function SupplierProfilePage() {
     };
     load();
   }, [id]);
+
+  const verticalName = (verticalId: string | null) => {
+    if (!verticalId) return '—';
+    return verticals.find((v) => v.id === verticalId)?.name ?? verticalId;
+  };
 
   const set = (k: keyof typeof editForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setEditForm((prev) => ({ ...prev, [k]: e.target.value }));
@@ -109,120 +117,158 @@ export default function SupplierProfilePage() {
   if (!supplier) return <div className="flex items-center justify-center py-20 text-slate-400">Supplier not found</div>;
 
   return (
-    <div>
-      <Link href="/supplier" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-emerald-500 transition-colors mb-6">
+    <div className="space-y-6">
+      <Link href="/supplier" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-emerald-500 transition-colors">
         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         Back to Dashboard
       </Link>
 
       {message && (
-        <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium border ${message.startsWith('Failed') ? 'bg-red-50 border-red-200 text-red-700' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
+        <div className={`px-4 py-3 rounded-lg text-sm font-medium border ${message.startsWith('Failed') ? 'bg-red-50 border-red-200 text-red-700' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
           {message}
         </div>
       )}
 
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">{supplier.companyName}</h1>
-          <p className="text-sm text-slate-400 mt-1">{supplier.country}</p>
+      {/* Header */}
+      <div className="bg-white rounded-xl border border-slate-200 p-6">
+        <div className="flex items-start gap-5">
+          {supplier.logoUrl ? (
+            <img src={supplier.logoUrl} alt="Company logo" className="w-20 h-20 rounded-xl object-cover border border-slate-200 flex-shrink-0" />
+          ) : (
+            <div className="w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl font-bold text-slate-300">{supplier.companyName.charAt(0)}</span>
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h1 className="text-2xl font-bold text-slate-800 tracking-tight">{supplier.companyName}</h1>
+                <p className="text-sm text-slate-400 mt-0.5">{supplier.country}</p>
+              </div>
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${statusColor[supplier.verificationStatus]}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${dotColor[supplier.verificationStatus]}`} />
+                {supplier.verificationStatus}
+              </span>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
+              <span className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                {supplier.contactEmail}
+              </span>
+              {supplier.contactPhone && (
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>
+                  {supplier.contactPhone}
+                </span>
+              )}
+              {supplier.website && (
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                  {supplier.website}
+                </span>
+              )}
+            </div>
+            {(supplier.certifications ?? []).length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {(supplier.certifications ?? []).map((c) => (
+                  <span key={c} className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-100">{c}</span>
+                ))}
+              </div>
+            )}
+            {supplier.description && (
+              <p className="mt-3 text-sm text-slate-500 leading-relaxed">{supplier.description}</p>
+            )}
+          </div>
         </div>
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold ${statusColor[supplier.verificationStatus]}`}>
-          <span className={`w-2 h-2 rounded-full ${dotColor[supplier.verificationStatus]}`} />
-          {supplier.verificationStatus}
-        </span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left */}
+        {/* Left — Products */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Profile Info */}
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-100">
-              <h2 className="font-semibold text-slate-800">Profile Information</h2>
-            </div>
-            <div className="p-5 grid grid-cols-2 gap-5">
-              {supplier.logoUrl && (
-                <div className="col-span-2 flex items-center gap-4">
-                  <img src={supplier.logoUrl} alt="Company logo" className="w-16 h-16 rounded-xl object-cover border border-slate-200" />
-                </div>
-              )}
-              {[
-                ['Company Name', supplier.companyName],
-                ['Country', supplier.country],
-                ['Contact Email', supplier.contactEmail],
-                ['Contact Phone', supplier.contactPhone || '—'],
-                ['Website', supplier.website || '—'],
-              ].map(([label, value]) => (
-                <div key={label}>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">{label}</p>
-                  <p className="text-sm text-slate-700">{value}</p>
-                </div>
-              ))}
-              {(supplier.certifications ?? []).length > 0 && (
-                <div className="col-span-2">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Certifications</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {(supplier.certifications ?? []).map((c) => (
-                      <span key={c} className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-xs font-medium">{c}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {supplier.description && (
-                <div className="col-span-2">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Description</p>
-                  <p className="text-sm text-slate-700 whitespace-pre-wrap">{supplier.description}</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Products */}
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-              <h2 className="font-semibold text-slate-800">Products</h2>
+              <div>
+                <h2 className="font-semibold text-slate-800">Products</h2>
+                <p className="text-xs text-slate-400 mt-0.5">{products.length} product{products.length !== 1 ? 's' : ''}</p>
+              </div>
               <Link href={`/supplier/profile/${id}/products/new`}
                 className="px-3.5 py-1.5 rounded-lg bg-emerald-500 text-white text-xs font-semibold hover:bg-emerald-600 transition">
                 + Add Product
               </Link>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-slate-50/80 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    <th className="text-left px-5 py-3">Name</th>
-                    <th className="text-left px-5 py-3">Vertical</th>
-                    <th className="text-left px-5 py-3">Origin</th>
-                    <th className="text-left px-5 py-3">Purity Grade</th>
-                    <th className="text-left px-5 py-3"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.length === 0 ? (
-                    <tr><td colSpan={5} className="px-5 py-10 text-center text-slate-400">No products yet. Add your first product.</td></tr>
-                  ) : products.map((p) => (
-                    <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                      <td className="px-5 py-3.5 font-medium text-slate-700">{p.name}</td>
-                      <td className="px-5 py-3.5 text-slate-500">{p.verticalId}</td>
-                      <td className="px-5 py-3.5 text-slate-500">{p.originCountry}</td>
-                      <td className="px-5 py-3.5 text-slate-500">{p.purityGrade}</td>
-                      <td className="px-5 py-3.5">
-                        <Link href={`/supplier/profile/${id}/products/${p.id}/edit`} className="text-xs font-medium text-blue-500 hover:text-blue-600">Edit</Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+
+            {products.length === 0 ? (
+              <div className="px-5 py-12 text-center">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mx-auto mb-3">
+                  <svg className="w-6 h-6 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <p className="text-sm text-slate-400">No products yet.</p>
+                <Link href={`/supplier/profile/${id}/products/new`} className="mt-2 inline-block text-sm text-emerald-500 hover:text-emerald-600 font-medium">Add your first product →</Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5">
+                {products.map((p) => (
+                  <div key={p.id} className="rounded-xl border border-slate-200 overflow-hidden hover:shadow-sm transition-shadow">
+                    {p.image ? (
+                      <div className="h-40 bg-slate-100 overflow-hidden">
+                        <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                      </div>
+                    ) : (
+                      <div className="h-40 bg-slate-100 flex items-center justify-center">
+                        <svg className="w-8 h-8 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                      </div>
+                    )}
+                    <div className="p-4">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-semibold text-slate-800 text-sm leading-tight">{p.name}</h3>
+                        {p.badge && (
+                          <span className="flex-shrink-0 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs font-medium border border-amber-100">{p.badge}</span>
+                        )}
+                      </div>
+                      <div className="mt-2.5 space-y-1.5">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-slate-400">Vertical</span>
+                          <span className="text-slate-600 font-medium">{verticalName(p.verticalId)}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-slate-400">Origin</span>
+                          <span className="text-slate-600 font-medium">{p.originCountry}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-slate-400">Purity Grade</span>
+                          <span className="text-slate-600 font-medium">{p.purityGrade}</span>
+                        </div>
+                        {p.originSite && (
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-slate-400">Origin Site</span>
+                            <span className="text-slate-600 font-medium">{p.originSite}</span>
+                          </div>
+                        )}
+                      </div>
+                      {(p.certifications ?? []).length > 0 && (
+                        <div className="mt-2.5 flex flex-wrap gap-1">
+                          {(p.certifications ?? []).map((c) => (
+                            <span key={c} className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-xs">{c}</span>
+                          ))}
+                        </div>
+                      )}
+                      <div className="mt-3 pt-3 border-t border-slate-100">
+                        <Link href={`/supplier/profile/${id}/products/${p.id}/edit`} className="text-xs font-medium text-blue-500 hover:text-blue-600">Edit product →</Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
         {/* Right */}
         <div className="space-y-6">
-          {/* Verification Status */}
+          {/* Verification */}
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <div className="px-5 py-4 border-b border-slate-100">
-              <h2 className="font-semibold text-slate-800">Verification Checklist</h2>
+              <h2 className="font-semibold text-slate-800">Verification</h2>
             </div>
             <div className="p-5 space-y-3">
               {!supplier.verification ? (

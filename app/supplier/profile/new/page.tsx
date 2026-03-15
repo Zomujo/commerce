@@ -30,11 +30,7 @@ export default function CreateSupplierProfilePage() {
     setSubmitting(true);
     setError('');
     try {
-      console.log('[CreateSupplier] Submit started', { form });
-
-      console.log('[CreateSupplier] Starting logo upload...');
       const uploadedLogoUrl = await logoRef.current?.upload() ?? form.logoUrl;
-      console.log('[CreateSupplier] Logo upload result:', uploadedLogoUrl);
 
       const certs = form.certifications
         ? form.certifications.split(',').map((c) => c.trim()).filter(Boolean)
@@ -50,14 +46,10 @@ export default function CreateSupplierProfilePage() {
         ...(uploadedLogoUrl && { logoUrl: uploadedLogoUrl }),
         ...(certs.length > 0 && { certifications: certs }),
       };
-      console.log('[CreateSupplier] Sending payload:', payload);
-
       const created = await ApiClient.createSupplier(payload);
-      console.log('[CreateSupplier] Created supplier:', created);
 
       router.push(`/supplier/profile/${created.id}`);
     } catch (err: unknown) {
-      console.error('[CreateSupplier] Error:', err);
       setError(err instanceof Error ? err.message : 'Failed to create profile');
     } finally {
       setSubmitting(false);

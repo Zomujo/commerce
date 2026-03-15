@@ -32,16 +32,13 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
         setUploading(true);
         setError('');
         try {
-          console.log('[FileUpload] Getting upload URL for:', pendingFile.name, pendingFile.type);
           const { uploadUrl, fileUrl } = await ApiClient.getUploadUrl(pendingFile.name, pendingFile.type);
-          console.log('[FileUpload] Got upload URL:', uploadUrl, '| fileUrl:', fileUrl);
 
-          const putRes = await fetch(uploadUrl, {
+          await fetch(uploadUrl, {
             method: 'PUT',
             body: pendingFile,
             headers: { 'Content-Type': pendingFile.type },
           });
-          console.log('[FileUpload] GCS PUT response status:', putRes.status);
 
           onChange(fileUrl);
           setPendingFile(null);
