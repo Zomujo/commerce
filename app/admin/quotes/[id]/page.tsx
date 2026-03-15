@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ApiClient } from '@/lib/api-client';
-import { QuoteRequest, QuoteStatus } from '@/types/api';
+import { QuoteRequest, QuoteStatus, Product } from '@/types/api';
 import Link from 'next/link';
 
 const statusColor: Record<string, string> = {
@@ -25,6 +25,7 @@ export default function QuoteDetailPage() {
   const id = params.id as string;
 
   const [quote, setQuote] = useState<QuoteRequest | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [note, setNote] = useState('');
   const [assignEmail, setAssignEmail] = useState('');
@@ -36,6 +37,11 @@ export default function QuoteDetailPage() {
       try {
         const data = await ApiClient.getQuoteById(id);
         setQuote(data);
+        if (data.productId) {
+          ApiClient.getProductById(data.productId)
+            .then(setProduct)
+            .catch(() => null);
+        }
       } catch (err) {
         console.error('Failed to fetch quote:', err);
       } finally {
@@ -163,30 +169,93 @@ export default function QuoteDetailPage() {
             <div className="px-5 py-4 border-b border-slate-100">
               <h2 className="font-semibold text-slate-800">Product Interest</h2>
             </div>
-            <div className="p-5 grid grid-cols-2 gap-5">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Product</p>
-                <p className="text-sm text-slate-700">{quote.productName || quote.product?.name || '—'}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Quantity</p>
-                <p className="text-sm text-slate-700">{quote.quantity || '—'}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Delivery Location</p>
-                <p className="text-sm text-slate-700">{quote.deliveryLocation || '—'}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Incoterms</p>
-                <p className="text-sm text-slate-700">{quote.incoterms || '—'}</p>
-              </div>
-              {quote.preferredCurrency && (
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Currency</p>
-                  <p className="text-sm text-slate-700">{quote.preferredCurrency}</p>
+
+            {/* Product card — shown when productId is linked */}
+            {product ? (
+              <div className="p-5">
+                <div className="flex gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+                  {product.image ? (
+                    <img src={product.image} alt={product.name} className="w-24 h-24 rounded-lg object-cover border border-slate-200 flex-shrink-0" />
+                  ) : (
+                    <div className="w-24 h-24 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-8 h-8 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-semibold text-slate-800">{product.name}</h3>
+                      {product.badge && (
+                        <span className="flex-shrink-0 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs font-medium border border-amber-100">{product.badge}</span>
+                      )}
+                    </div>
+                    <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5">
+                      <div className="text-xs"><span className="text-slate-400">Origin: </span><span className="text-slate-700 font-medium">{product.originCountry}</span></div>
+                      {product.originSite && <div className="text-xs"><span className="text-slate-400">Site: </span><span className="text-slate-700 font-medium">{product.originSite}</span></div>}
+                      <div className="text-xs"><span className="text-slate-400">Purity: </span><span className="text-slate-700 font-medium">{product.purityGrade}</span></div>
+                      {product.qaPartner && <div className="text-xs"><span className="text-slate-400">QA: </span><span className="text-slate-700 font-medium">{product.qaPartner}</span></div>}
+                    </div>
+                    {(product.certifications ?? []).length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {(product.certifications ?? []).map((c) => (
+                          <span key={c} className="px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 text-xs">{c}</span>
+                        ))}
+                      </div>
+                    )}
+                    {product.description && (
+                      <p className="mt-2 text-xs text-slate-500 line-clamp-2">{product.description}</p>
+                    )}
+                    <p className="mt-2 text-xs text-slate-400 font-mono">ID: {product.id}</p>
+                  </div>
                 </div>
-              )}
-            </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-5">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Quantity</p>
+                    <p className="text-sm text-slate-700">{quote.quantity || '—'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Delivery Location</p>
+                    <p className="text-sm text-slate-700">{quote.deliveryLocation || '—'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Incoterms</p>
+                    <p className="text-sm text-slate-700">{quote.incoterms || '—'}</p>
+                  </div>
+                  {quote.preferredCurrency && (
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Currency</p>
+                      <p className="text-sm text-slate-700">{quote.preferredCurrency}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="p-5 grid grid-cols-2 gap-5">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Product</p>
+                  <p className="text-sm text-slate-700">{quote.productName || '—'}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Quantity</p>
+                  <p className="text-sm text-slate-700">{quote.quantity || '—'}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Delivery Location</p>
+                  <p className="text-sm text-slate-700">{quote.deliveryLocation || '—'}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Incoterms</p>
+                  <p className="text-sm text-slate-700">{quote.incoterms || '—'}</p>
+                </div>
+                {quote.preferredCurrency && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Currency</p>
+                    <p className="text-sm text-slate-700">{quote.preferredCurrency}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {quote.message && (
               <div className="px-5 pb-5">
                 <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Message</p>

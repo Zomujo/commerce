@@ -56,6 +56,7 @@ export interface QuoteRequest {
   
   // Product Interest
   product?: Product;
+  productId?: string;
   productName?: string;
   vertical?: StrategicVertical;
 
