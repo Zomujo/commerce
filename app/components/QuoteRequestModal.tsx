@@ -7,9 +7,10 @@ interface QuoteRequestModalProps {
   isOpen: boolean;
   onClose: () => void;
   productName?: string;
+  productId?: string;
 }
 
-export default function QuoteRequestModal({ isOpen, onClose, productName }: QuoteRequestModalProps) {
+export default function QuoteRequestModal({ isOpen, onClose, productName, productId }: QuoteRequestModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -44,6 +45,7 @@ export default function QuoteRequestModal({ isOpen, onClose, productName }: Quot
         email: formData.email,
         company: formData.company,
         phone: formData.phone,
+        ...(productId && { productId }),
         productName: formData.product,
         quantity: formData.quantity || undefined,
         deliveryLocation: formData.deliveryLocation || undefined,

@@ -17,7 +17,7 @@ export default function VerticalDetailPage() {
   const [vertical, setVertical] = useState<StrategicVertical | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [quoteProduct, setQuoteProduct] = useState<string>('');
+  const [quoteProduct, setQuoteProduct] = useState<{ id: string; name: string } | undefined>();
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
 
   useEffect(() => {
@@ -132,7 +132,7 @@ export default function VerticalDetailPage() {
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 {products.map((p) => (
-                  <ProductCard key={p.id} product={p} onRequestQuote={() => { setQuoteProduct(p.name); setIsQuoteOpen(true); }} />
+                  <ProductCard key={p.id} product={p} onRequestQuote={() => { setQuoteProduct({ id: p.id, name: p.name }); setIsQuoteOpen(true); }} />
                 ))}
               </div>
             )}
@@ -140,7 +140,7 @@ export default function VerticalDetailPage() {
         </section>
       </main>
       <Footer />
-      <QuoteRequestModal isOpen={isQuoteOpen} onClose={() => setIsQuoteOpen(false)} productName={quoteProduct} />
+      <QuoteRequestModal isOpen={isQuoteOpen} onClose={() => setIsQuoteOpen(false)} productId={quoteProduct?.id} productName={quoteProduct?.name} />
     </div>
   );
 }

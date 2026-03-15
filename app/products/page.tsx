@@ -12,7 +12,7 @@ export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<string | undefined>();
+  const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | undefined>();
   const [products, setProducts] = useState<Product[]>([]);
   const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,8 +45,8 @@ export default function ProductsPage() {
     });
   }, [selectedCategory, searchQuery, products]);
 
-  const handleRequestQuote = (productName?: string) => {
-    setSelectedProduct(productName);
+  const handleRequestQuote = (productId: string, productName: string) => {
+    setSelectedProduct({ id: productId, name: productName });
     setIsQuoteModalOpen(true);
   };
 
@@ -243,7 +243,7 @@ export default function ProductsPage() {
                       <ProductCard
                         key={product.id}
                         product={product}
-                        onRequestQuote={() => handleRequestQuote(product.name)}
+                        onRequestQuote={() => handleRequestQuote(product.id, product.name)}
                       />
                     ))}
                   </div>
@@ -304,7 +304,8 @@ export default function ProductsPage() {
       <QuoteRequestModal
         isOpen={isQuoteModalOpen}
         onClose={() => setIsQuoteModalOpen(false)}
-        productName={selectedProduct}
+        productId={selectedProduct?.id}
+        productName={selectedProduct?.name}
       />
     </div>
   );

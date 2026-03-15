@@ -26,7 +26,7 @@ const trustedBrands = [
 
 export default function Home() {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<string | undefined>();
+  const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | undefined>();
   const [products, setProducts] = useState<Product[]>([]);
   const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
   const [stats, setStats] = useState<PlatformStats | null>(null);
@@ -53,8 +53,8 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const handleRequestQuote = (productName?: string) => {
-    setSelectedProduct(productName);
+  const handleRequestQuote = (productId: string, productName: string) => {
+    setSelectedProduct({ id: productId, name: productName });
     setIsQuoteModalOpen(true);
   };
 
@@ -309,7 +309,7 @@ export default function Home() {
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onRequestQuote={() => handleRequestQuote(product.name)}
+                  onRequestQuote={() => handleRequestQuote(product.id, product.name)}
                 />
               )) : (
                  <p>Loading products...</p>
@@ -444,7 +444,8 @@ export default function Home() {
       <QuoteRequestModal
         isOpen={isQuoteModalOpen}
         onClose={() => setIsQuoteModalOpen(false)}
-        productName={selectedProduct}
+        productId={selectedProduct?.id}
+        productName={selectedProduct?.name}
       />
 
       <style jsx global>{`

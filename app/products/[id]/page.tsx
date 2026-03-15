@@ -457,6 +457,7 @@ export default function ProductDetailPage() {
       <QuoteRequestModal
         isOpen={isQuoteModalOpen}
         onClose={() => setIsQuoteModalOpen(false)}
+        productId={product.id}
         productName={product.name}
       />
     </div>

@@ -158,6 +158,7 @@ export const ApiClient = {
     email: string;
     company?: string;
     phone?: string;
+    productId?: string;
     productName?: string;
     quantity?: string;
     deliveryLocation?: string;
