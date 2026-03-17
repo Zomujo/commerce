@@ -14,9 +14,7 @@ export default function ProductCard({
   onRequestQuote 
 }: ProductCardProps) {
   const { id, name, description, image, badge } = product;
-  // Handle vertical object or string depending on API response structure, 
-  // though our type says vertical is StrategicVertical object.
-  const categoryName = product.vertical?.name || 'Industrial';
+  const categoryName = product.verticalName || 'Industrial';
   return (
     <div className="card" style={{
       display: 'flex',

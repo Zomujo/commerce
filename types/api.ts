@@ -11,7 +11,8 @@ export interface StrategicVertical {
 export interface Product {
   id: string; // UUID
   name: string;
-  vertical: StrategicVertical;
+  vertical?: StrategicVertical;
+  verticalName?: string;
   description?: string;
   originCountry: string;
   originSite?: string;
@@ -203,7 +204,8 @@ export interface SupplierProductResponse {
   id: string;
   name: string;
   description?: string;
-  verticalId: string;
+  verticalId?: string;
+  verticalName?: string;
   originCountry: string;
   originSite?: string;
   purityGrade: string;
@@ -249,6 +251,36 @@ export interface ApiResponse<T> {
   message: string;
   data: T;
   timestamp: string;
+}
+
+export interface CoaTestResult {
+  parameter: string;
+  value: string;
+  specification?: string;
+  status: string;
+}
+
+export interface Coa {
+  id: string;
+  productId: string;
+  batchNumber: string;
+  qaPartner: string;
+  analysisDate: string;
+  expiryDate?: string;
+  results: CoaTestResult[];
+  documentUrl: string;
+  digitalSignature?: string;
+  createdAt: string;
+}
+
+export interface CreateCoaRequest {
+  batchNumber: string;
+  qaPartner: string;
+  analysisDate: string;
+  expiryDate?: string;
+  results: CoaTestResult[];
+  documentUrl: string;
+  digitalSignature?: string;
 }
 
 export interface Page<T> {

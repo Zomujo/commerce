@@ -1,4 +1,4 @@
-import { ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, VerificationStatus } from '@/types/api';
+import { ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, VerificationStatus, Coa, CreateCoaRequest } from '@/types/api';
 import { Auth } from './auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
@@ -258,6 +258,19 @@ export const ApiClient = {
     return res.text();
   },
 
+  getDownloadUrl: (name: string): string => {
+    return `${API_URL}/files/download/${encodeURIComponent(name)}`;
+  },
+
+  // Public - CoA
+  getProductCoas: async (productId: string): Promise<Coa[]> => {
+    return fetchHelper<Coa[]>(`/products/${productId}/coa`);
+  },
+
+  getProductCoaById: async (productId: string, id: string): Promise<Coa> => {
+    return fetchHelper<Coa>(`/products/${productId}/coa/${id}`);
+  },
+
   // Supplier
   getMySuppliers: async (): Promise<SupplierSummary[]> => {
     return fetchHelper<SupplierSummary[]>('/suppliers', {}, Auth.getAccessToken() ?? undefined);
@@ -300,6 +313,19 @@ export const ApiClient = {
     return fetchHelper<SupplierProductResponse>(`/suppliers/products/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  createSupplierProductCoa: async (supplierId: string, productId: string, data: CreateCoaRequest): Promise<Coa> => {
+    return fetchHelper<Coa>(`/suppliers/${supplierId}/products/${productId}/coa`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  deleteSupplierCoa: async (supplierId: string, id: string): Promise<void> => {
+    return fetchHelper<void>(`/suppliers/${supplierId}/coa/${id}`, {
+      method: 'DELETE',
     }, Auth.getAccessToken() ?? undefined);
   },
 

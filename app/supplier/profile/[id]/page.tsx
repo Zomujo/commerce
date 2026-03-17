@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ApiClient } from '@/lib/api-client';
-import { SupplierProfile, SupplierProductResponse, Verification, StrategicVertical } from '@/types/api';
+import { SupplierProfile, SupplierProductResponse, Verification } from '@/types/api';
 import Link from 'next/link';
 
 const verificationLabels: Record<keyof Verification, string> = {
@@ -32,7 +32,6 @@ export default function SupplierProfilePage() {
 
   const [supplier, setSupplier] = useState<SupplierProfile | null>(null);
   const [products, setProducts] = useState<SupplierProductResponse[]>([]);
-  const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -50,14 +49,12 @@ export default function SupplierProfilePage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [s, p, v] = await Promise.all([
+        const [s, p] = await Promise.all([
           ApiClient.getSupplierById(id),
           ApiClient.getSupplierProducts(id),
-          ApiClient.getVerticals(),
         ]);
         setSupplier(s);
         setProducts(p);
-        setVerticals(v);
         setEditForm({
           companyName: s.companyName,
           country: s.country,
@@ -76,10 +73,6 @@ export default function SupplierProfilePage() {
     load();
   }, [id]);
 
-  const verticalName = (verticalId: string | null) => {
-    if (!verticalId) return '—';
-    return verticals.find((v) => v.id === verticalId)?.name ?? verticalId;
-  };
 
   const set = (k: keyof typeof editForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setEditForm((prev) => ({ ...prev, [k]: e.target.value }));
@@ -227,7 +220,7 @@ export default function SupplierProfilePage() {
                       <div className="mt-2.5 space-y-1.5">
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-slate-400">Vertical</span>
-                          <span className="text-slate-600 font-medium">{verticalName(p.verticalId)}</span>
+                          <span className="text-slate-600 font-medium">{p.verticalName ?? '—'}</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-slate-400">Origin</span>

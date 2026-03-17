@@ -8,13 +8,14 @@ import Footer from '../../components/Footer';
 import ProductCard from '../../components/ProductCard';
 import QuoteRequestModal from '../../components/QuoteRequestModal';
 import { ApiClient } from '@/lib/api-client';
-import { Product } from '@/types/api';
+import { Coa, Product } from '@/types/api';
 
 export default function ProductDetailPage() {
   const params = useParams();
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [coas, setCoas] = useState<Coa[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,6 +26,13 @@ export default function ProductDetailPage() {
         setIsLoading(true);
         const data = await ApiClient.getProductById(params.id as string);
         setProduct(data);
+
+        try {
+          const coaData = await ApiClient.getProductCoas(data.id);
+          setCoas(coaData);
+        } catch {
+          setCoas([]);
+        }
 
         // Fetch related products from same vertical
         if (data.vertical?.id) {
@@ -68,7 +76,7 @@ export default function ProductDetailPage() {
         <Header />
         <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem' }}>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-navy)' }}>Product Not Found</h1>
-          <p style={{ color: 'var(--color-gray-500)' }}>The product you're looking for doesn't exist.</p>
+          <p style={{ color: 'var(--color-gray-500)' }}>The product you&apos;re looking for doesn&apos;t exist.</p>
           <Link href="/products" className="btn btn-primary">Browse Products</Link>
         </main>
         <Footer />
@@ -77,6 +85,17 @@ export default function ProductDetailPage() {
   }
 
   const categoryName = product.vertical?.name || 'Industrial';
+
+  const getDocumentName = (documentUrl: string) => {
+    if (!documentUrl) return '';
+    if (!documentUrl.includes('/')) return documentUrl;
+    try {
+      const parsed = new URL(documentUrl);
+      return parsed.pathname.replace(/^\//, '');
+    } catch {
+      return documentUrl;
+    }
+  };
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -330,6 +349,61 @@ export default function ProductDetailPage() {
                           <span style={{ color: 'var(--color-navy)', fontWeight: 600 }}>{value}</span>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Certificates of Analysis */}
+                {coas.length > 0 && (
+                  <div style={{ marginBottom: '2rem' }}>
+                    <h3 style={{
+                      fontSize: '0.9375rem',
+                      fontWeight: 600,
+                      color: 'var(--color-navy)',
+                      marginBottom: '0.75rem',
+                    }}>
+                      Certificates of Analysis
+                    </h3>
+                    <div style={{
+                      background: 'var(--color-white)',
+                      borderRadius: '0.75rem',
+                      border: '1px solid var(--color-gray-200)',
+                      overflow: 'hidden',
+                    }}>
+                      {coas.map((coa, index) => {
+                        const docName = getDocumentName(coa.documentUrl);
+                        return (
+                          <div key={coa.id} style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '1rem',
+                            padding: '0.875rem 1rem',
+                            borderBottom: index < coas.length - 1 ? '1px solid var(--color-gray-200)' : 'none',
+                          }}>
+                            <div>
+                              <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)' }}>
+                                Batch {coa.batchNumber}
+                              </div>
+                              <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)', marginTop: '0.125rem' }}>
+                                Analyzed: {new Date(coa.analysisDate).toLocaleDateString()}
+                                {coa.qaPartner ? ` • ${coa.qaPartner}` : ''}
+                              </div>
+                            </div>
+                            {docName && (
+                              <a
+                                href={ApiClient.getDownloadUrl(docName)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-secondary"
+                                style={{ padding: '0.5rem 0.875rem', fontSize: '0.8125rem' }}
+                              >
+                                Download CoA
+                              </a>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
