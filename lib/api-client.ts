@@ -1,18 +1,20 @@
-import { ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, VerificationStatus, Coa, CreateCoaRequest } from '@/types/api';
+import { ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, VerificationStatus, Coa, CreateCoaRequest, ContactSubject } from '@/types/api';
 import { Auth } from './auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
 
 async function fetchHelper<T>(endpoint: string, options?: RequestInit, token?: string): Promise<T> {
-  const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
+  const headers = new Headers(options?.headers);
+  if (!headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
 
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeader,
-      ...options?.headers,
-    },
+    headers,
   });
 
   if (res.status === 401 && token) {
@@ -28,14 +30,15 @@ async function fetchHelper<T>(endpoint: string, options?: RequestInit, token?: s
         if (refreshRes.ok) {
           const refreshData: ApiResponse<AuthResponse> = await refreshRes.json();
           Auth.updateAccessToken(refreshData.data.accessToken);
+          const retryHeaders = new Headers(options?.headers);
+          if (!retryHeaders.has('Content-Type')) {
+            retryHeaders.set('Content-Type', 'application/json');
+          }
+          retryHeaders.set('Authorization', `Bearer ${refreshData.data.accessToken}`);
           // Retry original request with new token
           const retryRes = await fetch(`${API_URL}${endpoint}`, {
             ...options,
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${refreshData.data.accessToken}`,
-              ...options?.headers,
-            },
+            headers: retryHeaders,
           });
           if (retryRes.ok) {
             const retryData: ApiResponse<T> = await retryRes.json();
@@ -180,7 +183,14 @@ export const ApiClient = {
     });
   },
 
-  submitContact: async (data: ContactMessage): Promise<void> => {
+  submitContact: async (data: {
+    name: string;
+    email: string;
+    company?: string;
+    phone?: string;
+    subject: ContactSubject;
+    message: string;
+  }): Promise<void> => {
     return fetchHelper<void>('/contact', {
       method: 'POST',
       body: JSON.stringify(data),
