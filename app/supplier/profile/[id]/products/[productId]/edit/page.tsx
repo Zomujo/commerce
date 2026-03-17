@@ -41,7 +41,6 @@ export default function EditProductPage() {
     analysisDate: '',
     expiryDate: '',
     digitalSignature: '',
-    documentUrl: '',
     parameter: '',
     value: '',
     specification: '',
@@ -56,15 +55,18 @@ export default function EditProductPage() {
           ApiClient.getVerticals(),
         ]);
         setVerticals(verts);
+        const resolvedVerticalId = product.verticalId
+          ?? verts.find((v) => v.name === product.verticalName)?.id
+          ?? '';
         setForm({
           name: product.name,
-          verticalId: product.verticalId,
+          verticalId: resolvedVerticalId,
           originCountry: product.originCountry,
           purityGrade: product.purityGrade,
           image: product.image,
           description: product.description || '',
           originSite: product.originSite || '',
-          qaPartner: '',
+          qaPartner: (product as { qaPartner?: string }).qaPartner || '',
           badge: product.badge || '',
           certifications: (product.certifications ?? []).join(', '),
         });
@@ -122,7 +124,7 @@ export default function EditProductPage() {
 
   const uploadCoaDocument = async (): Promise<string> => {
     if (!coaDocumentFile) {
-      return coaForm.documentUrl.trim();
+      throw new Error('Please upload a CoA PDF document');
     }
 
     const contentType = coaDocumentFile.type || 'application/pdf';
@@ -150,9 +152,6 @@ export default function EditProductPage() {
 
     try {
       const documentUrl = await uploadCoaDocument();
-      if (!documentUrl) {
-        throw new Error('Please upload a CoA document or paste a document object name');
-      }
 
       const created = await ApiClient.createSupplierProductCoa(supplierId, productId, {
         batchNumber: coaForm.batchNumber,
@@ -178,7 +177,6 @@ export default function EditProductPage() {
         analysisDate: '',
         expiryDate: '',
         digitalSignature: '',
-        documentUrl: '',
         parameter: '',
         value: '',
         specification: '',
@@ -351,14 +349,11 @@ export default function EditProductPage() {
               <input
                 type="file"
                 accept="application/pdf"
+                required
                 onChange={(e) => setCoaDocumentFile(e.target.files?.[0] ?? null)}
                 className={inputCls}
               />
-              <p className="text-xs text-slate-400 mt-1">Or paste document object name below if already uploaded.</p>
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Document Object Name</label>
-              <input value={coaForm.documentUrl} onChange={(e) => setCoaForm((p) => ({ ...p, documentUrl: e.target.value }))} className={inputCls} placeholder="uuid_filename.pdf" />
+              <p className="text-xs text-slate-400 mt-1">The file uploads automatically to secure storage when you submit.</p>
             </div>
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Result Parameter *</label>

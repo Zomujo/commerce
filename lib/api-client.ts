@@ -47,8 +47,16 @@ async function fetchHelper<T>(endpoint: string, options?: RequestInit, token?: s
       }
     }
     const role = Auth.getRole();
+    const path = typeof window !== 'undefined' ? window.location.pathname : '';
+    const loginPath = role === 'SUPPLIER'
+      ? '/supplier/login'
+      : role === 'ADMIN' || role === 'SALES'
+        ? '/admin/login'
+        : path.startsWith('/supplier')
+          ? '/supplier/login'
+          : '/admin/login';
     Auth.clear();
-    window.location.href = role === 'SUPPLIER' ? '/supplier/login' : '/admin/login';
+    window.location.href = loginPath;
     throw new Error('Session expired. Please log in again.');
   }
 

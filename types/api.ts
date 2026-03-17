@@ -210,6 +210,7 @@ export interface SupplierProductResponse {
   originSite?: string;
   purityGrade: string;
   certifications: string[];
+  qaPartner?: string;
   specifications: Record<string, string>;
   image: string;
   badge?: string;

@@ -245,7 +245,10 @@ export default function SupplierProfilePage() {
                         </div>
                       )}
                       <div className="mt-3 pt-3 border-t border-slate-100">
-                        <Link href={`/supplier/profile/${id}/products/${p.id}/edit`} className="text-xs font-medium text-blue-500 hover:text-blue-600">Edit product →</Link>
+                        <div className="flex items-center justify-between gap-3">
+                          <Link href={`/supplier/profile/${id}/products/${p.id}`} className="text-xs font-medium text-slate-600 hover:text-slate-800">View details</Link>
+                          <Link href={`/supplier/profile/${id}/products/${p.id}/edit`} className="text-xs font-medium text-blue-500 hover:text-blue-600">Edit product</Link>
+                        </div>
                       </div>
                     </div>
                   </div>

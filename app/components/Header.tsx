@@ -114,7 +114,7 @@ export default function Header() {
             display: 'none',
             gap: '0.75rem',
           }} className="desktop-cta">
-            <Link href="/contact" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+            <Link href="/login" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
               Login
             </Link>
             <button 
@@ -217,7 +217,7 @@ export default function Header() {
               paddingTop: '1rem',
               borderTop: '1px solid var(--color-gray-200)',
             }}>
-              <Link href="/contact" className="btn btn-secondary" style={{ width: '100%' }}>
+              <Link href="/login" className="btn btn-secondary" style={{ width: '100%' }}>
                 Login
               </Link>
               <button 

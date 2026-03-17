@@ -16,6 +16,7 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [coas, setCoas] = useState<Coa[]>([]);
+  const [openCoaIds, setOpenCoaIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -86,15 +87,10 @@ export default function ProductDetailPage() {
 
   const categoryName = product.vertical?.name || 'Industrial';
 
-  const getDocumentName = (documentUrl: string) => {
-    if (!documentUrl) return '';
-    if (!documentUrl.includes('/')) return documentUrl;
-    try {
-      const parsed = new URL(documentUrl);
-      return parsed.pathname.replace(/^\//, '');
-    } catch {
-      return documentUrl;
-    }
+  const toggleCoaDetails = (id: string) => {
+    setOpenCoaIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
   };
 
   return (
@@ -371,35 +367,106 @@ export default function ProductDetailPage() {
                       overflow: 'hidden',
                     }}>
                       {coas.map((coa, index) => {
-                        const docName = getDocumentName(coa.documentUrl);
+                        const isOpen = openCoaIds.includes(coa.id);
+                        const hasFail = coa.results?.some((r) => r.status.toLowerCase() === 'fail');
                         return (
                           <div key={coa.id} style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            gap: '1rem',
                             padding: '0.875rem 1rem',
                             borderBottom: index < coas.length - 1 ? '1px solid var(--color-gray-200)' : 'none',
                           }}>
-                            <div>
-                              <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)' }}>
-                                Batch {coa.batchNumber}
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              gap: '1rem',
+                            }}>
+                              <div>
+                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)' }}>
+                                  Batch {coa.batchNumber}
+                                </div>
+                                <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)', marginTop: '0.125rem' }}>
+                                  Analyzed: {new Date(coa.analysisDate).toLocaleDateString()}
+                                  {coa.qaPartner ? ` • ${coa.qaPartner}` : ''}
+                                  {coa.expiryDate ? ` • Expires: ${new Date(coa.expiryDate).toLocaleDateString()}` : ''}
+                                </div>
                               </div>
-                              <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)', marginTop: '0.125rem' }}>
-                                Analyzed: {new Date(coa.analysisDate).toLocaleDateString()}
-                                {coa.qaPartner ? ` • ${coa.qaPartner}` : ''}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                                <span style={{
+                                  padding: '0.25rem 0.5rem',
+                                  borderRadius: '9999px',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 600,
+                                  background: hasFail ? 'rgba(239, 68, 68, 0.12)' : 'rgba(16, 185, 129, 0.12)',
+                                  color: hasFail ? '#b91c1c' : '#047857',
+                                }}>
+                                  {hasFail ? 'Has failed tests' : 'All tests passed'}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => toggleCoaDetails(coa.id)}
+                                  className="btn btn-secondary"
+                                  style={{ padding: '0.5rem 0.75rem', fontSize: '0.8125rem' }}
+                                >
+                                  {isOpen ? 'Hide Details' : 'View Details'}
+                                </button>
                               </div>
                             </div>
-                            {docName && (
-                              <a
-                                href={ApiClient.getDownloadUrl(docName)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-secondary"
-                                style={{ padding: '0.5rem 0.875rem', fontSize: '0.8125rem' }}
-                              >
-                                Download CoA
-                              </a>
+
+                            {isOpen && (
+                              <div style={{
+                                marginTop: '0.875rem',
+                                border: '1px solid var(--color-gray-200)',
+                                borderRadius: '0.625rem',
+                                overflow: 'hidden',
+                              }}>
+                                {coa.digitalSignature && (
+                                  <div style={{
+                                    padding: '0.625rem 0.75rem',
+                                    fontSize: '0.75rem',
+                                    color: 'var(--color-gray-500)',
+                                    borderBottom: coa.results?.length ? '1px solid var(--color-gray-200)' : 'none',
+                                  }}>
+                                    Signature: <span style={{ color: 'var(--color-navy)', fontWeight: 600 }}>{coa.digitalSignature}</span>
+                                  </div>
+                                )}
+                                {coa.results?.length ? coa.results.map((result, rIndex) => (
+                                  <div key={`${coa.id}-${rIndex}`} style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+                                    gap: '0.5rem',
+                                    padding: '0.625rem 0.75rem',
+                                    borderBottom: rIndex < coa.results.length - 1 ? '1px solid var(--color-gray-200)' : 'none',
+                                    fontSize: '0.75rem',
+                                  }} className="coa-result-row">
+                                    <div>
+                                      <div style={{ color: 'var(--color-gray-500)', marginBottom: '0.125rem' }}>Parameter</div>
+                                      <div style={{ color: 'var(--color-navy)', fontWeight: 600 }}>{result.parameter}</div>
+                                    </div>
+                                    <div>
+                                      <div style={{ color: 'var(--color-gray-500)', marginBottom: '0.125rem' }}>Value</div>
+                                      <div style={{ color: 'var(--color-navy)', fontWeight: 600 }}>{result.value}</div>
+                                    </div>
+                                    <div>
+                                      <div style={{ color: 'var(--color-gray-500)', marginBottom: '0.125rem' }}>Specification</div>
+                                      <div style={{ color: 'var(--color-navy)', fontWeight: 600 }}>{result.specification || '—'}</div>
+                                    </div>
+                                    <div>
+                                      <div style={{ color: 'var(--color-gray-500)', marginBottom: '0.125rem' }}>Status</div>
+                                      <div style={{
+                                        fontWeight: 700,
+                                        color: result.status.toLowerCase() === 'pass' ? '#047857' : '#b91c1c',
+                                        textTransform: 'uppercase',
+                                      }}>
+                                        {result.status}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )) : (
+                                  <div style={{ padding: '0.625rem 0.75rem', fontSize: '0.75rem', color: 'var(--color-gray-500)' }}>
+                                    No test results attached.
+                                  </div>
+                                )}
+                              </div>
                             )}
                           </div>
                         );
@@ -521,6 +588,11 @@ export default function ProductDetailPage() {
             }
             .product-ctas {
               flex-direction: row !important;
+            }
+          }
+          @media (max-width: 640px) {
+            .coa-result-row {
+              grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             }
           }
         `}</style>
