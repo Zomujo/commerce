@@ -4,10 +4,9 @@ import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HeroSection from './components/HeroSection';
-import StrategicVerticals from './components/StrategicVerticals';
 import TrustEngine from './components/TrustEngine';
-import ProductCard from './components/ProductCard';
 import CategoryCard from './components/CategoryCard';
+import ProductCard from './components/ProductCard';
 import StatsSection from './components/StatsSection';
 import QuoteRequestModal from './components/QuoteRequestModal';
 import Link from 'next/link';
@@ -79,9 +78,7 @@ export default function Home() {
         <HeroSection />
 
         {/* Strategic Verticals */}
-
-        {/* Strategic Verticals Section */}
-        <section className="section" style={{ background: 'var(--color-background-light)' }}>
+        <section className="section" style={{ background: 'var(--color-gray-50)' }}>
           <div className="container">
             <h2 style={{
               fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
@@ -93,7 +90,7 @@ export default function Home() {
              <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '2rem',
+              gap: '1.5rem',
             }}>
               {verticals.length > 0 ? verticals.map((vertical) => (
                 <CategoryCard
@@ -101,8 +98,7 @@ export default function Home() {
                   category={vertical}
                 />
               )) : (
-                // Loading Skeleton or Fallback
-                <p>Loading market verticals...</p>
+                <p style={{ textAlign: 'center', color: 'var(--color-gray-500)' }}>Loading market verticals...</p>
               )}
             </div>
           </div>

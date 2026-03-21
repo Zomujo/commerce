@@ -10,6 +10,15 @@ import QuoteRequestModal from '../../components/QuoteRequestModal';
 import { ApiClient } from '@/lib/api-client';
 import { StrategicVertical, Product } from '@/types/api';
 
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
 export default function VerticalDetailPage() {
   const params = useParams();
   const id = params.id as string;
@@ -23,12 +32,30 @@ export default function VerticalDetailPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [v, p] = await Promise.all([
-          ApiClient.getVerticalById(id),
-          ApiClient.getProducts({ vertical: id, limit: 50 }),
-        ]);
-        setVertical(v);
-        setProducts(p.content);
+        let resolvedVertical: StrategicVertical | null = null;
+
+        try {
+          resolvedVertical = await ApiClient.getVerticalById(id);
+        } catch {
+          const allVerticals = await ApiClient.getVerticals().catch(() => [] as StrategicVertical[]);
+          resolvedVertical =
+            allVerticals.find((v) => v.id === id || slugify(v.name) === id) || null;
+        }
+
+        if (!resolvedVertical) {
+          setVertical(null);
+          setProducts([]);
+          return;
+        }
+
+        setVertical(resolvedVertical);
+
+        let productPage = await ApiClient.getProducts({ vertical: resolvedVertical.id, limit: 50 }).catch(() => null);
+        if (!productPage && slugify(resolvedVertical.name) !== resolvedVertical.id) {
+          productPage = await ApiClient.getProducts({ vertical: slugify(resolvedVertical.name), limit: 50 }).catch(() => null);
+        }
+
+        setProducts(productPage?.content || []);
       } catch (err) {
         console.error('Failed to load vertical:', err);
       } finally {

@@ -20,8 +20,34 @@ const categoryImages: Record<string, string> = {
   specialty: '/specialty.png',
 };
 
+const categoryNameImages: Record<string, string> = {
+  'critical transition materials': '/minerals.png',
+  'critical minerals': '/minerals.png',
+  'industrial chemicals': '/solvents.png',
+  'bulk raw materials': '/polymers.png',
+};
+
+function normalize(value?: string) {
+  return (value || '').trim().toLowerCase();
+}
+
+function resolveCategoryImage(category: StrategicVertical) {
+  const byId = categoryImages[category.id];
+  if (byId) return byId;
+
+  const nameKey = normalize(category.name);
+  const byName = categoryNameImages[nameKey];
+  if (byName) return byName;
+
+  if (nameKey.includes('mineral')) return '/minerals.png';
+  if (nameKey.includes('industrial') || nameKey.includes('chemical')) return '/solvents.png';
+  if (nameKey.includes('bulk') || nameKey.includes('raw')) return '/polymers.png';
+
+  return '/polymers.png';
+}
+
 export default function CategoryCard({ category }: CategoryCardProps) {
-  const imageUrl = categoryImages[category.id] || '/polymers.png';
+  const imageUrl = resolveCategoryImage(category);
   
   // Use DB description or fallback
   const description = category.description || category.tagline || 'Industrial grade materials';
@@ -40,86 +66,105 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           position: 'relative',
           borderRadius: '1rem',
           overflow: 'hidden',
-          height: '320px',
+          background: 'var(--color-white)',
           cursor: 'pointer',
-          transition: 'all 0.3s ease',
+          transition: 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
           border: '1px solid var(--color-gray-200)',
+          boxShadow: 'var(--shadow-sm)',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
         }}
       >
-        {/* Background Image */}
+        {/* Image */}
         <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${imageUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          transition: 'transform 0.3s ease',
-        }} className="category-bg" />
-
-        {/* Gradient Overlay */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(180deg, rgba(10, 22, 40, 0.3) 0%, rgba(10, 22, 40, 0.85) 100%)',
-          transition: 'background 0.3s ease',
-        }} className="category-overlay" />
+          position: 'relative',
+          height: '210px',
+          overflow: 'hidden',
+          borderBottom: '1px solid var(--color-gray-200)',
+        }}>
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url(${imageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            transition: 'transform 0.5s ease',
+          }} className="category-bg" />
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(17, 33, 23, 0.08) 0%, rgba(17, 33, 23, 0.38) 100%)',
+          }} />
+        </div>
 
         {/* Content */}
         <div style={{
           position: 'relative',
-          height: '100%',
-          padding: '1.75rem',
+          padding: '1.25rem 1.25rem 1.35rem',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'flex-end',
+          gap: '0.75rem',
+          flex: 1,
         }}>
-          {/* Product Count Badge */}
           <div style={{
-            position: 'absolute',
-            top: '1.25rem',
-            right: '1.25rem',
-            padding: '0.375rem 0.875rem',
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '9999px',
-            fontSize: '0.8125rem',
-            fontWeight: 600,
-            color: 'var(--color-navy)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '0.75rem',
+            paddingBottom: '0.55rem',
+            borderBottom: '1px solid var(--color-gray-200)',
           }}>
-            {category.productCount || 0}+ Products
+            <span style={{
+              fontSize: '0.68rem',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: 'var(--color-gray-500)',
+            }}>
+              Strategic Vertical
+            </span>
+            <span style={{
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              color: 'var(--color-gray-600)',
+              fontVariantNumeric: 'tabular-nums',
+              whiteSpace: 'nowrap',
+            }}>
+              {category.productCount || 0}+ products
+            </span>
           </div>
 
-          {/* Title */}
           <h3 style={{
-            fontSize: '1.5rem',
+            fontSize: '1.4rem',
             fontWeight: 700,
-            color: 'var(--color-white)',
-            marginBottom: '0.625rem',
+            color: 'var(--color-navy)',
             lineHeight: 1.2,
-            textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
           }}>
             {category.name}
           </h3>
 
-          {/* Description */}
           <p style={{
-            fontSize: '0.9375rem',
-            color: 'rgba(255, 255, 255, 0.9)',
-            lineHeight: 1.5,
-            marginBottom: '1.25rem',
-            textShadow: '0 1px 4px rgba(0, 0, 0, 0.3)',
+            fontSize: '0.93rem',
+            color: 'var(--color-gray-500)',
+            lineHeight: 1.6,
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            minHeight: '4.5em',
           }}>
             {description}
           </p>
 
-          {/* CTA */}
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.5rem',
             fontSize: '0.9375rem',
             fontWeight: 600,
-            color: 'var(--color-white)',
+            color: 'var(--color-navy)',
+            marginTop: 'auto',
           }}>
             <span>Explore Category</span>
             <svg 
@@ -144,17 +189,15 @@ export default function CategoryCard({ category }: CategoryCardProps) {
         {/* Hover Styles */}
         <style jsx>{`
           .category-card:hover .category-bg {
-            transform: scale(1.05);
-          }
-          .category-card:hover .category-overlay {
-            background: linear-gradient(180deg, rgba(10, 22, 40, 0.2) 0%, rgba(10, 22, 40, 0.75) 100%);
+            transform: scale(1.08);
           }
           .category-card:hover .category-arrow {
             transform: translateX(4px);
           }
           .category-card:hover {
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow-xl);
             transform: translateY(-4px);
+            border-color: rgba(29, 201, 98, 0.45);
           }
         `}</style>
       </div>
