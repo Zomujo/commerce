@@ -10,6 +10,7 @@ import ProductCard from './components/ProductCard';
 import StatsSection from './components/StatsSection';
 import QuoteRequestModal from './components/QuoteRequestModal';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ApiClient } from '@/lib/api-client';
 import { Product, StrategicVertical, PlatformStats } from '@/types/api';
 
@@ -26,10 +27,10 @@ const trustedBrands = [
 export default function Home() {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | undefined>();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
+  const [hotDealProducts, setHotDealProducts] = useState<Product[]>([]);
   const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
   const [stats, setStats] = useState<PlatformStats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   const hasUsableImage = (image?: string) => {
     if (!image) return false;
@@ -58,17 +59,20 @@ export default function Home() {
           if (!uniqueById.has(p.id)) uniqueById.set(p.id, p);
         });
 
-        const previewProducts = Array.from(uniqueById.values())
-          .filter((p) => hasUsableImage(p.image))
-          .slice(0, 4);
+        const imageReadyProducts = Array.from(uniqueById.values()).filter((p) => hasUsableImage(p.image));
 
-        setProducts(previewProducts);
+        const shuffledDeals = [...imageReadyProducts];
+        for (let i = shuffledDeals.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffledDeals[i], shuffledDeals[j]] = [shuffledDeals[j], shuffledDeals[i]];
+        }
+
+        setCatalogProducts(imageReadyProducts);
+        setHotDealProducts(shuffledDeals.slice(0, Math.min(3, shuffledDeals.length)));
         setVerticals(fetchedVerticals);
         setStats(fetchedStats);
       } catch (error) {
         console.error('Failed to fetch home data:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -91,6 +95,27 @@ export default function Home() {
     { label: 'Countries Served', value: '60+' },
     { label: 'Support Availability', value: '24/7' },
   ];
+
+  const pickWindow = (start: number, count: number) => {
+    if (!catalogProducts.length) return [] as Product[];
+    const max = Math.min(count, catalogProducts.length);
+    const picked: Product[] = [];
+    const used = new Set<string>();
+
+    for (let i = 0; i < catalogProducts.length && picked.length < max; i++) {
+      const idx = (start + i) % catalogProducts.length;
+      const p = catalogProducts[idx];
+      if (!used.has(p.id)) {
+        used.add(p.id);
+        picked.push(p);
+      }
+    }
+
+    return picked;
+  };
+
+  const previewProducts = pickWindow(0, 4);
+  const bestSellerProducts = pickWindow(1, 4);
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -198,7 +223,7 @@ export default function Home() {
                 <div className="partner-marquee-row partner-marquee-row-top">
                   {[...trustedBrands, ...trustedBrands].map((brand, index) => (
                     <div key={`partner-top-${brand.name}-${index}`} className="partner-float-logo-wrap">
-                      <img src={brand.logo} alt={brand.name} draggable={false} className="partner-logo" />
+                      <Image src={brand.logo} alt={brand.name} width={220} height={80} draggable={false} className="partner-logo" />
                     </div>
                   ))}
                 </div>
@@ -208,7 +233,7 @@ export default function Home() {
                 <div className="partner-marquee-row partner-marquee-row-bottom">
                   {[...trustedBrands.slice().reverse(), ...trustedBrands.slice().reverse()].map((brand, index) => (
                     <div key={`partner-bottom-${brand.name}-${index}`} className="partner-float-logo-wrap">
-                      <img src={brand.logo} alt={brand.name} draggable={false} className="partner-logo" />
+                      <Image src={brand.logo} alt={brand.name} width={220} height={80} draggable={false} className="partner-logo" />
                     </div>
                   ))}
                 </div>
@@ -275,7 +300,7 @@ export default function Home() {
               gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
               gap: '1.5rem',
             }}>
-              {products.length > 0 ? products.map((product) => (
+              {previewProducts.length > 0 ? previewProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -285,6 +310,130 @@ export default function Home() {
                  <p style={{ color: 'var(--color-gray-500)' }}>No products with usable images yet.</p>
               )}
             </div>
+          </div>
+        </section>
+
+        {/* Hot Deals */}
+        <section className="section bg-white">
+          <div className="container">
+            {hotDealProducts.length > 0 ? (
+              <div
+                className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-700 p-4 shadow-[0_26px_62px_rgba(17,33,23,0.18)] md:p-6"
+              >
+                <div aria-hidden className="pointer-events-none absolute -left-14 -top-14 h-48 w-48 rounded-full bg-red-500/40 blur-3xl" />
+                <div aria-hidden className="pointer-events-none absolute -right-14 -top-10 h-44 w-44 rounded-full bg-orange-400/35 blur-3xl" />
+                <div aria-hidden className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(255,255,255,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.22)_1px,transparent_1px)] [background-size:30px_30px]" />
+
+                <div className="relative z-[1] grid gap-4 lg:grid-cols-[1.1fr_1fr]">
+                  <div className="flex min-h-full flex-col justify-between">
+                    <div>
+                      <span className="mb-3 inline-flex items-center rounded-md bg-red-500/90 px-2.5 py-1 text-[0.72rem] font-extrabold uppercase tracking-[0.1em] text-white">
+                        Hot Deals
+                      </span>
+                      <h2 className="mb-3 text-[clamp(1.8rem,3vw,2.45rem)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white">
+                        Limited-Time Procurement Opportunities
+                      </h2>
+                      <p className="max-w-2xl text-base leading-7 text-white/85">
+                        Featured products rotate by demand signal. Lock in availability early while current pricing windows are active.
+                      </p>
+                    </div>
+
+                    <div className="mt-5 flex flex-wrap gap-3">
+                      <button onClick={() => setIsQuoteModalOpen(true)} className="btn btn-primary" style={{ background: '#f97316', borderColor: '#f97316' }}>
+                        Request Product
+                      </button>
+                      <Link href="/products" className="btn btn-ghost" style={{ color: 'white', borderColor: 'rgba(255,255,255,0.35)' }}>
+                        View All Deals
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3">
+                    {hotDealProducts.map((product) => (
+                      <Link
+                        href={`/products/${product.id}`}
+                        key={`deal-spot-${product.id}`}
+                        className="grid grid-cols-[80px_1fr] items-center gap-3 rounded-xl border border-white/25 bg-white/15 p-2 no-underline backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(0,0,0,0.22)] md:grid-cols-[92px_1fr]"
+                      >
+                        <Image src={product.image} alt={product.name} width={92} height={80} className="h-20 w-20 rounded-lg border border-white/30 object-cover md:h-20 md:w-[92px]" />
+                        <div>
+                          <p className="mb-0.5 text-[0.68rem] text-white/75">
+                            Limited-time attention
+                          </p>
+                          <p className="mb-0.5 text-[0.95rem] font-bold leading-[1.3] text-white">
+                            {product.name}
+                          </p>
+                          <p className="text-[0.78rem] text-white/85">
+                            {product.verticalName || 'Industrial'}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p style={{ color: 'var(--color-gray-500)' }}>No hot deals available yet.</p>
+            )}
+          </div>
+        </section>
+
+        {/* Best Sellers */}
+        <section className="section bg-slate-50">
+          <div className="container">
+            <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="mb-3 text-[clamp(1.75rem,3vw,2.25rem)] font-extrabold tracking-[-0.02em] text-slate-900">
+                  Best Sellers
+                </h2>
+                <p className="max-w-xl text-base text-slate-500">
+                  The products buyers come back for most often.
+                </p>
+              </div>
+              <Link href="/products" className="view-all-link inline-flex items-center gap-2 font-semibold text-emerald-600">
+                Browse Products
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+
+            {bestSellerProducts.length > 0 ? (
+              <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
+                <Link
+                  href={`/products/${bestSellerProducts[0].id}`}
+                  className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <Image src={bestSellerProducts[0].image} alt={bestSellerProducts[0].name} width={900} height={520} className="h-[340px] w-full object-cover transition duration-500 group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-950/5 to-emerald-950/70" />
+                  <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                    <p className="text-[0.72rem] uppercase tracking-[0.08em] text-white/80">Top Pick</p>
+                    <h3 className="text-2xl font-bold leading-tight">{bestSellerProducts[0].name}</h3>
+                    <p className="mt-1 text-sm text-white/85">{bestSellerProducts[0].verticalName || 'Industrial'}</p>
+                  </div>
+                </Link>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                  <div className="divide-y divide-slate-100">
+                    {bestSellerProducts.map((product) => (
+                      <Link
+                        href={`/products/${product.id}`}
+                        key={`best-list-${product.id}`}
+                        className="flex items-center gap-3 p-3 no-underline transition hover:bg-slate-50"
+                      >
+                        <Image src={product.image} alt={product.name} width={64} height={64} className="h-16 w-16 rounded-lg object-cover" />
+                        <div>
+                          <p className="text-sm font-semibold text-slate-900">{product.name}</p>
+                          <p className="text-xs text-slate-500">{product.verticalName || 'Industrial'}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p style={{ color: 'var(--color-gray-500)' }}>No best sellers available yet.</p>
+            )}
           </div>
         </section>
 
@@ -312,7 +461,7 @@ export default function Home() {
                 lineHeight: 1.8,
               }}>
                 For too long, Africa’s industrial wealth has been trapped in fragmented, opaque channels. 
-                WG Trade was founded by industry experts to change that. We aren't just a marketplace; 
+                WG Trade was founded by industry experts to change that. We aren&apos;t just a marketplace; 
                 we are a digital pipeline. By centralizing the continent’s most critical resources and 
                 de-risking the trade process, we are building the most resilient and transparent industrial 
                 supply chain of the 2020s.
