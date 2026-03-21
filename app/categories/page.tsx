@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import PageSpinner from '../components/PageSpinner';
 import CategoryCard from '../components/CategoryCard';
 import { ApiClient } from '@/lib/api-client';
 import { StrategicVertical } from '@/types/api';
@@ -25,6 +26,31 @@ export default function CategoriesPage() {
     };
     fetchCategories();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'grid',
+          gridTemplateRows: 'auto 1fr auto',
+        }}
+      >
+        <Header />
+        <main
+          style={{
+            minHeight: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <PageSpinner />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

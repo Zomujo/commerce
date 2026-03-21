@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import PageSpinner from '../components/PageSpinner';
 import ProductCard from '../components/ProductCard';
 import QuoteRequestModal from '../components/QuoteRequestModal';
 import { ApiClient } from '@/lib/api-client';
@@ -49,6 +50,32 @@ export default function ProductsPage() {
     setSelectedProduct({ id: productId, name: productName });
     setIsQuoteModalOpen(true);
   };
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'grid',
+          gridTemplateRows: 'auto 1fr auto',
+        }}
+      >
+        <Header />
+        <main
+          style={{
+            minHeight: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'var(--color-gray-50)',
+          }}
+        >
+          <PageSpinner />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
