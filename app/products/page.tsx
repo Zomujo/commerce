@@ -9,6 +9,10 @@ import QuoteRequestModal from '../components/QuoteRequestModal';
 import { ApiClient } from '@/lib/api-client';
 import { Product, StrategicVertical } from '@/types/api';
 
+function normalize(value?: string) {
+  return (value || '').trim().toLowerCase();
+}
+
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,14 +41,25 @@ export default function ProductsPage() {
   }, []);
 
   const filteredProducts = useMemo(() => {
+    const verticalIdByName = new Map<string, string>();
+    verticals.forEach((vertical) => {
+      verticalIdByName.set(normalize(vertical.name), vertical.id);
+    });
+
+    const getProductVerticalId = (product: Product) => {
+      if (product.vertical?.id) return product.vertical.id;
+      const productVerticalName = normalize(product.vertical?.name || product.verticalName);
+      return verticalIdByName.get(productVerticalName);
+    };
+
     return products.filter((product) => {
-      const matchesCategory = selectedCategory === 'all' || product.vertical?.id === selectedCategory;
+      const matchesCategory = selectedCategory === 'all' || getProductVerticalId(product) === selectedCategory;
       const matchesSearch = !searchQuery || 
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (product.description || '').toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery, products]);
+  }, [selectedCategory, searchQuery, products, verticals]);
 
   const handleRequestQuote = (productId: string, productName: string) => {
     setSelectedProduct({ id: productId, name: productName });
@@ -207,7 +222,11 @@ export default function ProductsPage() {
                       </span>
                     </button>
                     {verticals.map((vertical) => {
-                      const count = products.filter(p => p.vertical?.id === vertical.id).length;
+                      const count = products.filter((p) => {
+                        if (p.vertical?.id) return p.vertical.id === vertical.id;
+                        const productVerticalName = normalize(p.vertical?.name || p.verticalName);
+                        return productVerticalName === normalize(vertical.name);
+                      }).length;
                       return (
                         <button
                           key={vertical.id}

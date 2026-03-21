@@ -7,7 +7,11 @@ import Footer from '../components/Footer';
 import PageSpinner from '../components/PageSpinner';
 import CategoryCard from '../components/CategoryCard';
 import { ApiClient } from '@/lib/api-client';
-import { StrategicVertical } from '@/types/api';
+import { Product, StrategicVertical } from '@/types/api';
+
+function normalize(value?: string) {
+  return (value || '').trim().toLowerCase();
+}
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<StrategicVertical[]>([]);
@@ -16,8 +20,34 @@ export default function CategoriesPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = await ApiClient.getVerticals();
-        setCategories(data);
+        const [verticals, productsPage] = await Promise.all([
+          ApiClient.getVerticals(),
+          ApiClient.getProducts({ limit: 100 }).catch(() => null),
+        ]);
+
+        const products = productsPage?.content || [];
+        const productsByVerticalName = new Map<string, number>();
+
+        products.forEach((product: Product) => {
+          const key = normalize(product.vertical?.name || product.verticalName);
+          if (!key) return;
+          productsByVerticalName.set(key, (productsByVerticalName.get(key) || 0) + 1);
+        });
+
+        const verticalsWithCounts = verticals.map((vertical) => {
+          const existingCount = vertical.productCount;
+          if (typeof existingCount === 'number' && existingCount > 0) {
+            return vertical;
+          }
+
+          const derivedCount = productsByVerticalName.get(normalize(vertical.name)) || 0;
+          return {
+            ...vertical,
+            productCount: derivedCount,
+          };
+        });
+
+        setCategories(verticalsWithCounts);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
       } finally {

@@ -107,33 +107,23 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           gap: '0.75rem',
           flex: 1,
         }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '0.75rem',
-            paddingBottom: '0.55rem',
-            borderBottom: '1px solid var(--color-gray-200)',
-          }}>
-            <span style={{
-              fontSize: '0.68rem',
-              fontWeight: 600,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              color: 'var(--color-gray-500)',
-            }}>
-              Strategic Vertical
-            </span>
-            <span style={{
-              fontSize: '0.78rem',
-              fontWeight: 600,
-              color: 'var(--color-gray-600)',
-              fontVariantNumeric: 'tabular-nums',
-              whiteSpace: 'nowrap',
-            }}>
-              {category.productCount || 0}+ products
-            </span>
-          </div>
+           <div style={{
+             display: 'flex',
+             alignItems: 'center',
+             justifyContent: 'flex-end',
+             paddingBottom: '0.55rem',
+             borderBottom: '1px solid var(--color-gray-200)',
+           }}>
+             <span style={{
+               fontSize: '0.78rem',
+               fontWeight: 600,
+               color: 'var(--color-gray-600)',
+               fontVariantNumeric: 'tabular-nums',
+               whiteSpace: 'nowrap',
+             }}>
+               {category.productCount || 0}+ products
+             </span>
+           </div>
 
           <h3 style={{
             fontSize: '1.4rem',
