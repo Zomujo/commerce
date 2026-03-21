@@ -111,137 +111,88 @@ export default function Home() {
         {/* Trust Engine */}
         <TrustEngine />
 
-        {/* Trusted Partners - Auto-scrolling Carousel */}
-        <section style={{
-          padding: '4rem 0',
-          background: 'var(--color-background-light)',
-          borderTop: '1px solid var(--color-gray-200)',
-          borderBottom: '1px solid var(--color-gray-200)',
-          overflow: 'hidden',
-          position: 'relative',
-        }}>
-          <div className="container">
-            <div style={{
-              textAlign: 'center',
-              marginBottom: '3rem',
-            }}>
-              <p style={{
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                color: 'var(--color-gray-500)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                marginBottom: '0.5rem',
-              }}>
+        {/* Trusted partners — marquee */}
+        <section
+          style={{
+            padding: 'clamp(3.75rem, 9vw, 6rem) 0',
+            position: 'relative',
+            overflow: 'hidden',
+            background: 'radial-gradient(circle at 14% 14%, rgba(29, 201, 98, 0.22) 0%, rgba(29, 201, 98, 0) 34%), linear-gradient(180deg, #f8fcfa 0%, #eef5f1 100%)',
+            borderTop: '1px solid rgba(17, 33, 23, 0.08)',
+            borderBottom: '1px solid rgba(17, 33, 23, 0.08)',
+          }}
+        >
+          <div
+            aria-hidden
+            style={{
+              position: 'absolute',
+              width: '32rem',
+              height: '32rem',
+              right: '-10rem',
+              top: '-16rem',
+              borderRadius: '999px',
+              background: 'radial-gradient(circle, rgba(17, 33, 23, 0.12) 0%, rgba(17, 33, 23, 0) 70%)',
+              pointerEvents: 'none',
+            }}
+          />
+          <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 3rem)' }}>
+              <p
+                style={{
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  color: 'var(--color-gray-600)',
+                  marginBottom: '1rem',
+                }}
+              >
                 Trusted by Industry Leaders
               </p>
-              <h3 style={{
-                fontSize: '1.75rem',
-                fontWeight: 700,
-                color: 'var(--color-navy)',
-              }}>
+              <h3
+                style={{
+                  fontSize: 'clamp(1.9rem, 4vw, 2.65rem)',
+                  fontWeight: 800,
+                  letterSpacing: '-0.03em',
+                  color: 'var(--color-navy)',
+                  lineHeight: 1.12,
+                  marginBottom: '0.9rem',
+                }}
+              >
                 Official Distribution Partners
               </h3>
+              <p
+                style={{
+                  fontSize: '1.0625rem',
+                  color: 'var(--color-gray-600)',
+                  maxWidth: '40rem',
+                  margin: '0 auto',
+                  lineHeight: 1.65,
+                }}
+              >
+                Industrial alliances built for long-term reliability, quality assurance, and traceable global sourcing.
+              </p>
             </div>
 
-            {/* Infinite Scrolling Container */}
-            <div style={{
-              position: 'relative',
-              width: '100%',
-              overflow: 'hidden',
-            }}>
-              {/* Gradient overlays for fade effect */}
-              <div style={{
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                bottom: 0,
-                width: '150px',
-                background: 'linear-gradient(90deg, var(--color-background-light) 0%, transparent 100%)',
-                zIndex: 2,
-              }} />
-              <div style={{
-                position: 'absolute',
-                right: 0,
-                top: 0,
-                bottom: 0,
-                width: '150px',
-                background: 'linear-gradient(90deg, transparent 0%, var(--color-background-light) 100%)',
-                zIndex: 2,
-              }} />
+            <div style={{ position: 'relative' }}>
+              <div className="partner-marquee-viewport" style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
+                <div className="partner-marquee-row partner-marquee-row-top">
+                  {[...trustedBrands, ...trustedBrands].map((brand, index) => (
+                    <div key={`partner-top-${brand.name}-${index}`} className="partner-float-logo-wrap">
+                      <img src={brand.logo} alt={brand.name} draggable={false} className="partner-logo" />
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-              {/* Scrolling track - duplicate brands for seamless loop */}
-              <div className="carousel-track" style={{
-                display: 'flex',
-                gap: '3rem',
-                animation: 'scroll 30s linear infinite',
-              }}>
-                {/* First set of brands */}
-                {trustedBrands.map((brand, index) => (
-                  <div
-                    key={`brand-1-${index}`}
-                    style={{
-                      flex: '0 0 auto',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '2rem 3rem',
-                      background: 'white',
-                      borderRadius: '1rem',
-                      border: '1px solid var(--color-gray-200)',
-                      minWidth: '200px',
-                      transition: 'all 0.3s ease',
-                    }}
-                    className="brand-logo-card"
-                  >
-                    <img 
-                      src={brand.logo} 
-                      alt={brand.name} 
-                      style={{
-                        height: '3rem',
-                        width: 'auto',
-                        objectFit: 'contain',
-                        filter: 'grayscale(100%)',
-                        opacity: 0.7,
-                        transition: 'all 0.3s ease',
-                      }}
-                      className="brand-logo-img"
-                    />
-                  </div>
-                ))}
-                {/* Duplicate set for seamless infinite scroll */}
-                {trustedBrands.map((brand, index) => (
-                  <div
-                    key={`brand-2-${index}`}
-                    style={{
-                      flex: '0 0 auto',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '2rem 3rem',
-                      background: 'white',
-                      borderRadius: '1rem',
-                      border: '1px solid var(--color-gray-200)',
-                      minWidth: '200px',
-                      transition: 'all 0.3s ease',
-                    }}
-                    className="brand-logo-card"
-                  >
-                    <img 
-                      src={brand.logo} 
-                      alt={brand.name} 
-                      style={{
-                        height: '3rem',
-                        width: 'auto',
-                        objectFit: 'contain',
-                        filter: 'grayscale(100%)',
-                        opacity: 0.7,
-                        transition: 'all 0.3s ease',
-                      }}
-                      className="brand-logo-img"
-                    />
-                  </div>
-                ))}
+              <div className="partner-marquee-viewport" style={{ position: 'relative', width: '100%', overflow: 'hidden', marginTop: '1rem' }}>
+                <div className="partner-marquee-row partner-marquee-row-bottom">
+                  {[...trustedBrands.slice().reverse(), ...trustedBrands.slice().reverse()].map((brand, index) => (
+                    <div key={`partner-bottom-${brand.name}-${index}`} className="partner-float-logo-wrap">
+                      <img src={brand.logo} alt={brand.name} draggable={false} className="partner-logo" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -457,21 +408,89 @@ export default function Home() {
             transform: translateX(-50%);
           }
         }
+
+        @keyframes scrollReverse {
+          0% {
+            transform: translateX(-50%);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
         
         .carousel-track:hover {
           animation-play-state: paused;
         }
-        
-        .brand-logo-card:hover {
-          background: var(--color-white);
-          transform: scale(1.05);
-          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
-          border-color: var(--primary);
+
+        .partner-marquee-viewport {
+          -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
         }
-        
-        .brand-logo-card:hover .brand-logo-img {
-          filter: grayscale(0%) !important;
-          opacity: 1 !important;
+
+        .partner-marquee-row {
+          display: flex;
+          gap: clamp(0.7rem, 2vw, 1rem);
+          width: max-content;
+          will-change: transform;
+          padding: 0.2rem 0;
+        }
+
+        .partner-marquee-row-top {
+          animation: scroll 30s linear infinite;
+        }
+
+        .partner-marquee-row-bottom {
+          animation: scrollReverse 34s linear infinite;
+        }
+
+        .partner-float-logo-wrap {
+          flex: 0 0 auto;
+          height: clamp(4.5rem, 9vw, 5.5rem);
+          width: clamp(10rem, 18vw, 14rem);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.9rem;
+          background: rgba(255, 255, 255, 0.18);
+          transition: transform 0.35s ease;
+        }
+
+        .partner-logo {
+          display: block;
+          width: 92%;
+          max-width: 12.5rem;
+          height: 82%;
+          object-fit: contain;
+          object-position: center;
+          filter: drop-shadow(0 6px 14px rgba(17, 33, 23, 0.14));
+          opacity: 0.93;
+          transition: transform 0.35s ease, opacity 0.35s ease, filter 0.35s ease;
+        }
+
+        .partner-float-logo-wrap:hover {
+          transform: translateY(-5px);
+        }
+
+        .partner-float-logo-wrap:hover .partner-logo {
+          transform: scale(1.08);
+          opacity: 1;
+          filter: drop-shadow(0 10px 20px rgba(17, 33, 23, 0.2));
+        }
+
+        .partner-marquee-viewport:hover .partner-marquee-row {
+          animation-play-state: paused;
+        }
+
+        @media (max-width: 768px) {
+          .partner-float-logo-wrap {
+            width: clamp(8.8rem, 42vw, 11.25rem);
+            height: clamp(3.9rem, 16vw, 4.8rem);
+          }
+
+          .partner-logo {
+            width: 94%;
+            height: 84%;
+          }
         }
 
         .view-all-link:hover {
