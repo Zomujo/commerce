@@ -351,7 +351,7 @@ export default function Home() {
                 marginBottom: '2rem',
                 lineHeight: 1.7,
               }}>
-                Get competitive quotes from verified chemical suppliers. Our team is ready to help you 
+                Get competitive product offers from verified chemical suppliers. Our team is ready to help you 
                 source the right materials for your manufacturing operations.
               </p>
               <div style={{
@@ -368,7 +368,7 @@ export default function Home() {
                     fontSize: '1.0625rem',
                   }}
                 >
-                  Submit a Request for Quote (RfQ)
+                  Request a Product
                 </button>
                 <Link 
                   href="/products"

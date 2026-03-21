@@ -62,7 +62,7 @@ export default function QuoteRequestModal({ isOpen, onClose, productName, produc
       }, 2000);
     } catch (err) {
       console.error('Quote submission failed:', err);
-      setError(err instanceof Error ? err.message : 'Failed to submit quote. Please try again.');
+      setError(err instanceof Error ? err.message : 'Failed to submit product request. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -106,7 +106,7 @@ export default function QuoteRequestModal({ isOpen, onClose, productName, produc
               color: 'var(--color-navy)',
               marginBottom: '0.5rem',
             }}>
-              Quote Request Sent!
+              Product Request Sent!
             </h3>
             <p style={{
               color: 'var(--color-gray-500)',
@@ -132,7 +132,7 @@ export default function QuoteRequestModal({ isOpen, onClose, productName, produc
                   color: 'var(--color-navy)',
                   marginBottom: '0.25rem',
                 }}>
-                  Request a Quote
+                  Request a Product
                 </h2>
                 <p style={{
                   fontSize: '0.875rem',
@@ -450,7 +450,7 @@ export default function QuoteRequestModal({ isOpen, onClose, productName, produc
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                     </svg>
-                    Submit Quote Request
+                    Submit Product Request
                   </>
                 )}
               </button>

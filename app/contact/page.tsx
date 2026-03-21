@@ -396,7 +396,7 @@ export default function ContactPage() {
                             style={{ cursor: 'pointer' }}
                           >
                             <option value="">Select a subject</option>
-                            <option value="quote">Request a Quote</option>
+                            <option value="quote">Request a Product</option>
                             <option value="product">Product Inquiry</option>
                             <option value="support">Technical Support</option>
                             <option value="partnership">Partnership Opportunity</option>

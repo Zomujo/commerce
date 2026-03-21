@@ -122,7 +122,7 @@ export default function Header() {
               className="btn btn-primary" 
               style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
             >
-              Request Quote
+              Request Product
             </button>
           </div>
 
@@ -225,7 +225,7 @@ export default function Header() {
                 className="btn btn-primary" 
                 style={{ width: '100%' }}
               >
-                Request Quote
+                Request Product
               </button>
             </div>
           </div>
