@@ -31,15 +31,38 @@ export default function Home() {
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const hasUsableImage = (image?: string) => {
+    if (!image) return false;
+    return image.startsWith('http://') || image.startsWith('https://') || image.startsWith('/');
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [popularProducts, fetchedVerticals, fetchedStats] = await Promise.all([
+        const [popularProducts, recentProducts, allProductsPage, fetchedVerticals, fetchedStats] = await Promise.all([
           ApiClient.getPopularProducts(4),
+          ApiClient.getRecentProducts().catch(() => []),
+          ApiClient.getProducts({ limit: 100 }).catch(() => null),
           ApiClient.getVerticals().catch(() => []),
           ApiClient.getStats().catch(() => null)
         ]);
-        setProducts(popularProducts);
+
+        const pool = [
+          ...popularProducts,
+          ...recentProducts,
+          ...(allProductsPage?.content || []),
+        ];
+
+        const uniqueById = new Map<string, Product>();
+        pool.forEach((p) => {
+          if (!uniqueById.has(p.id)) uniqueById.set(p.id, p);
+        });
+
+        const previewProducts = Array.from(uniqueById.values())
+          .filter((p) => hasUsableImage(p.image))
+          .slice(0, 4);
+
+        setProducts(previewProducts);
         setVerticals(fetchedVerticals);
         setStats(fetchedStats);
       } catch (error) {
@@ -259,7 +282,7 @@ export default function Home() {
                   onRequestQuote={() => handleRequestQuote(product.id, product.name)}
                 />
               )) : (
-                 <p>Loading products...</p>
+                 <p style={{ color: 'var(--color-gray-500)' }}>No products with usable images yet.</p>
               )}
             </div>
           </div>
