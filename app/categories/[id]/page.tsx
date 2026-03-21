@@ -19,6 +19,10 @@ function slugify(value: string) {
     .replace(/-+/g, '-');
 }
 
+function normalize(value?: string) {
+  return (value || '').trim().toLowerCase();
+}
+
 export default function VerticalDetailPage() {
   const params = useParams();
   const id = params.id as string;
@@ -55,7 +59,20 @@ export default function VerticalDetailPage() {
           productPage = await ApiClient.getProducts({ vertical: slugify(resolvedVertical.name), limit: 50 }).catch(() => null);
         }
 
-        setProducts(productPage?.content || []);
+        if (productPage?.content?.length) {
+          setProducts(productPage.content);
+          return;
+        }
+
+        const allProductsPage = await ApiClient.getProducts({ limit: 100 }).catch(() => null);
+        const verticalNameKey = normalize(resolvedVertical.name);
+        const filteredProducts = (allProductsPage?.content || []).filter((product) => {
+          const productVerticalId = product.vertical?.id || '';
+          const productVerticalName = normalize(product.vertical?.name || product.verticalName);
+          return productVerticalId === resolvedVertical.id || productVerticalName === verticalNameKey;
+        });
+
+        setProducts(filteredProducts);
       } catch (err) {
         console.error('Failed to load vertical:', err);
       } finally {
