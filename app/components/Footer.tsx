@@ -7,11 +7,10 @@ export default function Footer() {
 
   const footerLinks = {
     products: [
-      { href: '/categories/diagnostic', label: 'Diagnostic Equipment' },
-      { href: '/categories/surgical', label: 'Surgical Instruments' },
-      { href: '/categories/laboratory', label: 'Laboratory Equipment' },
-      { href: '/categories/patient-care', label: 'Patient Care' },
-      { href: '/categories/imaging', label: 'Imaging Systems' },
+      { href: '/categories/critical-transition-materials', label: 'Critical Transition Materials' },
+      { href: '/categories/industrial-chemicals', label: 'Industrial Chemicals' },
+      { href: '/categories/bulk-raw-materials', label: 'Bulk Raw Materials' },
+      { href: '/categories', label: 'All Verticals' },
     ],
     company: [
       { href: '/about', label: 'About Us' },
@@ -119,7 +118,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Products Column */}
+          {/* Verticals Column */}
           <div>
             <h4 style={{
               fontSize: '0.875rem',
@@ -128,7 +127,7 @@ export default function Footer() {
               marginBottom: '1.25rem',
               textTransform: 'uppercase',
               letterSpacing: '0.05em',
-            }}>Products</h4>
+            }}>Verticals</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {footerLinks.products.map((link) => (
                 <li key={link.href} style={{ marginBottom: '0.75rem' }}>

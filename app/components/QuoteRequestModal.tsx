@@ -209,7 +209,7 @@ export default function QuoteRequestModal({ isOpen, onClose, productName, produc
                       value={formData.email}
                       onChange={handleChange}
                       className="input"
-                      placeholder="john@hospital.com"
+                      placeholder="john@acmetrading.com"
                       required
                     />
                   </div>
@@ -229,7 +229,7 @@ export default function QuoteRequestModal({ isOpen, onClose, productName, produc
                       color: 'var(--color-navy)',
                       marginBottom: '0.5rem',
                     }}>
-                      Company / Hospital
+                      Company
                     </label>
                     <input
                       type="text"
@@ -237,7 +237,7 @@ export default function QuoteRequestModal({ isOpen, onClose, productName, produc
                       value={formData.company}
                       onChange={handleChange}
                       className="input"
-                      placeholder="Metro Medical Center"
+                      placeholder="Acme Industrial Trading Ltd"
                     />
                   </div>
                   <div>
@@ -278,7 +278,7 @@ export default function QuoteRequestModal({ isOpen, onClose, productName, produc
                     value={formData.product}
                     onChange={handleChange}
                     className="input"
-                    placeholder="e.g., Digital Ultrasound System"
+                    placeholder="e.g., Lithium Carbonate, Caustic Soda"
                   />
                 </div>
 

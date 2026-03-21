@@ -7,6 +7,7 @@ import HeroSection from './components/HeroSection';
 import TrustEngine from './components/TrustEngine';
 import CategoryCard from './components/CategoryCard';
 import ProductCard from './components/ProductCard';
+import PageSpinner from './components/PageSpinner';
 import StatsSection from './components/StatsSection';
 import QuoteRequestModal from './components/QuoteRequestModal';
 import Link from 'next/link';
@@ -31,6 +32,7 @@ export default function Home() {
   const [hotDealProducts, setHotDealProducts] = useState<Product[]>([]);
   const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
   const [stats, setStats] = useState<PlatformStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const hasUsableImage = (image?: string) => {
     if (!image) return false;
@@ -73,6 +75,8 @@ export default function Home() {
         setStats(fetchedStats);
       } catch (error) {
         console.error('Failed to fetch home data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -300,7 +304,11 @@ export default function Home() {
               gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
               gap: '1.5rem',
             }}>
-              {previewProducts.length > 0 ? previewProducts.map((product) => (
+              {isLoading ? (
+                <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', padding: '2rem 0' }}>
+                  <PageSpinner />
+                </div>
+              ) : previewProducts.length > 0 ? previewProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -316,7 +324,11 @@ export default function Home() {
         {/* Hot Deals */}
         <section className="section bg-white">
           <div className="container">
-            {hotDealProducts.length > 0 ? (
+            {isLoading ? (
+              <div className="flex justify-center py-8">
+                <PageSpinner />
+              </div>
+            ) : hotDealProducts.length > 0 ? (
               <div
                 className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-700 p-4 shadow-[0_26px_62px_rgba(17,33,23,0.18)] md:p-6"
               >
@@ -398,7 +410,11 @@ export default function Home() {
               </Link>
             </div>
 
-            {bestSellerProducts.length > 0 ? (
+            {isLoading ? (
+              <div className="flex justify-center py-8">
+                <PageSpinner />
+              </div>
+            ) : bestSellerProducts.length > 0 ? (
               <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
                 <Link
                   href={`/products/${bestSellerProducts[0].id}`}
