@@ -126,13 +126,13 @@ export const ApiClient = {
 
   // Public
   getProducts: async (params?: {
-    vertical?: string;
+    verticalId?: string;
     search?: string;
     page?: number;
     limit?: number;
   }): Promise<Page<Product>> => {
     const query = new URLSearchParams();
-    if (params?.vertical) query.append('vertical', params.vertical);
+    if (params?.verticalId) query.append('verticalId', params.verticalId);
     if (params?.search) query.append('search', params.search);
     if (params?.page) query.append('page', params.page.toString());
     if (params?.limit) query.append('limit', params.limit.toString());

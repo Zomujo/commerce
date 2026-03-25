@@ -8,13 +8,22 @@ const inter = Inter({
   display: "swap",
 });
 
+const siteTitle =
+  "WG Trade - Africa's Critical Minerals & Industrial Supply Infrastructure";
+
 export const metadata: Metadata = {
-  title: "WasteGrid Procure | Industrial Chemicals & Raw Materials",
-  description: "Your trusted B2B marketplace for industrial chemicals and raw materials. Request quotes from verified suppliers for polymers, solvents, pigments, additives, and specialty chemicals.",
-  keywords: "industrial chemicals, raw materials, polymers, solvents, B2B chemicals, chemical suppliers, bulk chemicals, manufacturing materials",
+  title: {
+    default: siteTitle,
+    template: "%s | WG Trade",
+  },
+  description:
+    "Africa's critical minerals and industrial supply infrastructure. Your trusted B2B marketplace for industrial chemicals and raw materials — request quotes from verified suppliers.",
+  keywords:
+    "WG Trade, Africa, critical minerals, industrial supply, industrial chemicals, raw materials, polymers, solvents, B2B, chemical suppliers, bulk chemicals, manufacturing materials",
   openGraph: {
-    title: "WasteGrid Procure | Industrial Chemicals & Raw Materials",
-    description: "Your trusted B2B marketplace for industrial chemicals and raw materials. Request quotes from verified suppliers.",
+    title: siteTitle,
+    description:
+      "Africa's critical minerals and industrial supply infrastructure. B2B marketplace for industrial chemicals and raw materials.",
     type: "website",
   },
 };

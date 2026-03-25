@@ -39,7 +39,7 @@ export default function ProductDetailPage() {
         if (data.vertical?.id) {
           try {
             const related = await ApiClient.getProducts({
-              vertical: data.vertical.id,
+              verticalId: data.vertical.id,
               limit: 5,
             });
             setRelatedProducts(

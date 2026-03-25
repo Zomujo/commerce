@@ -67,10 +67,7 @@ export default function VerticalDetailPage() {
 
         setVertical(resolvedVertical);
 
-        let productPage = await ApiClient.getProducts({ vertical: resolvedVertical.id, limit: 50 }).catch(() => null);
-        if (!productPage && slugify(resolvedVertical.name) !== resolvedVertical.id) {
-          productPage = await ApiClient.getProducts({ vertical: slugify(resolvedVertical.name), limit: 50 }).catch(() => null);
-        }
+        const productPage = await ApiClient.getProducts({ verticalId: resolvedVertical.id, limit: 50 }).catch(() => null);
 
         const fromVerticalQuery = (productPage?.content || []).filter((p) =>
           productBelongsToVertical(p, resolvedVertical),
