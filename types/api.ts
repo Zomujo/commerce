@@ -1,11 +1,28 @@
 export interface StrategicVertical {
-  id: string; // critical-minerals, etc.
+  id: string;
+  name: string;
+  tagline?: string;
+  description?: string;
+  edge?: string;
+  /** Image URL (e.g. after file upload) or site-relative path (`/…`). Used by `resolveCategoryImage` when valid. */
+  icon?: string;
+  productCount?: number;
+}
+
+export interface CreateVerticalRequest {
   name: string;
   tagline?: string;
   description?: string;
   edge?: string;
   icon?: string;
-  productCount?: number;
+}
+
+export interface UpdateVerticalRequest {
+  name?: string;
+  tagline?: string;
+  description?: string;
+  edge?: string;
+  icon?: string;
 }
 
 export interface Product {

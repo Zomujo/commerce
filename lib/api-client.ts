@@ -1,4 +1,4 @@
-import { ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, VerificationStatus, Coa, CreateCoaRequest, ContactSubject } from '@/types/api';
+import { ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, CreateVerticalRequest, UpdateVerticalRequest, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, VerificationStatus, Coa, CreateCoaRequest, ContactSubject } from '@/types/api';
 import { Auth } from './auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
@@ -365,6 +365,21 @@ export const ApiClient = {
     return fetchHelper<SupplierProfile>(`/admin/suppliers/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status }),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  // Admin - Verticals
+  createAdminVertical: async (data: CreateVerticalRequest): Promise<StrategicVertical> => {
+    return fetchHelper<StrategicVertical>('/admin/verticals', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  updateAdminVertical: async (id: string, data: UpdateVerticalRequest): Promise<StrategicVertical> => {
+    return fetchHelper<StrategicVertical>(`/admin/verticals/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
     }, Auth.getAccessToken() ?? undefined);
   },
 };
