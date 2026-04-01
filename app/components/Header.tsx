@@ -34,11 +34,14 @@ export default function Header() {
         backdropFilter: 'blur(10px)',
         borderBottom: '1px solid var(--color-gray-200)',
       }}>
-        <div className="container" style={{
+        <div className="header-row" style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           height: '4.5rem',
+          width: '100%',
+          padding: '0 1rem',
+          position: 'relative',
         }}>
           {/* Logo */}
           <Link href="/" style={{
@@ -52,9 +55,9 @@ export default function Header() {
               width={120}
               height={40}
               style={{
-                height: '2rem',
+                height: '2.75rem',
                 width: 'auto',
-                maxWidth: '7.5rem',
+                maxWidth: '10rem',
               }}
               priority
             />
@@ -245,17 +248,34 @@ export default function Header() {
           }
 
           @media (min-width: 768px) {
+            .header-row {
+              padding: 0 2.5rem !important;
+            }
+
             .desktop-nav {
               display: flex !important;
+              position: absolute;
+              left: 50%;
+              transform: translateX(-50%);
             }
+
             .desktop-cta {
               display: flex !important;
+              margin-left: auto;
             }
+
             .mobile-menu-btn {
               display: none !important;
             }
+
             .mobile-menu {
               display: none !important;
+            }
+          }
+
+          @media (min-width: 1280px) {
+            .header-row {
+              padding: 0 3.5rem !important;
             }
           }
         `}</style>
