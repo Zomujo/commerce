@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ApiClient } from '@/lib/api-client';
@@ -35,7 +36,7 @@ export default function SupplierRegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm">
         <div className="flex justify-center mb-6">
-          <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-xl">W</div>
+          <Image src="/logo.png" alt="WG Trade" width={353} height={345} className="h-10 w-auto" priority />
         </div>
         <h1 className="text-2xl font-bold text-slate-800 text-center mb-1">Create account</h1>
         <p className="text-sm text-slate-400 text-center mb-8">Register as a WG Trade supplier</p>

@@ -20,6 +20,11 @@ export const metadata: Metadata = {
     "Africa's critical minerals and industrial supply infrastructure. Your trusted B2B marketplace for industrial chemicals and raw materials — request quotes from verified suppliers.",
   keywords:
     "WG Trade, Africa, critical minerals, industrial supply, industrial chemicals, raw materials, polymers, solvents, B2B, chemical suppliers, bulk chemicals, manufacturing materials",
+  icons: {
+    icon: '/logo.png?v=3',
+    shortcut: '/logo.png?v=3',
+    apple: '/logo.png',
+  },
   openGraph: {
     title: siteTitle,
     description:

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import QuoteRequestModal from './QuoteRequestModal';
 
@@ -43,30 +44,20 @@ export default function Header() {
           <Link href="/" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem',
             textDecoration: 'none',
           }}>
-            <div style={{
-              width: '2.5rem',
-              height: '2.5rem',
-              background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
-              borderRadius: '0.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2v20M2 12h20" />
-              </svg>
-            </div>
-            <span style={{
-              fontSize: '1.25rem',
-              fontWeight: 700,
-              color: 'var(--color-navy)',
-              letterSpacing: '-0.02em',
-            }}>
-              WG<span style={{ color: 'var(--primary)' }}>Trade</span>
-            </span>
+            <Image
+              src="/logo.png"
+              alt="WG Trade"
+              width={120}
+              height={40}
+              style={{
+                height: '2rem',
+                width: 'auto',
+                maxWidth: '7.5rem',
+              }}
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}

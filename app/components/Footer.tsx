@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -47,31 +48,10 @@ export default function Footer() {
             <Link href="/" style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.5rem',
               textDecoration: 'none',
               marginBottom: '1.25rem',
             }}>
-              <div style={{
-                width: '2.5rem',
-                height: '2.5rem',
-                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
-                borderRadius: '0.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2v20M2 12h20" />
-                </svg>
-              </div>
-              <span style={{
-                fontSize: '1.25rem',
-                fontWeight: 700,
-                color: 'var(--color-white)',
-                letterSpacing: '-0.02em',
-              }}>
-                WG<span style={{ color: 'var(--primary)' }}>Trade</span>
-              </span>
+              <Image src="/logo.png" alt="WG Trade" width={353} height={345} className="h-10 w-auto" />
             </Link>
             <p style={{
               color: 'var(--color-gray-400)',

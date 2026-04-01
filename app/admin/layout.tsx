@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Auth } from '@/lib/auth';
 import { ApiClient } from '@/lib/api-client';
 
@@ -52,8 +53,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 text-white flex flex-col fixed inset-y-0 left-0 z-40">
         <div className="flex items-center gap-3 px-5 py-5 border-b border-white/10">
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm">W</div>
-          <span className="font-bold text-lg tracking-tight">WG Trade</span>
+          <Image src="/logo.png" alt="WG Trade" width={353} height={345} className="h-9 w-auto" priority />
         </div>
 
         <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500 px-5 pt-5 pb-2">Management</p>

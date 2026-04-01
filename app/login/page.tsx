@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function LoginChoicePage() {
   return (
@@ -28,23 +29,12 @@ export default function LoginChoicePage() {
             <Link href="/" style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.45rem',
               textDecoration: 'none',
               marginBottom: '0.85rem',
               color: 'var(--color-navy)',
               fontWeight: 700,
             }}>
-              <span style={{
-                width: '1.8rem',
-                height: '1.8rem',
-                borderRadius: '0.4rem',
-                background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-              }}>W</span>
-              WGTrade
+              <Image src="/logo.png" alt="WG Trade" width={353} height={345} className="h-9 w-auto" priority />
             </Link>
             <h1 style={{ fontSize: 'clamp(1.5rem, 2.8vw, 1.9rem)', fontWeight: 700, color: 'var(--color-navy)' }}>Sign In</h1>
             <p style={{ color: 'var(--color-gray-500)', marginTop: '0.25rem' }}>Select the portal you want to access</p>
