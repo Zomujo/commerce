@@ -34,7 +34,7 @@ export default function AboutPage() {
               marginBottom: '1.5rem',
               lineHeight: 1.2,
             }}>
-              About WasteGrid Procure
+              About WG Trade
             </h1>
             <p style={{
               fontSize: '1.25rem',
@@ -132,7 +132,7 @@ export default function AboutPage() {
                   color: 'var(--color-gray-600)',
                   lineHeight: 1.7,
                 }}>
-                  To become the world's leading digital platform for industrial chemical procurement, 
+                  To become the world&apos;s leading digital platform for industrial chemical procurement,
                   setting new standards for quality, reliability, and sustainability in the chemical 
                   industry. We envision a future where every manufacturer has seamless access to 
                   verified suppliers and competitive pricing.
@@ -352,7 +352,7 @@ export default function AboutPage() {
               maxWidth: '36rem',
               margin: '0 auto 2rem',
             }}>
-              Join thousands of manufacturers who trust WasteGrid Procure for their chemical procurement needs.
+              Join thousands of manufacturers who trust WG Trade for their chemical procurement needs.
             </p>
             <div style={{
               display: 'flex',
