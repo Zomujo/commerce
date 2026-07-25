@@ -8,18 +8,25 @@ const inter = Inter({
   display: "swap",
 });
 
+
+
 const siteTitle =
-  "WG Trade - Africa's Critical Minerals & Industrial Supply Infrastructure";
+  "WG Trade - Connecting African Industry to the World";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.wgtradeafrica.com";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: siteTitle,
     template: "%s | WG Trade",
   },
   description:
-    "Africa's critical minerals and industrial supply infrastructure. Your trusted B2B marketplace for industrial chemicals and raw materials — request quotes from verified suppliers.",
+    "WG Trade connects businesses to the materials, markets and commercial capabilities required to produce, build and grow across Africa and global markets.",
+  alternates: {
+    canonical: "/",
+  },
   keywords:
-    "WG Trade, Africa, critical minerals, industrial supply, industrial chemicals, raw materials, polymers, solvents, B2B, chemical suppliers, bulk chemicals, manufacturing materials",
+    "WG Trade, Africa trade, industrial sourcing, critical minerals, industrial chemicals, polymers, metals, trade execution, trade finance, market access",
   icons: {
     icon: '/logo.png?v=3',
     shortcut: '/logo.png?v=3',
@@ -28,8 +35,27 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteTitle,
     description:
-      "Africa's critical minerals and industrial supply infrastructure. B2B marketplace for industrial chemicals and raw materials.",
+      "WG Trade connects businesses to the materials, markets and commercial capabilities required to produce, build and grow.",
     type: "website",
+    url: "/",
+    siteName: "WG Trade",
+  },
+  twitter: {
+    card: "summary",
+    title: siteTitle,
+    description:
+      "Industrial sourcing, market access and trade execution for businesses across Africa and global markets.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 

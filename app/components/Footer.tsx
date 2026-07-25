@@ -30,7 +30,7 @@ export default function Footer() {
 
   return (
     <footer style={{
-      background: 'var(--color-navy)',
+      background: 'var(--wg-green-main)',
       color: 'var(--color-white)',
       paddingTop: '4rem',
       paddingBottom: '2rem',
@@ -54,7 +54,7 @@ export default function Footer() {
               <Image src="/logo.png" alt="WG Trade" width={353} height={345} className="h-10 w-auto" />
             </Link>
             <p style={{
-              color: 'var(--color-gray-400)',
+              color: 'rgba(255, 255, 255, 0.75)',
               fontSize: '0.875rem',
               lineHeight: 1.7,
               marginBottom: '1.5rem',
@@ -112,7 +112,7 @@ export default function Footer() {
               {footerLinks.products.map((link) => (
                 <li key={link.href} style={{ marginBottom: '0.75rem' }}>
                   <Link href={link.href} style={{
-                    color: 'var(--color-gray-400)',
+                    color: 'rgba(255, 255, 255, 0.75)',
                     textDecoration: 'none',
                     fontSize: '0.875rem',
                     transition: 'color var(--transition-fast)',
@@ -141,7 +141,7 @@ export default function Footer() {
               {footerLinks.company.map((link) => (
                 <li key={link.href} style={{ marginBottom: '0.75rem' }}>
                   <Link href={link.href} style={{
-                    color: 'var(--color-gray-400)',
+                    color: 'rgba(255, 255, 255, 0.75)',
                     textDecoration: 'none',
                     fontSize: '0.875rem',
                     transition: 'color var(--transition-fast)',
@@ -170,7 +170,7 @@ export default function Footer() {
               {footerLinks.support.map((link) => (
                 <li key={link.href} style={{ marginBottom: '0.75rem' }}>
                   <Link href={link.href} style={{
-                    color: 'var(--color-gray-400)',
+                    color: 'rgba(255, 255, 255, 0.75)',
                     textDecoration: 'none',
                     fontSize: '0.875rem',
                     transition: 'color var(--transition-fast)',
@@ -189,7 +189,7 @@ export default function Footer() {
         {/* Newsletter */}
         <div style={{
           background: 'rgba(255,255,255,0.05)',
-          borderRadius: '1rem',
+          borderRadius: 0,
           padding: '2rem',
           marginBottom: '3rem',
           display: 'flex',
@@ -204,7 +204,7 @@ export default function Footer() {
               marginBottom: '0.5rem',
             }}>Stay Updated</h4>
             <p style={{
-              color: 'var(--color-gray-400)',
+              color: 'rgba(255, 255, 255, 0.75)',
               fontSize: '0.875rem',
             }}>Get the latest product updates and industry news.</p>
           </div>
@@ -219,14 +219,22 @@ export default function Footer() {
               style={{
                 flex: 1,
                 padding: '0.75rem 1rem',
-                borderRadius: '0.5rem',
+                borderRadius: 0,
                 border: '1px solid rgba(255,255,255,0.2)',
                 background: 'rgba(255,255,255,0.1)',
                 color: 'var(--color-white)',
                 fontSize: '0.875rem',
               }}
             />
-            <button type="submit" className="btn btn-teal" style={{ whiteSpace: 'nowrap' }}>
+            <button type="submit" style={{ 
+              background: 'var(--wg-gold-main)',
+              color: 'var(--wg-green-deep)',
+              border: 'none',
+              padding: '0.75rem 1.5rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
+            }}>
               Subscribe
             </button>
           </form>
@@ -243,7 +251,7 @@ export default function Footer() {
           textAlign: 'center',
         }} className="footer-bottom">
           <p style={{
-            color: 'var(--color-gray-400)',
+            color: 'rgba(255, 255, 255, 0.75)',
             fontSize: '0.875rem',
           }}>
             © {currentYear} WG Trade. All rights reserved.

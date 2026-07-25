@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 import PageSpinner from '../components/PageSpinner';
 import ProductCard from '../components/ProductCard';
 import QuoteRequestModal from '../components/QuoteRequestModal';
@@ -82,12 +81,11 @@ export default function ProductsPage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'var(--color-gray-50)',
+            background: '#F8F7F3',
           }}
         >
           <PageSpinner />
         </main>
-        <Footer />
       </div>
     );
   }
@@ -96,74 +94,47 @@ export default function ProductsPage() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header />
 
-      <main style={{ flex: 1, background: 'var(--color-gray-50)' }}>
+      <main style={{ flex: 1, background: 'white' }}>
         {/* Page Header */}
         <section style={{
-          background: 'var(--color-white)',
-          borderBottom: '1px solid var(--color-gray-200)',
-          padding: '3rem 0',
+          background: 'white',
+          borderBottom: '1px solid #E2DDD3',
+          paddingTop: '8rem', // accounts for floating header
+          paddingBottom: '4rem',
         }}>
-          <div className="container">
-            <h1 style={{
-              fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
-              fontWeight: 700,
-              color: 'var(--color-navy)',
-              marginBottom: '0.5rem',
-            }}>
-              Industrial Chemicals & Raw Materials
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium text-[#06231A] tracking-tight mb-4">
+              Industrial Catalog
             </h1>
-            <p style={{
-              fontSize: '1rem',
-              color: 'var(--color-gray-500)',
-            }}>
-              Browse our complete catalog of industrial chemicals and raw materials
+            <p className="text-lg text-[#0F4534] font-light max-w-2xl">
+              Browse our complete catalog of verified industrial chemicals, raw materials, and heavy equipment ready for global procurement.
             </p>
           </div>
         </section>
 
         {/* Filters & Products */}
-        <section className="section">
-          <div className="container">
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr',
-              gap: '2rem',
-            }} className="products-layout">
+        <section className="py-12 sm:py-16">
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
+            <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12">
+              
               {/* Sidebar Filters */}
-              <aside style={{
-                background: 'var(--color-white)',
-                borderRadius: '1rem',
-                padding: '1.5rem',
-                border: '1px solid var(--color-gray-200)',
-                height: 'fit-content',
-              }} className="filters-sidebar">
+              <aside className="bg-white border border-[#E2DDD3] p-8 h-fit">
                 {/* Search */}
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: 'var(--color-navy)',
-                    marginBottom: '0.5rem',
-                  }}>
+                <div className="mb-8">
+                  <label className="block text-sm font-mono font-bold text-[#06231A] uppercase tracking-widest mb-4">
                     Search
                   </label>
-                  <div style={{ position: 'relative' }}>
+                  <div className="relative">
                     <svg 
                       width="18" 
                       height="18" 
                       viewBox="0 0 24 24" 
                       fill="none" 
-                      stroke="var(--color-gray-400)" 
+                      stroke="#0F4534" 
                       strokeWidth="2" 
                       strokeLinecap="round" 
                       strokeLinejoin="round"
-                      style={{
-                        position: 'absolute',
-                        left: '0.75rem',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                      }}
+                      className="absolute left-4 top-1/2 -translate-y-1/2"
                     >
                       <circle cx="11" cy="11" r="8" />
                       <path d="m21 21-4.3-4.3" />
@@ -173,51 +144,27 @@ export default function ProductsPage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search products..."
-                      className="input"
-                      style={{ paddingLeft: '2.5rem' }}
+                      className="w-full bg-white border border-[#E2DDD3] text-[#06231A] text-sm py-3 pl-12 pr-4 focus:outline-none focus:border-[#0F4534] transition-colors"
                     />
                   </div>
                 </div>
 
                 {/* Category Filter */}
                 <div>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: 'var(--color-navy)',
-                    marginBottom: '0.75rem',
-                  }}>
-                    Category
+                  <label className="block text-sm font-mono font-bold text-[#06231A] uppercase tracking-widest mb-4">
+                    Categories
                   </label>
-                  <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.5rem',
-                  }}>
+                  <div className="flex flex-col gap-2">
                     <button
                       onClick={() => setSelectedCategory('all')}
-                      style={{
-                        padding: '0.625rem 0.875rem',
-                        borderRadius: '0.5rem',
-                        border: 'none',
-                        background: selectedCategory === 'all' ? 'rgba(0, 102, 204, 0.1)' : 'transparent',
-                        color: selectedCategory === 'all' ? 'var(--color-blue)' : 'var(--color-gray-600)',
-                        fontSize: '0.875rem',
-                        fontWeight: selectedCategory === 'all' ? 600 : 400,
-                        textAlign: 'left',
-                        cursor: 'pointer',
-                        transition: 'all var(--transition-fast)',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
+                      className={`w-full flex justify-between items-center px-4 py-3 text-sm text-left transition-all ${
+                        selectedCategory === 'all' 
+                          ? 'bg-[#06231A] text-white font-medium' 
+                          : 'bg-transparent text-[#0F4534] hover:bg-[#F8F7F3]'
+                      }`}
                     >
                       All Categories
-                      <span style={{
-                        fontSize: '0.75rem',
-                        color: 'var(--color-gray-400)',
-                      }}>
+                      <span className={`text-xs ${selectedCategory === 'all' ? 'text-[#E6FFE6]' : 'text-gray-400'}`}>
                         {products.length}
                       </span>
                     </button>
@@ -227,31 +174,21 @@ export default function ProductsPage() {
                         const productVerticalName = normalize(p.vertical?.name || p.verticalName);
                         return productVerticalName === normalize(vertical.name);
                       }).length;
+                      
+                      const isActive = selectedCategory === vertical.id;
+                      
                       return (
                         <button
                           key={vertical.id}
                           onClick={() => setSelectedCategory(vertical.id)}
-                          style={{
-                            padding: '0.625rem 0.875rem',
-                            borderRadius: '0.5rem',
-                            border: 'none',
-                            background: selectedCategory === vertical.id ? 'rgba(0, 102, 204, 0.1)' : 'transparent',
-                            color: selectedCategory === vertical.id ? 'var(--color-blue)' : 'var(--color-gray-600)',
-                            fontSize: '0.875rem',
-                            fontWeight: selectedCategory === vertical.id ? 600 : 400,
-                            textAlign: 'left',
-                            cursor: 'pointer',
-                            transition: 'all var(--transition-fast)',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}
+                          className={`w-full flex justify-between items-center px-4 py-3 text-sm text-left transition-all ${
+                            isActive 
+                              ? 'bg-[#06231A] text-white font-medium' 
+                              : 'bg-transparent text-[#0F4534] hover:bg-[#F8F7F3]'
+                          }`}
                         >
                           {vertical.name}
-                          <span style={{
-                            fontSize: '0.75rem',
-                            color: 'var(--color-gray-400)',
-                          }}>
+                          <span className={`text-xs ${isActive ? 'text-[#E6FFE6]' : 'text-gray-400'}`}>
                             {count}
                           </span>
                         </button>
@@ -264,27 +201,15 @@ export default function ProductsPage() {
               {/* Products Grid */}
               <div>
                 {/* Results Count */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '1.5rem',
-                }}>
-                  <p style={{
-                    fontSize: '0.9375rem',
-                    color: 'var(--color-gray-500)',
-                  }}>
-                    Showing <strong style={{ color: 'var(--color-navy)' }}>{filteredProducts.length}</strong> products
+                <div className="flex justify-between items-center mb-8 border-b border-[#E2DDD3] pb-4">
+                  <p className="text-sm font-mono tracking-widest text-[#0F4534]">
+                    SHOWING <strong className="text-[#06231A] font-bold mx-1">{filteredProducts.length}</strong> RESULTS
                   </p>
                 </div>
 
                 {/* Grid */}
                 {filteredProducts.length > 0 ? (
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                    gap: '1.5rem',
-                  }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
                     {filteredProducts.map((product) => (
                       <ProductCard
                         key={product.id}
@@ -294,39 +219,25 @@ export default function ProductsPage() {
                     ))}
                   </div>
                 ) : (
-                  <div style={{
-                    textAlign: 'center',
-                    padding: '4rem 2rem',
-                    background: 'var(--color-white)',
-                    borderRadius: '1rem',
-                    border: '1px solid var(--color-gray-200)',
-                  }}>
+                  <div className="text-center py-24 bg-white border border-[#E2DDD3]">
                     <svg 
                       width="48" 
                       height="48" 
                       viewBox="0 0 24 24" 
                       fill="none" 
-                      stroke="var(--color-gray-300)" 
+                      stroke="#E2DDD3" 
                       strokeWidth="1.5" 
                       strokeLinecap="round" 
                       strokeLinejoin="round"
-                      style={{ margin: '0 auto 1rem' }}
+                      className="mx-auto mb-6"
                     >
                       <circle cx="11" cy="11" r="8" />
                       <path d="m21 21-4.3-4.3" />
                     </svg>
-                    <h3 style={{
-                      fontSize: '1.125rem',
-                      fontWeight: 600,
-                      color: 'var(--color-navy)',
-                      marginBottom: '0.5rem',
-                    }}>
+                    <h3 className="text-xl font-medium text-[#06231A] mb-2">
                       No products found
                     </h3>
-                    <p style={{
-                      fontSize: '0.9375rem',
-                      color: 'var(--color-gray-500)',
-                    }}>
+                    <p className="text-[#0F4534] font-light">
                       Try adjusting your search or filter criteria
                     </p>
                   </div>
@@ -335,17 +246,7 @@ export default function ProductsPage() {
             </div>
           </div>
         </section>
-
-        <style jsx global>{`
-          @media (min-width: 1024px) {
-            .products-layout {
-              grid-template-columns: 280px 1fr !important;
-            }
-          }
-        `}</style>
       </main>
-
-      <Footer />
 
       <QuoteRequestModal
         isOpen={isQuoteModalOpen}

@@ -1,32 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  /* Waste Grid Palette */
-  --background-light: #f6f8f7;
-  --background-dark: #112117;
-  --content-light: #0f172a;
-  --content-dark: #e2e8f0;
-  --subtle-light: #64748b;
-  --subtle-dark: #94a3b8;
-  --border-light: #dce5df;
-  --border-dark: #2a3f33;
+  /* WG Trade Brand Palette - Green & Warm Gold/Yellow */
+  --wg-green-deep: #06231A;
+  --wg-green-dark: #0A3326;
+  --wg-green-main: #0F4534;
+  --wg-green-mid: #155B45;
+  --wg-green-light: #217D60;
   
-  /* Primary Green */
-  --primary: #1dc962;
-  --primary-50: #f0fdf4;
-  --primary-100: #dcfce7;
-  --primary-200: #bbf7d0;
-  --primary-300: #86efac;
-  --primary-400: #4ade80;
-  --primary-500: #22c55e;
-  --primary-600: #16a34a;
-  --primary-700: #15803d;
-  --primary-800: #166534;
-  --primary-900: #14532d;
-  --primary-950: #052e16;
+  --wg-gold-main: #D4C9A8;
+  --wg-gold-deep: #C78D24;
+  --wg-gold-light: #F4C469;
+  --wg-gold-subtle: #FDF7EA;
 
-  /* Secondary Orange */
-  --secondary: #f97316;
+  --wg-sand: #F8F7F3;
+  --wg-sand-muted: #EFECE4;
+  --wg-sand-border: #E2DDD3;
+
+  --wg-charcoal: #111815;
+  
+  /* Legacy mapping for compatibility */
+  --background-light: #f8f7f3;
+  --background-dark: #06231a;
+  --content-light: #111815;
+  --content-dark: #f8f7f3;
+  --primary: #0f4534;
+  --secondary: #d4c9a8;
+
   --secondary-50: #fff7ed;
   --secondary-100: #ffedd5;
   --secondary-200: #fed7aa;
@@ -77,11 +77,7 @@
   --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@theme inline {
-  --color-background: var(--color-white);
-  --color-foreground: var(--color-navy);
-  --font-sans: var(--font-inter);
-}
+
 
 * {
   box-sizing: border-box;
@@ -115,7 +111,9 @@ body {
   padding: 0.75rem 1.5rem;
   font-weight: 500;
   font-size: 0.875rem;
-  border-radius: 0.5rem;
+  border-radius: 0 !important;
+  -webkit-appearance: none;
+  appearance: none;
   transition: all var(--transition-fast);
   cursor: pointer;
   border: none;

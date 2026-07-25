@@ -19,30 +19,28 @@ export default function CategoryCard({ category }: CategoryCardProps) {
       style={{
         display: 'block',
         textDecoration: 'none',
+        height: '100%',
       }}
+      className="group"
     >
       <div 
-        className="category-card"
         style={{
           position: 'relative',
-          borderRadius: '1rem',
-          overflow: 'hidden',
-          background: 'var(--color-white)',
+          background: 'white',
           cursor: 'pointer',
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
-          border: '1px solid var(--color-gray-200)',
-          boxShadow: 'var(--shadow-sm)',
+          transition: 'all 0.3s ease',
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
         }}
+        className="border border-[#E2DDD3] group-hover:border-[#06231A]"
       >
         {/* Image */}
         <div style={{
           position: 'relative',
-          height: '210px',
+          height: '240px',
           overflow: 'hidden',
-          borderBottom: '1px solid var(--color-gray-200)',
+          borderBottom: '1px solid #E2DDD3',
         }}>
           <div style={{
             position: 'absolute',
@@ -50,107 +48,93 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             backgroundImage: `url(${imageUrl})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            transition: 'transform 0.5s ease',
-          }} className="category-bg" />
+          }} className="transition-transform duration-700 group-hover:scale-105" />
           <div style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(17, 33, 23, 0.08) 0%, rgba(17, 33, 23, 0.38) 100%)',
+            background: 'linear-gradient(180deg, rgba(6, 35, 26, 0.05) 0%, rgba(6, 35, 26, 0.4) 100%)',
           }} />
+          
+          {/* Product Count Badge */}
+          <div style={{
+            position: 'absolute',
+            top: '1rem',
+            right: '1rem',
+            background: '#06231A',
+            color: 'white',
+            padding: '0.25rem 0.75rem',
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            fontFamily: 'monospace',
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+          }}>
+            {category.productCount || 0} PRODUCTS
+          </div>
         </div>
 
         {/* Content */}
         <div style={{
           position: 'relative',
-          padding: '1.25rem 1.25rem 1.35rem',
+          padding: '1.5rem',
           display: 'flex',
           flexDirection: 'column',
-          gap: '0.75rem',
+          gap: '1rem',
           flex: 1,
         }}>
-           <div style={{
-             display: 'flex',
-             alignItems: 'center',
-             justifyContent: 'flex-end',
-             paddingBottom: '0.55rem',
-             borderBottom: '1px solid var(--color-gray-200)',
-           }}>
-             <span style={{
-               fontSize: '0.78rem',
-               fontWeight: 600,
-               color: 'var(--color-gray-600)',
-               fontVariantNumeric: 'tabular-nums',
-               whiteSpace: 'nowrap',
-             }}>
-               {category.productCount || 0}+ products
-             </span>
-           </div>
-
-          <h3 style={{
-            fontSize: '1.4rem',
-            fontWeight: 700,
-            color: 'var(--color-navy)',
-            lineHeight: 1.2,
-          }}>
-            {category.name}
-          </h3>
-
-          <p style={{
-            fontSize: '0.93rem',
-            color: 'var(--color-gray-500)',
-            lineHeight: 1.6,
-            display: '-webkit-box',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            minHeight: '4.5em',
-          }}>
-            {description}
-          </p>
+          <div>
+            <h3 style={{
+              fontSize: '1.25rem',
+              fontWeight: 500,
+              color: '#06231A',
+              lineHeight: 1.2,
+              marginBottom: '0.5rem',
+              letterSpacing: '-0.02em',
+            }}>
+              {category.name}
+            </h3>
+            
+            <p style={{
+              fontSize: '0.875rem',
+              color: '#4B5563',
+              lineHeight: 1.6,
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              fontWeight: 300,
+            }}>
+              {description}
+            </p>
+          </div>
 
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.5rem',
-            fontSize: '0.9375rem',
+            fontSize: '0.875rem',
             fontWeight: 600,
-            color: 'var(--color-navy)',
+            color: '#06231A',
             marginTop: 'auto',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
           }}>
-            <span>Explore Category</span>
+            Explore
             <svg 
-              width="18" 
-              height="18" 
+              width="16" 
+              height="16" 
               viewBox="0 0 24 24" 
               fill="none" 
               stroke="currentColor" 
-              strokeWidth="2.5" 
+              strokeWidth="2" 
               strokeLinecap="round" 
               strokeLinejoin="round"
-              style={{
-                transition: 'transform 0.3s ease',
-              }}
-              className="category-arrow"
+              className="transition-transform duration-300 group-hover:translate-x-1"
             >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </div>
         </div>
-
-        {/* Hover Styles */}
-        <style jsx>{`
-          .category-card:hover .category-bg {
-            transform: scale(1.08);
-          }
-          .category-card:hover .category-arrow {
-            transform: translateX(4px);
-          }
-          .category-card:hover {
-            box-shadow: var(--shadow-xl);
-            transform: translateY(-4px);
-            border-color: rgba(29, 201, 98, 0.45);
-          }
-        `}</style>
       </div>
     </Link>
   );

@@ -24,15 +24,18 @@ export default function Header() {
     return pathname.startsWith(href);
   };
 
+  const isLightBg = pathname !== '/' && pathname !== '/about';
+
   return (
     <>
       <header style={{
-        position: 'sticky',
+        position: 'absolute',
         top: 0,
+        left: 0,
+        right: 0,
         zIndex: 40,
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid var(--color-gray-200)',
+        background: 'transparent',
+        borderBottom: isLightBg ? '1px solid rgba(6, 35, 26, 0.1)' : '1px solid rgba(255, 255, 255, 0.1)',
       }}>
         <div className="header-row" style={{
           display: 'flex',
@@ -74,18 +77,18 @@ export default function Header() {
                 <Link 
                   key={link.href} 
                   href={link.href}
-                  className="nav-link"
+                  className={`nav-link ${isLightBg ? 'nav-link-light' : 'nav-link-dark'}`}
                   style={{
                     position: 'relative',
-                    color: active ? 'var(--color-blue)' : 'var(--color-gray-600)',
+                    color: active ? (isLightBg ? '#06231A' : 'white') : (isLightBg ? '#06231A' : 'rgba(255, 255, 255, 0.8)'),
                     textDecoration: 'none',
                     fontSize: '0.9375rem',
                     fontWeight: active ? 600 : 500,
-                    transition: 'color var(--transition-fast)',
-                    padding: '0.5rem 0',
+                    padding: '0.5rem 1rem',
+                    transition: 'color 0.3s ease',
                   }}
                 >
-                  {link.label}
+                  <span className="relative z-10">{link.label}</span>
                   {/* Active indicator */}
                   {active && (
                     <span style={{
@@ -94,8 +97,7 @@ export default function Header() {
                       left: 0,
                       right: 0,
                       height: '2px',
-                      background: 'linear-gradient(90deg, var(--color-blue) 0%, var(--color-teal) 100%)',
-                      borderRadius: '2px',
+                      background: isLightBg ? '#06231A' : 'white',
                     }} />
                   )}
                 </Link>
@@ -108,13 +110,39 @@ export default function Header() {
             display: 'none',
             gap: '0.75rem',
           }} className="desktop-cta">
-            <Link href="/login" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+            <Link 
+              href="/login" 
+              style={{ 
+                padding: '0.5rem 1rem', 
+                fontSize: '0.875rem',
+                border: isLightBg ? '1px solid #06231A' : '1px solid white',
+                color: isLightBg ? '#06231A' : 'white',
+                textDecoration: 'none',
+                fontWeight: 500,
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = isLightBg ? '#06231A' : 'white';
+                e.currentTarget.style.color = isLightBg ? 'white' : '#06231A';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = isLightBg ? '#06231A' : 'white';
+              }}
+            >
               Login
             </Link>
             <button 
               onClick={() => setIsQuoteModalOpen(true)} 
-              className="btn btn-primary" 
-              style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
+              style={{ 
+                padding: '0.5rem 1rem', 
+                fontSize: '0.875rem',
+                background: isLightBg ? '#06231A' : 'white',
+                color: isLightBg ? 'white' : '#06231A',
+                border: 'none',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
             >
               Request Product
             </button>
@@ -133,7 +161,7 @@ export default function Header() {
             className="mobile-menu-btn"
             aria-label="Toggle menu"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-navy)" strokeWidth="2" strokeLinecap="round">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={isLightBg && !isMobileMenuOpen ? '#06231A' : 'white'} strokeWidth="2" strokeLinecap="round">
               {isMobileMenuOpen ? (
                 <>
                   <path d="M18 6L6 18" />
@@ -157,8 +185,8 @@ export default function Header() {
             top: '100%',
             left: 0,
             right: 0,
-            background: 'var(--color-white)',
-            borderBottom: '1px solid var(--color-gray-200)',
+            background: 'var(--wg-green-main)',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
             padding: '1rem',
             boxShadow: 'var(--shadow-lg)',
           }} className="mobile-menu">
@@ -175,26 +203,26 @@ export default function Header() {
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     style={{
-                      color: active ? 'var(--color-blue)' : 'var(--color-gray-600)',
+                      color: active ? 'white' : 'rgba(255, 255, 255, 0.8)',
                       textDecoration: 'none',
                       fontSize: '1rem',
                       fontWeight: active ? 600 : 500,
                       padding: '0.75rem 1rem',
-                      borderRadius: '0.5rem',
+                      borderRadius: 0,
                       transition: 'all var(--transition-fast)',
-                      background: active ? 'rgba(0, 102, 204, 0.08)' : 'transparent',
-                      borderLeft: active ? '3px solid var(--color-blue)' : '3px solid transparent',
+                      background: active ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                      borderLeft: active ? '3px solid white' : '3px solid transparent',
                     }}
                     onMouseEnter={(e) => {
                       if (!active) {
-                        e.currentTarget.style.background = 'var(--color-gray-50)';
-                        e.currentTarget.style.color = 'var(--color-blue)';
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                        e.currentTarget.style.color = 'var(--color-white)';
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!active) {
                         e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.color = 'var(--color-gray-600)';
+                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
                       }
                     }}
                   >
@@ -209,15 +237,31 @@ export default function Header() {
               gap: '0.5rem',
               marginTop: '1rem',
               paddingTop: '1rem',
-              borderTop: '1px solid var(--color-gray-200)',
+              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
             }}>
-              <Link href="/login" className="btn btn-secondary" style={{ width: '100%' }}>
+              <Link href="/login" style={{ 
+                width: '100%', 
+                display: 'block', 
+                textAlign: 'center', 
+                padding: '0.75rem',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                color: 'var(--color-white)',
+                fontWeight: 600,
+                textDecoration: 'none'
+              }}>
                 Login
               </Link>
               <button 
                 onClick={() => { setIsQuoteModalOpen(true); setIsMobileMenuOpen(false); }} 
-                className="btn btn-primary" 
-                style={{ width: '100%' }}
+                style={{ 
+                  width: '100%',
+                  padding: '0.75rem',
+                  background: 'white',
+                  color: '#06231A',
+                  border: 'none',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
               >
                 Request Product
               </button>
@@ -226,6 +270,12 @@ export default function Header() {
         )}
 
         <style jsx global>{`
+          .nav-link {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+          }
+
           .nav-link::before {
             content: '';
             position: absolute;
@@ -233,18 +283,22 @@ export default function Header() {
             left: 0;
             right: 0;
             height: 2px;
-            background: linear-gradient(90deg, var(--color-blue) 0%, var(--color-teal) 100%);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-            border-radius: 2px;
+            background: #0F4534;
+            transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+            transform-origin: bottom;
           }
           
           .nav-link:hover::before {
-            transform: scaleX(1);
+            height: 100%;
           }
           
-          .nav-link:hover {
-            color: var(--color-blue) !important;
+          .nav-link-dark:hover {
+            color: white !important;
+          }
+          
+          .nav-link-light:hover {
+            color: #06231A !important;
           }
 
           @media (min-width: 768px) {
