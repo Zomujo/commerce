@@ -96,7 +96,7 @@ export default function ProductCard({
         <span style={{
           fontSize: '0.75rem',
           fontWeight: 600,
-          color: '#D4C9A8',
+          color: '#06231A',
           textTransform: 'uppercase',
           letterSpacing: '0.1em',
           marginBottom: '0.75rem',

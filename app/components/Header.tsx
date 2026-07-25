@@ -80,7 +80,7 @@ export default function Header() {
                   className={`nav-link ${isLightBg ? 'nav-link-light' : 'nav-link-dark'}`}
                   style={{
                     position: 'relative',
-                    color: active ? 'var(--wg-gold-main)' : (isLightBg ? '#06231A' : 'rgba(255, 255, 255, 0.8)'),
+                    color: active ? (isLightBg ? '#06231A' : 'white') : (isLightBg ? '#06231A' : 'rgba(255, 255, 255, 0.8)'),
                     textDecoration: 'none',
                     fontSize: '0.9375rem',
                     fontWeight: active ? 600 : 500,
@@ -97,7 +97,7 @@ export default function Header() {
                       left: 0,
                       right: 0,
                       height: '2px',
-                      background: 'var(--wg-gold-main)',
+                      background: isLightBg ? '#06231A' : 'white',
                     }} />
                   )}
                 </Link>
@@ -137,8 +137,8 @@ export default function Header() {
               style={{ 
                 padding: '0.5rem 1rem', 
                 fontSize: '0.875rem',
-                background: 'var(--wg-gold-main)',
-                color: '#06231A',
+                background: isLightBg ? '#06231A' : 'white',
+                color: isLightBg ? 'white' : '#06231A',
                 border: 'none',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -203,7 +203,7 @@ export default function Header() {
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     style={{
-                      color: active ? 'var(--wg-gold-main)' : 'rgba(255, 255, 255, 0.8)',
+                      color: active ? 'white' : 'rgba(255, 255, 255, 0.8)',
                       textDecoration: 'none',
                       fontSize: '1rem',
                       fontWeight: active ? 600 : 500,
@@ -211,7 +211,7 @@ export default function Header() {
                       borderRadius: 0,
                       transition: 'all var(--transition-fast)',
                       background: active ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-                      borderLeft: active ? '3px solid var(--wg-gold-main)' : '3px solid transparent',
+                      borderLeft: active ? '3px solid white' : '3px solid transparent',
                     }}
                     onMouseEnter={(e) => {
                       if (!active) {
@@ -256,8 +256,8 @@ export default function Header() {
                 style={{ 
                   width: '100%',
                   padding: '0.75rem',
-                  background: 'var(--wg-gold-main)',
-                  color: 'var(--wg-green-deep)',
+                  background: 'white',
+                  color: '#06231A',
                   border: 'none',
                   fontWeight: 600,
                   cursor: 'pointer'
@@ -283,7 +283,7 @@ export default function Header() {
             left: 0;
             right: 0;
             height: 2px;
-            background: var(--wg-gold-main);
+            background: #0F4534;
             transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: -1;
             transform-origin: bottom;

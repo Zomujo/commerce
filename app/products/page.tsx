@@ -121,7 +121,7 @@ export default function ProductsPage() {
               <aside className="bg-white border border-[#E2DDD3] p-8 h-fit">
                 {/* Search */}
                 <div className="mb-8">
-                  <label className="block text-sm font-mono font-bold text-[#D4C9A8] uppercase tracking-widest mb-4">
+                  <label className="block text-sm font-mono font-bold text-[#06231A] uppercase tracking-widest mb-4">
                     Search
                   </label>
                   <div className="relative">
@@ -151,7 +151,7 @@ export default function ProductsPage() {
 
                 {/* Category Filter */}
                 <div>
-                  <label className="block text-sm font-mono font-bold text-[#D4C9A8] uppercase tracking-widest mb-4">
+                  <label className="block text-sm font-mono font-bold text-[#06231A] uppercase tracking-widest mb-4">
                     Categories
                   </label>
                   <div className="flex flex-col gap-2">
@@ -164,7 +164,7 @@ export default function ProductsPage() {
                       }`}
                     >
                       All Categories
-                      <span className={`text-xs ${selectedCategory === 'all' ? 'text-[#D4C9A8]' : 'text-gray-400'}`}>
+                      <span className={`text-xs ${selectedCategory === 'all' ? 'text-[#E6FFE6]' : 'text-gray-400'}`}>
                         {products.length}
                       </span>
                     </button>
@@ -188,7 +188,7 @@ export default function ProductsPage() {
                           }`}
                         >
                           {vertical.name}
-                          <span className={`text-xs ${isActive ? 'text-[#D4C9A8]' : 'text-gray-400'}`}>
+                          <span className={`text-xs ${isActive ? 'text-[#E6FFE6]' : 'text-gray-400'}`}>
                             {count}
                           </span>
                         </button>
