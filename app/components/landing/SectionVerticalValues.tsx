@@ -30,16 +30,14 @@ export default function SectionVerticalValues() {
           {accessPoints.map((point, index) => (
             <div
               key={index}
-              className={`group block py-12 ${index !== 0 ? 'border-t border-[#E2DDD3]' : ''} hover:bg-[#F8F7F3] -mx-6 px-6 sm:-mx-12 sm:px-12 transition-colors duration-300 animate-slide-in`}
+              className={`group relative block py-12 ${index !== 0 ? 'border-t border-[#E2DDD3]' : ''} -mx-6 px-6 sm:-mx-12 sm:px-12 animate-slide-in overflow-hidden`}
               style={{ animationDelay: `${index * 0.15}s` }}
             >
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-8">
-                <h3 className="text-xl font-bold tracking-tight">{point}</h3>
-                <div className="flex-shrink-0 text-[#E2DDD3] group-hover:text-[#D4C9A8] transition-colors duration-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m6.171 17.513 11.18-11.18M6.171 6.334h11.18v11.179" />
-                  </svg>
-                </div>
+              {/* Sweep fill background */}
+              <div className="absolute inset-0 bg-[#E6FFE6] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] z-0" />
+              
+              <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-8">
+                <h3 className="text-xl font-bold tracking-tight transition-colors duration-300 delay-100">{point}</h3>
               </div>
             </div>
           ))}

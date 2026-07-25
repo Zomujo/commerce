@@ -59,7 +59,7 @@ export default function SectionFixedImage() {
   }, []);
 
   return (
-    <section className="w-full bg-[#06231A] text-white pt-24 pb-32">
+    <section className="w-full bg-[#E6FFE6] text-[#06231A] pt-24 pb-32">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
         
         {/* Header */}
@@ -88,7 +88,7 @@ export default function SectionFixedImage() {
                   alt={point.title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#06231A]/80 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#E6FFE6]/90 via-transparent to-transparent" />
               </div>
             ))}
           </div>
@@ -100,10 +100,10 @@ export default function SectionFixedImage() {
                 key={point.id}
                 data-index={idx}
                 className={`scroll-text-item flex flex-col justify-center min-h-[50vh] lg:min-h-[70vh] transition-opacity duration-700 ${
-                  activeIndex === idx ? 'opacity-100' : 'opacity-30'
+                  activeIndex === idx ? 'opacity-100' : 'opacity-20'
                 }`}
               >
-                <span className="text-lg font-mono font-bold text-[#D4C9A8] mb-6 block tracking-widest">
+                <span className="text-lg font-mono font-bold text-[#0F4534] mb-6 block tracking-widest">
                   {point.id} — {point.title}
                 </span>
                 <h3 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight mb-8 leading-tight max-w-lg">
