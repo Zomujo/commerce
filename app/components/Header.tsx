@@ -24,16 +24,18 @@ export default function Header() {
     return pathname.startsWith(href);
   };
 
+  const isLightBg = pathname !== '/';
+
   return (
     <>
       <header style={{
-        position: 'absolute', // Sabi style floating header
+        position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
         zIndex: 40,
         background: 'transparent',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        borderBottom: isLightBg ? '1px solid rgba(6, 35, 26, 0.1)' : '1px solid rgba(255, 255, 255, 0.1)',
       }}>
         <div className="header-row" style={{
           display: 'flex',
@@ -75,10 +77,10 @@ export default function Header() {
                 <Link 
                   key={link.href} 
                   href={link.href}
-                  className="nav-link"
+                  className={`nav-link ${isLightBg ? 'nav-link-light' : 'nav-link-dark'}`}
                   style={{
                     position: 'relative',
-                    color: active ? 'var(--wg-gold-main)' : 'rgba(255, 255, 255, 0.8)',
+                    color: active ? 'var(--wg-gold-main)' : (isLightBg ? '#06231A' : 'rgba(255, 255, 255, 0.8)'),
                     textDecoration: 'none',
                     fontSize: '0.9375rem',
                     fontWeight: active ? 600 : 500,
@@ -108,13 +110,39 @@ export default function Header() {
             display: 'none',
             gap: '0.75rem',
           }} className="desktop-cta">
-            <Link href="/login" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+            <Link 
+              href="/login" 
+              style={{ 
+                padding: '0.5rem 1rem', 
+                fontSize: '0.875rem',
+                border: isLightBg ? '1px solid #06231A' : '1px solid white',
+                color: isLightBg ? '#06231A' : 'white',
+                textDecoration: 'none',
+                fontWeight: 500,
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = isLightBg ? '#06231A' : 'white';
+                e.currentTarget.style.color = isLightBg ? 'white' : '#06231A';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = isLightBg ? '#06231A' : 'white';
+              }}
+            >
               Login
             </Link>
             <button 
               onClick={() => setIsQuoteModalOpen(true)} 
-              className="btn btn-primary" 
-              style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
+              style={{ 
+                padding: '0.5rem 1rem', 
+                fontSize: '0.875rem',
+                background: 'var(--wg-gold-main)',
+                color: '#06231A',
+                border: 'none',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
             >
               Request Product
             </button>
@@ -133,7 +161,7 @@ export default function Header() {
             className="mobile-menu-btn"
             aria-label="Toggle menu"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={isLightBg && !isMobileMenuOpen ? '#06231A' : 'white'} strokeWidth="2" strokeLinecap="round">
               {isMobileMenuOpen ? (
                 <>
                   <path d="M18 6L6 18" />
@@ -265,8 +293,12 @@ export default function Header() {
             height: 100%;
           }
           
-          .nav-link:hover {
+          .nav-link-dark:hover {
             color: white !important;
+          }
+          
+          .nav-link-light:hover {
+            color: #06231A !important;
           }
 
           @media (min-width: 768px) {
