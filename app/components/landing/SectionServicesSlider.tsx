@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 
 const services = [
@@ -68,6 +68,33 @@ const services = [
 
 export default function SectionServicesSlider() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Auto-scroll logic
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (!isHovered) {
+      intervalId = setInterval(() => {
+        if (scrollRef.current) {
+          const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+          
+          // If we reach the end, scroll back to start, else scroll right
+          if (scrollLeft + clientWidth >= scrollWidth - 10) {
+            scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            scrollRef.current.scrollBy({ left: 400, behavior: 'smooth' });
+          }
+        }
+      }, 3500); // Scroll every 3.5 seconds
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isHovered]);
 
   const scrollLeft = () => {
     if (scrollRef.current) {
@@ -91,7 +118,11 @@ export default function SectionServicesSlider() {
       </div>
 
       {/* Slider Container */}
-      <div className="relative w-full group">
+      <div 
+        className="relative w-full group"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         
         {/* Custom Navigation Arrows (visible on hover) */}
         <div className="absolute top-1/2 -translate-y-1/2 left-4 right-4 z-20 flex justify-between pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -135,25 +166,33 @@ export default function SectionServicesSlider() {
                 <div className={`absolute inset-0 ${service.overlayColor} opacity-90 transition-opacity duration-500 group-hover/card:opacity-95`} />
               </div>
 
-              {/* Content Default State */}
-              <div className="absolute inset-0 p-12 flex flex-col justify-between z-10 transition-transform duration-500 group-hover/card:-translate-y-8">
+              {/* Content Box */}
+              <div className="absolute inset-0 p-8 sm:p-12 flex flex-col justify-between z-10">
                 <div className="text-xl font-mono font-bold">{service.id}</div>
-                <h3 className="text-3xl lg:text-4xl font-medium tracking-tight mb-8">
-                  {service.title}
-                </h3>
+                
+                <div className="flex flex-col">
+                  <h3 className="text-3xl lg:text-4xl font-medium tracking-tight">
+                    {service.title}
+                  </h3>
+                  
+                  {/* Accordion style expansion for description */}
+                  <div className="grid grid-rows-[0fr] group-hover/card:grid-rows-[1fr] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                    <div className="overflow-hidden">
+                      <div className="flex flex-col gap-6 pt-6">
+                        <p className="text-base lg:text-lg font-light leading-relaxed">
+                          {service.description}
+                        </p>
+                        <button className={`w-12 h-12 flex items-center justify-center ${service.btnBg} ${service.btnIcon} transition-transform hover:scale-105`}>
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Content Hover State */}
-              <div className="absolute inset-x-0 bottom-0 p-12 translate-y-full opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 transition-all duration-500 z-20 flex flex-col gap-6">
-                <p className="text-base lg:text-lg font-light leading-relaxed">
-                  {service.description}
-                </p>
-                <button className={`w-12 h-12 flex items-center justify-center ${service.btnBg} ${service.btnIcon} transition-transform hover:scale-105`}>
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </button>
-              </div>
             </div>
           ))}
         </div>
