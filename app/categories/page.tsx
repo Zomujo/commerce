@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 import PageSpinner from '../components/PageSpinner';
 import CategoryCard from '../components/CategoryCard';
 import { ApiClient } from '@/lib/api-client';
@@ -63,7 +62,7 @@ export default function CategoriesPage() {
         style={{
           minHeight: '100vh',
           display: 'grid',
-          gridTemplateRows: 'auto 1fr auto',
+          gridTemplateRows: 'auto 1fr',
         }}
       >
         <Header />
@@ -73,11 +72,11 @@ export default function CategoriesPage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            background: 'white',
           }}
         >
           <PageSpinner />
         </main>
-        <Footer />
       </div>
     );
   }
@@ -86,44 +85,28 @@ export default function CategoriesPage() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header />
 
-      <main style={{ flex: 1 }}>
+      <main style={{ flex: 1, background: 'white' }}>
         {/* Page Header */}
         <section style={{
-          background: 'linear-gradient(180deg, var(--color-gray-50) 0%, var(--color-white) 100%)',
-          padding: '4rem 0',
-          textAlign: 'center',
+          background: 'white',
+          borderBottom: '1px solid #E2DDD3',
+          paddingTop: '8rem',
+          paddingBottom: '4rem',
         }}>
-          <div className="container">
-            <span className="badge badge-blue" style={{ marginBottom: '0.75rem' }}>
-              Equipment Categories
-            </span>
-            <h1 style={{
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              fontWeight: 700,
-              color: 'var(--color-navy)',
-              marginBottom: '1rem',
-            }}>
-              Browse by Category
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium text-[#06231A] tracking-tight mb-4">
+              Browse Categories
             </h1>
-            <p style={{
-              fontSize: '1.125rem',
-              color: 'var(--color-gray-500)',
-              maxWidth: '32rem',
-              margin: '0 auto',
-            }}>
-              Explore our comprehensive range of chemicals and raw materials organized by application.
+            <p className="text-lg text-[#0F4534] font-light max-w-2xl">
+              Explore our comprehensive range of verified industrial chemicals, raw materials, and heavy equipment organized by application.
             </p>
           </div>
         </section>
 
         {/* Categories Grid */}
-        <section className="section">
-          <div className="container">
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '1.5rem',
-            }}>
+        <section className="py-12 sm:py-16 border-b border-[#E2DDD3]">
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
               {categories.map((category) => (
                 <CategoryCard
                   key={category.id}
@@ -135,44 +118,39 @@ export default function CategoriesPage() {
         </section>
 
         {/* CTA Section */}
-        <section style={{
-          background: 'var(--color-gray-50)',
-          padding: '4rem 0',
-        }}>
-          <div className="container">
-            <div style={{
-              background: 'var(--color-white)',
-              borderRadius: '1.5rem',
-              padding: '3rem',
-              textAlign: 'center',
-              border: '1px solid var(--color-gray-200)',
-            }}>
-              <h2 style={{
-                fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-                fontWeight: 700,
-                color: 'var(--color-navy)',
-                marginBottom: '0.75rem',
-              }}>
+        <section className="py-16 sm:py-24 bg-white">
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
+            <div className="bg-[#06231A] border border-[#06231A] p-10 sm:p-16 flex flex-col items-center text-center">
+              <h2 className="text-3xl sm:text-4xl font-medium text-white mb-4 tracking-tight">
                 Can&apos;t Find What You&apos;re Looking For?
               </h2>
-              <p style={{
-                fontSize: '1rem',
-                color: 'var(--color-gray-500)',
-                marginBottom: '1.5rem',
-                maxWidth: '28rem',
-                margin: '0 auto 1.5rem',
-              }}>
-                Our team can help you source any industrial chemical or raw material. Get in touch and we&apos;ll find the right solution.
+              <p className="text-[#E6FFE6] font-light max-w-2xl mb-8 text-lg">
+                Our global sourcing team can help you acquire any industrial chemical or heavy machinery. Get in touch and we&apos;ll find the right solution.
               </p>
-              <Link href="/contact" className="btn btn-primary" style={{ padding: '0.875rem 2rem' }}>
+              <Link 
+                href="/contact" 
+                className="group flex items-center gap-2 px-8 py-4 bg-transparent border border-white text-white font-medium uppercase tracking-widest text-sm hover:bg-white hover:text-[#06231A] transition-colors"
+              >
                 Contact Our Team
+                <svg 
+                  width="18" 
+                  height="18" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
               </Link>
             </div>
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }

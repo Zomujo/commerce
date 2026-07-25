@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import ProductCard from '../../components/ProductCard';
 import QuoteRequestModal from '../../components/QuoteRequestModal';
 import PageSpinner from '../../components/PageSpinner';
@@ -98,7 +97,7 @@ export default function VerticalDetailPage() {
         style={{
           minHeight: '100vh',
           display: 'grid',
-          gridTemplateRows: 'auto 1fr auto',
+          gridTemplateRows: 'auto 1fr',
         }}
       >
         <Header />
@@ -108,12 +107,11 @@ export default function VerticalDetailPage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'var(--color-gray-50)',
+            background: 'white',
           }}
         >
           <PageSpinner />
         </main>
-        <Footer />
       </div>
     );
   }
@@ -122,11 +120,12 @@ export default function VerticalDetailPage() {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
-        <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem' }}>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-navy)' }}>Category Not Found</h1>
-          <Link href="/categories" className="btn btn-primary">Browse Categories</Link>
+        <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.5rem', background: 'white' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 500, color: '#06231A' }}>Category Not Found</h1>
+          <Link href="/categories" className="group flex items-center gap-2 px-8 py-4 bg-[#06231A] text-white font-medium uppercase tracking-widest text-sm hover:bg-[#0F4534] transition-colors">
+            Browse Categories
+          </Link>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -137,42 +136,46 @@ export default function VerticalDetailPage() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header />
-      <main style={{ flex: 1, background: 'var(--color-gray-50)' }}>
-        <div className="container" style={{ paddingTop: '1.25rem', paddingBottom: '3.5rem' }}>
+      <main style={{ flex: 1, background: 'white' }}>
+        <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24" style={{ paddingTop: '8rem', paddingBottom: '4rem' }}>
+          
+          {/* Breadcrumb */}
           <nav
             style={{
               display: 'flex',
               alignItems: 'center',
               flexWrap: 'wrap',
-              gap: '0.35rem',
-              fontSize: '0.8125rem',
-              color: 'var(--color-gray-500)',
-              marginBottom: '1.25rem',
+              gap: '0.5rem',
+              fontSize: '0.75rem',
+              color: '#0F4534',
+              marginBottom: '2rem',
+              fontFamily: 'monospace',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
             }}
             aria-label="Breadcrumb"
           >
-            <Link href="/" style={{ color: 'var(--color-gray-500)', textDecoration: 'none' }}>Home</Link>
-            <span style={{ color: 'var(--color-gray-300)' }} aria-hidden>/</span>
-            <Link href="/categories" style={{ color: 'var(--color-gray-500)', textDecoration: 'none' }}>Categories</Link>
-            <span style={{ color: 'var(--color-gray-300)' }} aria-hidden>/</span>
-            <span style={{ color: 'var(--color-navy)', fontWeight: 600 }}>{vertical.name}</span>
+            <Link href="/" style={{ color: '#0F4534', textDecoration: 'none' }} className="hover:text-[#06231A]">Home</Link>
+            <span style={{ color: '#E2DDD3' }} aria-hidden>/</span>
+            <Link href="/categories" style={{ color: '#0F4534', textDecoration: 'none' }} className="hover:text-[#06231A]">Categories</Link>
+            <span style={{ color: '#E2DDD3' }} aria-hidden>/</span>
+            <span style={{ color: '#06231A', fontWeight: 700 }}>{vertical.name}</span>
           </nav>
 
+          {/* Hero Section */}
           <section
             style={{
               position: 'relative',
-              borderRadius: '1.25rem',
+              minHeight: 'min(300px, 40vw)',
+              border: '1px solid #E2DDD3',
               overflow: 'hidden',
-              minHeight: 'min(300px, 56vw)',
-              border: '1px solid var(--color-gray-200)',
-              boxShadow: 'var(--shadow-lg)',
             }}
           >
             <div
               style={{
                 position: 'absolute',
                 inset: 0,
-                backgroundImage: `linear-gradient(105deg, rgba(17, 33, 23, 0.93) 0%, rgba(17, 33, 23, 0.62) 38%, rgba(17, 33, 23, 0.22) 100%), url(${heroImage})`,
+                backgroundImage: `linear-gradient(105deg, rgba(6, 35, 26, 0.95) 0%, rgba(6, 35, 26, 0.7) 40%, rgba(6, 35, 26, 0.2) 100%), url(${heroImage})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }}
@@ -181,95 +184,105 @@ export default function VerticalDetailPage() {
             <div
               style={{
                 position: 'relative',
-                padding: 'clamp(1.75rem, 5vw, 3rem)',
-                maxWidth: '44rem',
+                padding: '3rem sm:p-12',
+                maxWidth: '48rem',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '0.75rem',
+                gap: '1rem',
+                height: '100%',
+                justifyContent: 'center',
+                paddingLeft: '3rem',
+                paddingTop: '3rem',
+                paddingBottom: '3rem',
               }}
             >
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: '0.9375rem',
-                  fontWeight: 500,
-                  color: 'rgba(255, 255, 255, 0.82)',
-                }}
-              >
-                {productCount === 1 ? '1 material in this category' : `${productCount} materials in this category`}
-              </p>
+              <div style={{
+                background: 'white',
+                color: '#06231A',
+                padding: '0.25rem 0.75rem',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                fontFamily: 'monospace',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                alignSelf: 'flex-start',
+              }}>
+                {productCount === 1 ? '1 PRODUCT' : `${productCount} PRODUCTS`}
+              </div>
               <h1
                 style={{
                   margin: 0,
-                  fontSize: 'clamp(2rem, 5vw, 3rem)',
-                  fontWeight: 800,
-                  letterSpacing: '-0.03em',
-                  color: '#fff',
-                  lineHeight: 1.08,
+                  fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+                  fontWeight: 500,
+                  letterSpacing: '-0.02em',
+                  color: 'white',
+                  lineHeight: 1.1,
                 }}
               >
                 {vertical.name}
               </h1>
-              {vertical.tagline ? (
+              {vertical.tagline && (
                 <p
                   style={{
                     margin: 0,
-                    fontSize: 'clamp(1rem, 2.2vw, 1.2rem)',
-                    color: 'rgba(255, 255, 255, 0.9)',
-                    lineHeight: 1.55,
-                    maxWidth: '36rem',
+                    fontSize: '1.125rem',
+                    color: '#E6FFE6',
+                    lineHeight: 1.6,
+                    fontWeight: 300,
+                    maxWidth: '40rem',
                   }}
                 >
                   {vertical.tagline}
                 </p>
-              ) : null}
+              )}
             </div>
           </section>
 
-          {(vertical.description || vertical.edge) ? (
+          {/* Description & Edge */}
+          {(vertical.description || vertical.edge) && (
             <div
               style={{
-                marginTop: '1.75rem',
-                background: 'var(--color-white)',
-                borderRadius: '1.25rem',
-                border: '1px solid var(--color-gray-200)',
-                boxShadow: 'var(--shadow-sm)',
-                padding: 'clamp(1.5rem, 4vw, 2.35rem)',
+                marginTop: '2rem',
+                background: 'white',
+                border: '1px solid #E2DDD3',
+                padding: '2.5rem',
               }}
             >
-              {vertical.description ? (
+              {vertical.description && (
                 <p
                   style={{
                     margin: 0,
-                    fontSize: '1.0625rem',
-                    color: 'var(--color-gray-600)',
-                    lineHeight: 1.75,
-                    maxWidth: '50rem',
+                    fontSize: '1rem',
+                    color: '#0F4534',
+                    lineHeight: 1.8,
+                    fontWeight: 300,
+                    maxWidth: '56rem',
                   }}
                 >
                   {vertical.description}
                 </p>
-              ) : null}
-              {vertical.edge ? (
+              )}
+              {vertical.edge && (
                 <blockquote
                   style={{
-                    margin: vertical.description ? '1.75rem 0 0' : 0,
-                    padding: '0 0 0 1.15rem',
-                    borderLeft: '3px solid var(--primary)',
-                    fontSize: '1rem',
+                    margin: vertical.description ? '2rem 0 0' : 0,
+                    padding: '0 0 0 1.5rem',
+                    borderLeft: '4px solid #06231A',
+                    fontSize: '1.125rem',
                     fontWeight: 500,
-                    color: 'var(--color-navy)',
-                    lineHeight: 1.7,
+                    color: '#06231A',
+                    lineHeight: 1.6,
                     fontStyle: 'normal',
                   }}
                 >
                   {vertical.edge}
                 </blockquote>
-              ) : null}
+              )}
             </div>
-          ) : null}
+          )}
 
-          <section style={{ marginTop: '2.75rem' }}>
+          {/* Materials Grid */}
+          <section style={{ marginTop: '4rem' }}>
             <div
               style={{
                 display: 'flex',
@@ -277,54 +290,56 @@ export default function VerticalDetailPage() {
                 justifyContent: 'space-between',
                 gap: '1rem',
                 flexWrap: 'wrap',
-                marginBottom: '1.35rem',
+                marginBottom: '2rem',
                 paddingBottom: '1rem',
-                borderBottom: '1px solid var(--color-gray-200)',
+                borderBottom: '1px solid #E2DDD3',
               }}
             >
               <h2
                 style={{
                   margin: 0,
-                  fontSize: 'clamp(1.2rem, 2.4vw, 1.45rem)',
-                  fontWeight: 700,
-                  color: 'var(--color-navy)',
+                  fontSize: '1.5rem',
+                  fontWeight: 500,
+                  color: '#06231A',
+                  letterSpacing: '-0.01em',
                 }}
               >
-                Materials
+                Available Materials
               </h2>
               <Link
                 href="/products"
                 style={{
-                  fontSize: '0.875rem',
-                  color: 'var(--color-blue)',
+                  fontSize: '0.75rem',
+                  color: '#06231A',
                   textDecoration: 'none',
                   fontWeight: 600,
+                  fontFamily: 'monospace',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
                 }}
+                className="hover:text-[#0F4534] transition-colors"
               >
-                Open full catalog →
+                Open Full Catalog →
               </Link>
             </div>
+            
             {products.length === 0 ? (
               <div
                 style={{
                   textAlign: 'center',
-                  padding: '3.5rem 1.5rem',
-                  background: 'var(--color-white)',
-                  borderRadius: '1rem',
-                  border: '1px dashed var(--color-gray-200)',
-                  color: 'var(--color-gray-500)',
+                  padding: '4rem 2rem',
+                  background: '#F8F7F3',
+                  border: '1px solid #E2DDD3',
+                  color: '#0F4534',
                   fontSize: '1rem',
+                  fontWeight: 300,
                 }}
               >
                 No materials are listed in this category yet. Try the full catalog or another vertical.
               </div>
             ) : (
               <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                  gap: '1.5rem',
-                }}
+                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8"
               >
                 {products.map((p) => (
                   <ProductCard
@@ -341,7 +356,7 @@ export default function VerticalDetailPage() {
           </section>
         </div>
       </main>
-      <Footer />
+      
       <QuoteRequestModal
         isOpen={isQuoteOpen}
         onClose={() => setIsQuoteOpen(false)}

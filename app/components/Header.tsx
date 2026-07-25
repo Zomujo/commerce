@@ -24,7 +24,7 @@ export default function Header() {
     return pathname.startsWith(href);
   };
 
-  const isLightBg = pathname !== '/';
+  const isLightBg = pathname !== '/' && pathname !== '/about';
 
   return (
     <>

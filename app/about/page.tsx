@@ -1,393 +1,286 @@
 'use client';
 
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { stats } from '../../lib/data';
 
 export default function AboutPage() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: heroScroll } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+
+  const heroY = useTransform(heroScroll, [0, 1], ["0%", "30%"]);
+  const heroOpacity = useTransform(heroScroll, [0, 1], [1, 0.2]);
+  const heroScale = useTransform(heroScroll, [0, 1], [1, 1.1]);
+
+  const fadeUpVariant = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const } 
+    }
+  };
+
+  const staggerVariant = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const lineVariant = {
+    hidden: { scaleX: 0 },
+    visible: { 
+      scaleX: 1, 
+      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] as const } 
+    }
+  };
+
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="min-h-screen flex flex-col bg-[#06231A] selection:bg-[#E6FFE6] selection:text-[#06231A]">
       <Header />
 
-      <main style={{ flex: 1 }}>
-        {/* Hero Section */}
-        <section style={{
-          background: 'linear-gradient(135deg, var(--color-navy) 0%, var(--color-blue) 100%)',
-          padding: '5rem 0 4rem',
-          position: 'relative',
-          overflow: 'hidden',
-        }}>
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `
-              radial-gradient(circle at 20% 50%, rgba(0, 163, 163, 0.2) 0%, transparent 50%),
-              radial-gradient(circle at 80% 50%, rgba(0, 163, 163, 0.2) 0%, transparent 50%)
-            `,
-          }} />
-          <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-            <h1 style={{
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-              fontWeight: 700,
-              color: 'white',
-              marginBottom: '1.5rem',
-              lineHeight: 1.2,
-            }}>
-              About WG Trade
-            </h1>
-            <p style={{
-              fontSize: '1.25rem',
-              color: 'rgba(255, 255, 255, 0.9)',
-              maxWidth: '42rem',
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}>
-              Your trusted partner in industrial chemical procurement, connecting manufacturers 
-              with verified suppliers worldwide since 2020.
-            </p>
+      <main className="flex-1 overflow-hidden">
+        
+        {/* 1. Parallax Hero */}
+        <section ref={heroRef} className="relative h-[90vh] md:h-screen w-full flex items-center justify-center overflow-hidden">
+          <motion.div 
+            className="absolute inset-0 z-0 origin-bottom"
+            style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
+          >
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(/images/landing/factory_production_line.png)` }}
+            />
+            {/* Deep Green gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#06231A]/60 via-[#06231A]/40 to-[#06231A]" />
+          </motion.div>
+
+          <div className="relative z-10 max-w-[1400px] w-full mx-auto px-6 sm:px-12 lg:px-24 flex flex-col items-center justify-center text-center mt-20">
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={staggerVariant}
+            >
+              <motion.span 
+                variants={fadeUpVariant}
+                className="block text-[#E6FFE6] font-mono font-bold uppercase tracking-widest text-sm mb-6"
+              >
+                Connecting Global Industry
+              </motion.span>
+              <motion.h1 
+                variants={fadeUpVariant}
+                className="text-5xl sm:text-6xl md:text-8xl lg:text-[7rem] font-medium text-white tracking-tighter leading-[0.9]"
+              >
+                Trade Without <br /> Boundaries
+              </motion.h1>
+            </motion.div>
           </div>
         </section>
 
-        {/* Mission & Vision */}
-        <section className="section">
-          <div className="container">
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr',
-              gap: '3rem',
-            }} className="about-grid">
-              <div style={{
-                background: 'linear-gradient(135deg, rgba(0, 102, 204, 0.05) 0%, rgba(0, 163, 163, 0.05) 100%)',
-                padding: '3rem',
-                borderRadius: '1rem',
-                border: '1px solid rgba(0, 102, 204, 0.1)',
-              }}>
-                <div style={{
-                  width: '3.5rem',
-                  height: '3.5rem',
-                  borderRadius: '0.75rem',
-                  background: 'linear-gradient(135deg, var(--color-blue) 0%, var(--color-teal) 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '1.5rem',
-                }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5M2 12l10 5 10-5" />
-                  </svg>
-                </div>
-                <h2 style={{
-                  fontSize: '1.75rem',
-                  fontWeight: 700,
-                  color: 'var(--color-navy)',
-                  marginBottom: '1rem',
-                }}>
-                  Our Mission
-                </h2>
-                <p style={{
-                  fontSize: '1.0625rem',
-                  color: 'var(--color-gray-600)',
-                  lineHeight: 1.7,
-                }}>
-                  To revolutionize the industrial chemical supply chain by providing a transparent, 
-                  efficient, and reliable B2B marketplace that connects manufacturers with high-quality 
-                  suppliers. We strive to make chemical procurement faster, safer, and more cost-effective 
-                  for businesses worldwide.
-                </p>
+        {/* 2. Mission & Vision (Editorial Sticky Scrolling) */}
+        <section className="relative bg-[#06231A] text-white py-24 lg:py-48 z-20">
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
+            
+            <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-32">
+              {/* Sticky Title */}
+              <div className="w-full lg:w-1/3 lg:sticky lg:top-40">
+                <motion.h2 
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  variants={fadeUpVariant}
+                  className="text-4xl sm:text-5xl md:text-7xl font-medium tracking-tight"
+                >
+                  Our <br className="hidden lg:block" /> Mission
+                </motion.h2>
               </div>
 
-              <div style={{
-                background: 'var(--color-white)',
-                padding: '3rem',
-                borderRadius: '1rem',
-                border: '1px solid var(--color-gray-200)',
-              }}>
-                <div style={{
-                  width: '3.5rem',
-                  height: '3.5rem',
-                  borderRadius: '0.75rem',
-                  background: 'linear-gradient(135deg, var(--color-teal) 0%, var(--color-blue) 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '1.5rem',
-                }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                  </svg>
-                </div>
-                <h2 style={{
-                  fontSize: '1.75rem',
-                  fontWeight: 700,
-                  color: 'var(--color-navy)',
-                  marginBottom: '1rem',
-                }}>
-                  Our Vision
-                </h2>
-                <p style={{
-                  fontSize: '1.0625rem',
-                  color: 'var(--color-gray-600)',
-                  lineHeight: 1.7,
-                }}>
-                  To become the world&apos;s leading digital platform for industrial chemical procurement,
-                  setting new standards for quality, reliability, and sustainability in the chemical 
-                  industry. We envision a future where every manufacturer has seamless access to 
-                  verified suppliers and competitive pricing.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Stats */}
-        <section style={{
-          background: 'var(--color-gray-50)',
-          padding: '4rem 0',
-        }}>
-          <div className="container">
-            <div style={{
-              textAlign: 'center',
-              marginBottom: '3rem',
-            }}>
-              <h2 style={{
-                fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
-                fontWeight: 700,
-                color: 'var(--color-navy)',
-                marginBottom: '0.75rem',
-              }}>
-                Our Impact
-              </h2>
-              <p style={{
-                fontSize: '1rem',
-                color: 'var(--color-gray-500)',
-              }}>
-                Trusted by manufacturing companies worldwide
-              </p>
-            </div>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '2rem',
-            }}>
-              {stats.map((stat, index) => (
-                <div key={index} style={{
-                  textAlign: 'center',
-                  padding: '2rem 1rem',
-                  background: 'white',
-                  borderRadius: '1rem',
-                  border: '1px solid var(--color-gray-200)',
-                }}>
-                  <div style={{
-                    fontSize: 'clamp(2rem, 4vw, 2.5rem)',
-                    fontWeight: 700,
-                    background: 'linear-gradient(135deg, var(--color-blue) 0%, var(--color-teal) 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    marginBottom: '0.5rem',
-                  }}>
-                    {stat.value}
-                  </div>
-                  <div style={{
-                    fontSize: '0.9375rem',
-                    color: 'var(--color-gray-600)',
-                    fontWeight: 500,
-                  }}>
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Our Values */}
-        <section className="section">
-          <div className="container">
-            <div style={{
-              textAlign: 'center',
-              marginBottom: '3rem',
-            }}>
-              <h2 style={{
-                fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
-                fontWeight: 700,
-                color: 'var(--color-navy)',
-                marginBottom: '0.75rem',
-              }}>
-                Our Core Values
-              </h2>
-              <p style={{
-                fontSize: '1rem',
-                color: 'var(--color-gray-500)',
-              }}>
-                The principles that guide everything we do
-              </p>
-            </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '2rem',
-            }}>
-              {[
-                {
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
-                  ),
-                  title: 'Trust & Transparency',
-                  desc: 'We verify every supplier and maintain complete transparency in all transactions, ensuring you work with reliable partners.',
-                },
-                {
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                    </svg>
-                  ),
-                  title: 'Quality First',
-                  desc: 'All products meet international quality standards. We rigorously vet suppliers to ensure consistent, high-quality materials.',
-                },
-                {
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                  ),
-                  title: 'Efficiency',
-                  desc: 'Streamlined procurement process that saves you time and resources, from quote requests to delivery.',
-                },
-                {
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                      <circle cx="9" cy="7" r="4" />
-                      <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
-                  ),
-                  title: 'Customer Focus',
-                  desc: '24/7 support team dedicated to helping you find the right materials and suppliers for your needs.',
-                },
-                {
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 16v-4M12 8h.01" />
-                    </svg>
-                  ),
-                  title: 'Innovation',
-                  desc: 'Leveraging technology to continuously improve the procurement experience and supply chain efficiency.',
-                },
-                {
-                  icon: (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                      <path d="M2 17l10 5 10-5" />
-                    </svg>
-                  ),
-                  title: 'Sustainability',
-                  desc: 'Promoting environmentally responsible practices and eco-friendly alternatives in the chemical industry.',
-                },
-              ].map((value, index) => (
-                <div key={index} className="card" style={{
-                  padding: '2rem',
-                  transition: 'all var(--transition-fast)',
-                }}>
-                  <div style={{
-                    width: '3rem',
-                    height: '3rem',
-                    borderRadius: '0.75rem',
-                    background: 'linear-gradient(135deg, rgba(0, 102, 204, 0.1) 0%, rgba(0, 163, 163, 0.1) 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--color-blue)',
-                    marginBottom: '1.25rem',
-                  }}>
-                    {value.icon}
-                  </div>
-                  <h3 style={{
-                    fontSize: '1.125rem',
-                    fontWeight: 600,
-                    color: 'var(--color-navy)',
-                    marginBottom: '0.75rem',
-                  }}>
-                    {value.title}
-                  </h3>
-                  <p style={{
-                    fontSize: '0.9375rem',
-                    color: 'var(--color-gray-600)',
-                    lineHeight: 1.6,
-                  }}>
-                    {value.desc}
+              {/* Scrolling Content */}
+              <div className="w-full lg:w-2/3 flex flex-col gap-24 lg:gap-40">
+                <motion.div 
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  variants={fadeUpVariant}
+                  className="max-w-3xl"
+                >
+                  <p className="text-2xl sm:text-3xl md:text-4xl font-light leading-tight text-[#E2DDD3]">
+                    We are revolutionizing the industrial supply chain by providing a transparent, efficient, and reliable B2B marketplace.
                   </p>
-                </div>
+                  <p className="mt-8 text-lg md:text-xl text-white/50 font-light leading-relaxed">
+                    Procurement shouldn't be opaque. We strive to make sourcing faster, safer, and more cost-effective for businesses globally by cutting through the noise and connecting you directly with verified suppliers.
+                  </p>
+                </motion.div>
+
+                <motion.div 
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  variants={fadeUpVariant}
+                  className="max-w-3xl"
+                >
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-6">Our Vision</h3>
+                  <p className="text-2xl sm:text-3xl md:text-4xl font-light leading-tight text-[#E2DDD3]">
+                    To become the world&apos;s definitive digital platform for industrial procurement, setting new standards for quality, reliability, and sustainability.
+                  </p>
+                  <p className="mt-8 text-lg md:text-xl text-white/50 font-light leading-relaxed">
+                    We envision a future where every manufacturer, regardless of location, has seamless access to verified global supply. A frictionless trade environment that empowers businesses to build the future.
+                  </p>
+                </motion.div>
+              </div>
+            </div>
+            
+          </div>
+        </section>
+
+        {/* 3. Impact Stats (Massive Typography) */}
+        <section className="bg-white text-[#06231A] py-32 lg:py-48">
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUpVariant}
+              className="mb-24 lg:mb-32"
+            >
+              <h2 className="text-4xl sm:text-5xl md:text-7xl font-medium tracking-tight">
+                Global Impact
+              </h2>
+            </motion.div>
+
+            <div className="flex flex-col">
+              {stats.map((stat, index) => (
+                <motion.div 
+                  key={index}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={staggerVariant}
+                  className="relative flex flex-col md:flex-row md:items-end justify-between py-12 lg:py-16 border-t border-[#E2DDD3] last:border-b group hover:bg-[#F8F7F3] transition-colors duration-500"
+                >
+                  <motion.div 
+                    variants={lineVariant} 
+                    className="absolute top-0 left-0 w-full h-[1px] bg-[#06231A] origin-left"
+                  />
+                  <motion.div variants={fadeUpVariant} className="mb-4 md:mb-0">
+                    <span className="block text-sm font-mono font-bold text-[#0F4534] uppercase tracking-widest mb-4">
+                      0{index + 1}
+                    </span>
+                    <span className="text-2xl sm:text-3xl lg:text-4xl font-light text-[#4B5563]">
+                      {stat.label}
+                    </span>
+                  </motion.div>
+                  <motion.div 
+                    variants={fadeUpVariant}
+                    className="text-7xl sm:text-8xl lg:text-[9rem] font-medium tracking-tighter leading-none"
+                  >
+                    {stat.value}
+                  </motion.div>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section style={{
-          background: 'linear-gradient(135deg, var(--color-navy) 0%, var(--color-blue) 100%)',
-          padding: '4rem 0',
-        }}>
-          <div className="container" style={{ textAlign: 'center' }}>
-            <h2 style={{
-              fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
-              fontWeight: 700,
-              color: 'white',
-              marginBottom: '1rem',
-            }}>
-              Ready to Get Started?
-            </h2>
-            <p style={{
-              fontSize: '1.125rem',
-              color: 'rgba(255, 255, 255, 0.9)',
-              marginBottom: '2rem',
-              maxWidth: '36rem',
-              margin: '0 auto 2rem',
-            }}>
-              Join thousands of manufacturers who trust WG Trade for their chemical procurement needs.
-            </p>
-            <div style={{
-              display: 'flex',
-              gap: '1rem',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-            }}>
-              <Link href="/products" className="btn btn-teal" style={{
-                padding: '1rem 2rem',
-                fontSize: '1.0625rem',
-              }}>
-                Browse Products
-              </Link>
-              <Link href="/contact" className="btn btn-ghost" style={{
-                padding: '1rem 2rem',
-                fontSize: '1.0625rem',
-                color: 'white',
-                borderColor: 'rgba(255, 255, 255, 0.3)',
-              }}>
-                Contact Us
-              </Link>
+        {/* 4. Core Values (Editorial List) */}
+        <section className="bg-[#F8F7F3] text-[#06231A] py-32 lg:py-48 border-t border-[#E2DDD3]">
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUpVariant}
+              className="mb-24 lg:mb-32 flex flex-col md:flex-row md:items-end justify-between gap-8"
+            >
+              <h2 className="text-4xl sm:text-5xl md:text-7xl font-medium tracking-tight">
+                The Principles
+              </h2>
+              <p className="max-w-sm text-lg text-[#0F4534] font-light">
+                The foundational values that dictate how we operate, source, and build relationships globally.
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24">
+              {[
+                { title: 'Trust & Transparency', desc: 'We verify every supplier and maintain complete transparency in all transactions, ensuring you work with reliable partners.' },
+                { title: 'Quality First', desc: 'All products meet international quality standards. We rigorously vet suppliers to ensure consistent, high-quality materials.' },
+                { title: 'Efficiency', desc: 'Streamlined procurement process that saves you time and resources, from quote requests to delivery.' },
+                { title: 'Customer Focus', desc: 'Our dedicated team operates globally to help you source the exact materials and equipment for your operational needs.' },
+                { title: 'Innovation', desc: 'Leveraging technology to continuously improve the B2B procurement experience and overall supply chain efficiency.' },
+                { title: 'Sustainability', desc: 'Promoting environmentally responsible practices and eco-friendly alternatives across the heavy industrial sector.' },
+              ].map((val, idx) => (
+                <motion.div 
+                  key={idx}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={fadeUpVariant}
+                  className="flex flex-col"
+                >
+                  <span className="text-[#06231A]/30 font-mono text-sm mb-6">0{idx + 1}</span>
+                  <h3 className="text-3xl sm:text-4xl font-medium tracking-tight mb-6">
+                    {val.title}
+                  </h3>
+                  <p className="text-lg text-[#4B5563] font-light leading-relaxed">
+                    {val.desc}
+                  </p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
+
+        {/* 5. Animated CTA */}
+        <section className="bg-white text-white py-12 px-6 sm:px-12 lg:px-24 pb-32">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{
+              hidden: { scale: 0.95, opacity: 0 },
+              visible: { scale: 1, opacity: 1, transition: { duration: 1, ease: [0.16, 1, 0.3, 1] as const } }
+            }}
+            className="bg-[#06231A] px-10 py-24 sm:p-32 flex flex-col items-center text-center rounded-sm overflow-hidden relative"
+          >
+            <div className="absolute inset-0 bg-[url('/images/landing/global_freight.png')] opacity-10 bg-cover bg-center mix-blend-overlay" />
+            <div className="relative z-10 max-w-4xl">
+              <h2 className="text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight mb-8">
+                Ready to Get Started?
+              </h2>
+              <p className="text-xl sm:text-2xl text-[#E6FFE6] font-light mb-12">
+                Join thousands of manufacturers who trust WG Trade for their industrial procurement needs.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <Link 
+                  href="/products" 
+                  className="flex items-center justify-center px-12 py-5 bg-white text-[#06231A] font-medium uppercase tracking-widest text-sm hover:bg-[#E6FFE6] transition-colors"
+                >
+                  Browse Catalog
+                </Link>
+                <Link 
+                  href="/contact" 
+                  className="flex items-center justify-center px-12 py-5 bg-transparent border border-white/30 text-white font-medium uppercase tracking-widest text-sm hover:border-white transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
       </main>
 
       <Footer />
-
-      <style jsx global>{`
-        @media (min-width: 768px) {
-          .about-grid {
-            grid-template-columns: 1fr 1fr !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }
