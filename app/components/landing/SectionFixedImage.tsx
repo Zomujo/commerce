@@ -70,10 +70,10 @@ export default function SectionFixedImage() {
         </div>
 
         {/* Sticky Scroll Container */}
-        <div ref={containerRef} className="relative flex flex-col lg:flex-row items-start gap-12 lg:gap-24">
+        <div ref={containerRef} className="relative flex flex-row-reverse lg:flex-row items-start gap-6 sm:gap-10 lg:gap-24">
           
-          {/* Left: Sticky Image Crossfade Area */}
-          <div className="w-full lg:w-1/2 sticky top-32 z-10 flex-shrink-0 h-[50vh] lg:h-[70vh] rounded-2xl overflow-hidden shadow-2xl">
+          {/* Left (Desktop) / Right (Mobile): Sticky Image Crossfade Area */}
+          <div className="sticky top-28 lg:top-32 z-10 flex-shrink-0 w-28 h-28 sm:w-40 sm:h-40 lg:w-1/2 lg:h-[70vh] rounded-2xl overflow-hidden shadow-xl lg:shadow-2xl">
             {tradePoints.map((point, idx) => (
               <div 
                 key={point.id}
@@ -93,20 +93,20 @@ export default function SectionFixedImage() {
             ))}
           </div>
 
-          {/* Right: Scrolling Text Items */}
-          <div className="w-full lg:w-1/2 flex flex-col pt-[20vh] lg:pt-0 pb-[30vh]">
+          {/* Right (Desktop) / Left (Mobile): Scrolling Text Items */}
+          <div className="flex-1 w-full lg:w-1/2 flex flex-col pt-8 lg:pt-0 pb-[30vh]">
             {tradePoints.map((point, idx) => (
               <div 
                 key={point.id}
                 data-index={idx}
-                className={`scroll-text-item flex flex-col justify-center min-h-[50vh] lg:min-h-[70vh] transition-opacity duration-700 ${
+                className={`scroll-text-item flex flex-col justify-center min-h-[40vh] lg:min-h-[70vh] transition-opacity duration-700 ${
                   activeIndex === idx ? 'opacity-100' : 'opacity-20'
                 }`}
               >
-                <span className="text-lg font-mono font-bold text-[#0F4534] mb-6 block tracking-widest">
+                <span className="text-base lg:text-lg font-mono font-bold text-[#0F4534] mb-4 lg:mb-6 block tracking-widest">
                   {point.id} — {point.title}
                 </span>
-                <h3 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight mb-8 leading-tight max-w-lg">
+                <h3 className="text-2xl sm:text-3xl lg:text-5xl font-medium tracking-tight mb-8 leading-tight max-w-lg">
                   {point.description}
                 </h3>
               </div>

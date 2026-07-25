@@ -157,8 +157,8 @@ export default function Header() {
             top: '100%',
             left: 0,
             right: 0,
-            background: 'var(--color-white)',
-            borderBottom: '1px solid var(--color-gray-200)',
+            background: 'var(--wg-green-main)',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
             padding: '1rem',
             boxShadow: 'var(--shadow-lg)',
           }} className="mobile-menu">
@@ -175,26 +175,26 @@ export default function Header() {
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     style={{
-                      color: active ? 'var(--color-blue)' : 'var(--color-gray-600)',
+                      color: active ? 'var(--wg-gold-main)' : 'rgba(255, 255, 255, 0.8)',
                       textDecoration: 'none',
                       fontSize: '1rem',
                       fontWeight: active ? 600 : 500,
                       padding: '0.75rem 1rem',
-                      borderRadius: '0.5rem',
+                      borderRadius: 0,
                       transition: 'all var(--transition-fast)',
-                      background: active ? 'rgba(0, 102, 204, 0.08)' : 'transparent',
-                      borderLeft: active ? '3px solid var(--color-blue)' : '3px solid transparent',
+                      background: active ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                      borderLeft: active ? '3px solid var(--wg-gold-main)' : '3px solid transparent',
                     }}
                     onMouseEnter={(e) => {
                       if (!active) {
-                        e.currentTarget.style.background = 'var(--color-gray-50)';
-                        e.currentTarget.style.color = 'var(--color-blue)';
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                        e.currentTarget.style.color = 'var(--color-white)';
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!active) {
                         e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.color = 'var(--color-gray-600)';
+                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
                       }
                     }}
                   >
@@ -209,15 +209,31 @@ export default function Header() {
               gap: '0.5rem',
               marginTop: '1rem',
               paddingTop: '1rem',
-              borderTop: '1px solid var(--color-gray-200)',
+              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
             }}>
-              <Link href="/login" className="btn btn-secondary" style={{ width: '100%' }}>
+              <Link href="/login" style={{ 
+                width: '100%', 
+                display: 'block', 
+                textAlign: 'center', 
+                padding: '0.75rem',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                color: 'var(--color-white)',
+                fontWeight: 600,
+                textDecoration: 'none'
+              }}>
                 Login
               </Link>
               <button 
                 onClick={() => { setIsQuoteModalOpen(true); setIsMobileMenuOpen(false); }} 
-                className="btn btn-primary" 
-                style={{ width: '100%' }}
+                style={{ 
+                  width: '100%',
+                  padding: '0.75rem',
+                  background: 'var(--wg-gold-main)',
+                  color: 'var(--wg-green-deep)',
+                  border: 'none',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
               >
                 Request Product
               </button>

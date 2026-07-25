@@ -97,7 +97,7 @@ export default function SectionServicesSlider() {
                   </h3>
                   
                   {/* Accordion style expansion for description */}
-                  <div className="grid grid-rows-[0fr] group-hover/card:grid-rows-[1fr] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                  <div className="grid grid-rows-[1fr] lg:grid-rows-[0fr] lg:group-hover/card:grid-rows-[1fr] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
                     <div className="overflow-hidden">
                       <div className="flex flex-col gap-6 pt-6">
                         <p className="text-base lg:text-lg font-light leading-relaxed">
