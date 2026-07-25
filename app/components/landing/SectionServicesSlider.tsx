@@ -67,7 +67,7 @@ export default function SectionServicesSlider() {
         <div className="absolute top-1/2 -translate-y-1/2 left-4 right-4 z-20 flex justify-between pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button 
             onClick={scrollLeft}
-            className="w-12 h-12 rounded-full bg-white/90 shadow-lg flex items-center justify-center pointer-events-auto hover:scale-110 transition-transform text-[#06231A]"
+            className="w-12 h-12 bg-white/90 shadow-lg flex items-center justify-center pointer-events-auto hover:scale-110 transition-transform text-[#06231A]"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -75,7 +75,7 @@ export default function SectionServicesSlider() {
           </button>
           <button 
             onClick={scrollRight}
-            className="w-12 h-12 rounded-full bg-white/90 shadow-lg flex items-center justify-center pointer-events-auto hover:scale-110 transition-transform text-[#06231A]"
+            className="w-12 h-12 bg-white/90 shadow-lg flex items-center justify-center pointer-events-auto hover:scale-110 transition-transform text-[#06231A]"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -118,7 +118,7 @@ export default function SectionServicesSlider() {
                 <p className="text-lg lg:text-xl font-light leading-relaxed">
                   {service.description}
                 </p>
-                <button className={`w-12 h-12 rounded-full flex items-center justify-center ${service.btnBg} ${service.btnIcon} transition-transform hover:scale-105`}>
+                <button className={`w-12 h-12 flex items-center justify-center ${service.btnBg} ${service.btnIcon} transition-transform hover:scale-105`}>
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>

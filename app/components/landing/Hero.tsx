@@ -8,7 +8,7 @@ interface HeroSlide {
   id: string;
   image: string;
   titlePrefix: string;
-  italicText: string;
+  highlightText: string;
   titleSuffix?: string;
   description: string;
   ctaText?: string;
@@ -20,7 +20,7 @@ const slides: HeroSlide[] = [
     id: 'slide-1',
     image: '/images/landing/hero_industrial_port.png',
     titlePrefix: 'The infrastructure powering trade across ',
-    italicText: 'Africa and the world',
+    highlightText: 'Africa and the world',
     titleSuffix: '.',
     description: 'WG Trade connects businesses to the materials, markets and commercial capabilities required to produce, build and grow.',
     ctaText: 'Explore WG Trade',
@@ -30,7 +30,7 @@ const slides: HeroSlide[] = [
     id: 'slide-2',
     image: '/images/landing/hero_logistics_cargo.png',
     titlePrefix: 'Sourcing critical minerals, chemicals & ',
-    italicText: 'industrial materials',
+    highlightText: 'industrial materials',
     titleSuffix: '.',
     description: 'From industrial chemicals and polymers to metals, machinery and essential production inputs, we keep industry moving.',
     ctaText: 'View Materials',
@@ -40,7 +40,7 @@ const slides: HeroSlide[] = [
     id: 'slide-3',
     image: '/images/landing/hero_mining_machinery.png',
     titlePrefix: 'Creating stronger connections within ',
-    italicText: 'Africa & global markets',
+    highlightText: 'Africa & global markets',
     titleSuffix: '.',
     description: 'Connecting producers, manufacturers and buyers across borders with verified trust, execution, and trade financing.',
     ctaText: 'Trade With Us',
@@ -98,7 +98,7 @@ export default function Hero({ onExploreClick, onTradeWithUsClick }: HeroProps) 
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[5rem] font-medium tracking-tight text-white leading-[1.1] mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
                   <p className="m-0">
                     {slide.titlePrefix}
-                    <em className="font-serif-italic font-normal text-[#E5A93C] not-italic">{slide.italicText}</em>
+                    <span className="text-[#E5A93C] font-semibold">{slide.highlightText}</span>
                     {slide.titleSuffix}
                   </p>
                 </h1>
@@ -112,7 +112,7 @@ export default function Hero({ onExploreClick, onTradeWithUsClick }: HeroProps) 
                   {index === 2 && onTradeWithUsClick ? (
                     <button
                       onClick={onTradeWithUsClick}
-                      className="group flex items-center justify-center w-14 h-14 rounded-full border border-white/30 hover:border-[#E5A93C] transition-colors duration-300 backdrop-blur-sm"
+                      className="group flex items-center justify-center w-14 h-14 border border-white/30 hover:border-[#E5A93C] transition-colors duration-300 backdrop-blur-sm"
                       aria-label="Action"
                     >
                       <svg className="w-5 h-5 text-white group-hover:text-[#E5A93C] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -128,7 +128,7 @@ export default function Hero({ onExploreClick, onTradeWithUsClick }: HeroProps) 
                           onExploreClick();
                         }
                       }}
-                      className="group flex items-center justify-center w-14 h-14 rounded-full border border-white/30 hover:border-[#E5A93C] transition-colors duration-300 backdrop-blur-sm"
+                      className="group flex items-center justify-center w-14 h-14 border border-white/30 hover:border-[#E5A93C] transition-colors duration-300 backdrop-blur-sm"
                       aria-label="Action"
                     >
                       <svg className="w-5 h-5 text-white group-hover:text-[#E5A93C] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">

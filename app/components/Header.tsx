@@ -27,12 +27,13 @@ export default function Header() {
   return (
     <>
       <header style={{
-        position: 'sticky',
+        position: 'absolute', // Sabi style floating header
         top: 0,
+        left: 0,
+        right: 0,
         zIndex: 40,
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid var(--color-gray-200)',
+        background: 'transparent',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
       }}>
         <div className="header-row" style={{
           display: 'flex',
@@ -77,15 +78,15 @@ export default function Header() {
                   className="nav-link"
                   style={{
                     position: 'relative',
-                    color: active ? 'var(--color-blue)' : 'var(--color-gray-600)',
+                    color: active ? 'var(--wg-gold-main)' : 'rgba(255, 255, 255, 0.8)',
                     textDecoration: 'none',
                     fontSize: '0.9375rem',
                     fontWeight: active ? 600 : 500,
-                    transition: 'color var(--transition-fast)',
-                    padding: '0.5rem 0',
+                    padding: '0.5rem 1rem',
+                    transition: 'color 0.3s ease',
                   }}
                 >
-                  {link.label}
+                  <span className="relative z-10">{link.label}</span>
                   {/* Active indicator */}
                   {active && (
                     <span style={{
@@ -94,8 +95,7 @@ export default function Header() {
                       left: 0,
                       right: 0,
                       height: '2px',
-                      background: 'linear-gradient(90deg, var(--color-blue) 0%, var(--color-teal) 100%)',
-                      borderRadius: '2px',
+                      background: 'var(--wg-gold-main)',
                     }} />
                   )}
                 </Link>
@@ -133,7 +133,7 @@ export default function Header() {
             className="mobile-menu-btn"
             aria-label="Toggle menu"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-navy)" strokeWidth="2" strokeLinecap="round">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
               {isMobileMenuOpen ? (
                 <>
                   <path d="M18 6L6 18" />
@@ -226,6 +226,12 @@ export default function Header() {
         )}
 
         <style jsx global>{`
+          .nav-link {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+          }
+
           .nav-link::before {
             content: '';
             position: absolute;
@@ -233,18 +239,18 @@ export default function Header() {
             left: 0;
             right: 0;
             height: 2px;
-            background: linear-gradient(90deg, var(--color-blue) 0%, var(--color-teal) 100%);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-            border-radius: 2px;
+            background: var(--wg-gold-main);
+            transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+            transform-origin: bottom;
           }
           
           .nav-link:hover::before {
-            transform: scaleX(1);
+            height: 100%;
           }
           
           .nav-link:hover {
-            color: var(--color-blue) !important;
+            color: white !important;
           }
 
           @media (min-width: 768px) {

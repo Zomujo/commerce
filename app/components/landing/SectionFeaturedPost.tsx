@@ -56,7 +56,7 @@ export default function SectionFeaturedPost() {
 
         <div className="absolute bottom-8 left-8 sm:bottom-12 sm:left-12 flex items-center justify-between w-[calc(100%-4rem)] sm:w-[calc(100%-6rem)]">
           <button className="flex items-center space-x-3 text-white uppercase text-xs font-bold tracking-widest group/btn">
-            <div className="w-10 h-10 rounded-full border border-white/50 flex items-center justify-center bg-white/10 backdrop-blur-sm group-hover/btn:bg-white group-hover/btn:text-[#06231A] transition-all duration-300">
+            <div className="w-10 h-10 border border-white/50 flex items-center justify-center bg-white/10 backdrop-blur-sm group-hover/btn:bg-white group-hover/btn:text-[#06231A] transition-all duration-300">
               <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
               </svg>
