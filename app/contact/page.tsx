@@ -1,10 +1,28 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { ApiClient } from '@/lib/api-client';
 import { ContactSubject } from '@/types/api';
+
+const fadeUpVariant = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const } 
+  }
+};
+
+const staggerVariant = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 }
+  }
+};
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -51,438 +69,281 @@ export default function ContactPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="min-h-screen flex flex-col selection:bg-[#06231A] selection:text-white">
       <Header />
 
-      <main style={{ flex: 1 }}>
+      <main className="flex-1 bg-white">
         {/* Page Header */}
-        <section style={{
-          background: 'linear-gradient(180deg, var(--color-gray-50) 0%, var(--color-white) 100%)',
-          padding: '4rem 0',
-          textAlign: 'center',
-        }}>
-          <div className="container">
-            <span className="badge badge-blue" style={{ marginBottom: '0.75rem' }}>
-              Get in Touch
-            </span>
-            <h1 style={{
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              fontWeight: 700,
-              color: 'var(--color-navy)',
-              marginBottom: '1rem',
-            }}>
-              Contact Us
-            </h1>
-            <p style={{
-              fontSize: '1.125rem',
-              color: 'var(--color-gray-500)',
-              maxWidth: '32rem',
-              margin: '0 auto',
-            }}>
-              Have questions? Our team is here to help you source the right chemicals and raw materials.
-            </p>
+        <section className="bg-white pt-40 pb-24 lg:pt-48 lg:pb-32 relative overflow-hidden border-b border-[#E2DDD3]">
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
+            <motion.div 
+              initial="hidden"
+              animate="visible"
+              variants={staggerVariant}
+            >
+              <motion.span 
+                variants={fadeUpVariant}
+                className="block text-[#0F4534] font-mono font-bold uppercase tracking-widest text-sm mb-6"
+              >
+                Global Support
+              </motion.span>
+              <motion.h1 
+                variants={fadeUpVariant}
+                className="text-5xl sm:text-6xl md:text-8xl font-medium text-[#06231A] tracking-tighter leading-[0.9] mb-8"
+              >
+                Start a <br /> Conversation
+              </motion.h1>
+              <motion.p 
+                variants={fadeUpVariant}
+                className="text-lg sm:text-xl text-[#4B5563] font-light max-w-2xl leading-relaxed"
+              >
+                Have questions? Our team operates globally to help you source the right chemicals, raw materials, and heavy equipment.
+              </motion.p>
+            </motion.div>
           </div>
         </section>
 
         {/* Contact Content */}
-        <section className="section">
-          <div className="container">
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr',
-              gap: '3rem',
-              maxWidth: '72rem',
-              margin: '0 auto',
-            }} className="contact-grid">
+        <section className="py-24 lg:py-32">
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-16 lg:gap-24">
+              
               {/* Contact Info */}
-              <div>
-                <h2 style={{
-                  fontSize: '1.5rem',
-                  fontWeight: 700,
-                  color: 'var(--color-navy)',
-                  marginBottom: '1.5rem',
-                }}>
-                  Contact Information
-                </h2>
+              <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={staggerVariant}
+              >
+                <motion.h2 
+                  variants={fadeUpVariant}
+                  className="text-2xl sm:text-3xl font-medium text-[#06231A] mb-12 tracking-tight"
+                >
+                  Contact Details
+                </motion.h2>
                 
-                <div style={{
-                  display: 'grid',
-                  gap: '1.5rem',
-                }}>
+                <div className="flex flex-col">
                   {[
                     {
                       icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
                       label: 'Email',
                       value: 'admin@wgtradeafrica.com\ntrade@wgtradeafrica.com\nexports@wgtradeafrica.com',
-                      href: 'mailto:admin@wgtradeafrica.com,trade@wgtradeafrica.com,exports@wgtradeafrica.com',
+                      href: 'mailto:admin@wgtradeafrica.com',
                     },
                     {
                       icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z',
                       label: 'Phone',
-                      value: '030 395 9173 / 0241197843',
+                      value: '030 395 9173 \n024 119 7843',
                       href: 'tel:+233303959173',
                     },
                     {
                       icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z',
-                      label: 'Office',
-                      value: 'Accra',
+                      label: 'Headquarters',
+                      value: 'Accra, Ghana',
                     },
                   ].map((contact, index) => (
-                    <div key={index} style={{
-                      display: 'flex',
-                      gap: '1rem',
-                      padding: '1.25rem',
-                      background: 'var(--color-gray-50)',
-                      borderRadius: '0.75rem',
-                    }}>
-                      <div style={{
-                        width: '2.75rem',
-                        height: '2.75rem',
-                        borderRadius: '0.5rem',
-                        background: 'linear-gradient(135deg, rgba(0, 102, 204, 0.1) 0%, rgba(0, 163, 163, 0.1) 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                      }}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-blue)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <motion.div 
+                      key={index} 
+                      variants={fadeUpVariant}
+                      className="flex items-start gap-6 py-8 border-t border-[#E2DDD3] last:border-b"
+                    >
+                      <div className="w-12 h-12 bg-[#06231A] flex items-center justify-center flex-shrink-0">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d={contact.icon} />
                         </svg>
                       </div>
                       <div>
-                        <div style={{
-                          fontSize: '0.8125rem',
-                          fontWeight: 500,
-                          color: 'var(--color-gray-500)',
-                          marginBottom: '0.25rem',
-                        }}>
+                        <div className="text-xs font-mono font-bold text-[#0F4534] uppercase tracking-widest mb-2">
                           {contact.label}
                         </div>
                         {contact.href ? (
-                          <a href={contact.href} style={{
-                            fontSize: '0.9375rem',
-                            color: 'var(--color-navy)',
-                            textDecoration: 'none',
-                            fontWeight: 500,
-                            whiteSpace: 'pre-line',
-                            lineHeight: 1.5,
-                          }}>
+                          <a href={contact.href} className="text-base text-[#06231A] font-medium whitespace-pre-line leading-relaxed hover:text-[#0F4534] transition-colors">
                             {contact.value}
                           </a>
                         ) : (
-                          <div style={{
-                            fontSize: '0.9375rem',
-                            color: 'var(--color-navy)',
-                            whiteSpace: 'pre-line',
-                            lineHeight: 1.5,
-                          }}>
+                          <div className="text-base text-[#06231A] font-medium whitespace-pre-line leading-relaxed">
                             {contact.value}
                           </div>
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
 
                 {/* Office Hours */}
-                <div style={{ marginTop: '2rem' }}>
-                  <h3 style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    color: 'var(--color-navy)',
-                    marginBottom: '0.75rem',
-                  }}>
+                <motion.div variants={fadeUpVariant} className="mt-12">
+                  <h3 className="text-xs font-mono font-bold text-[#0F4534] uppercase tracking-widest mb-4">
                     Business Hours
                   </h3>
-                  <div style={{
-                    fontSize: '0.9375rem',
-                    color: 'var(--color-gray-600)',
-                    lineHeight: 1.8,
-                  }}>
+                  <div className="text-sm text-[#06231A] leading-loose">
                     <div>Monday - Friday: 9:00 AM - 6:00 PM EST</div>
                     <div>Saturday: 10:00 AM - 2:00 PM EST</div>
                     <div>Sunday: Closed</div>
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
 
               {/* Contact Form */}
-              <div style={{
-                background: 'var(--color-white)',
-                borderRadius: '1rem',
-                border: '1px solid var(--color-gray-200)',
-                padding: '2rem',
-              }}>
+              <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUpVariant}
+                className="bg-[#F8F7F3] border border-[#E2DDD3] p-8 sm:p-12"
+              >
                 {isSuccess ? (
-                  <div style={{
-                    textAlign: 'center',
-                    padding: '3rem 2rem',
-                  }}>
-                    <div style={{
-                      width: '4rem',
-                      height: '4rem',
-                      borderRadius: '50%',
-                      background: 'rgba(16, 185, 129, 0.1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      margin: '0 auto 1.5rem',
-                    }}>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div className="text-center py-16">
+                    <div className="w-16 h-16 bg-[#06231A] flex items-center justify-center mx-auto mb-8">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="20,6 9,17 4,12" />
                       </svg>
                     </div>
-                    <h3 style={{
-                      fontSize: '1.25rem',
-                      fontWeight: 600,
-                      color: 'var(--color-navy)',
-                      marginBottom: '0.5rem',
-                    }}>
-                      Message Sent!
+                    <h3 className="text-2xl font-medium text-[#06231A] mb-4 tracking-tight">
+                      Message Sent
                     </h3>
-                    <p style={{
-                      color: 'var(--color-gray-500)',
-                      fontSize: '0.9375rem',
-                      marginBottom: '1.5rem',
-                    }}>
-                      Thank you for reaching out. We&apos;ll get back to you within 24 hours.
+                    <p className="text-[#0F4534] font-light mb-12">
+                      Thank you for reaching out. A representative will be in touch within 24 hours.
                     </p>
                     <button 
-                      onClick={() => {
-                        setIsSuccess(false);
-                      }}
-                      className="btn btn-secondary"
+                      onClick={() => setIsSuccess(false)}
+                      className="px-8 py-4 bg-transparent border border-[#06231A] text-[#06231A] font-medium uppercase tracking-widest text-sm hover:bg-[#06231A] hover:text-white transition-colors"
                     >
-                      Send Another Message
+                      Send Another
                     </button>
                   </div>
                 ) : (
                   <>
-                    <h2 style={{
-                      fontSize: '1.25rem',
-                      fontWeight: 600,
-                      color: 'var(--color-navy)',
-                      marginBottom: '1.5rem',
-                    }}>
-                      Send us a Message
+                    <h2 className="text-2xl sm:text-3xl font-medium text-[#06231A] mb-8 tracking-tight">
+                      Direct Inquiry
                     </h2>
                     
                     {error && (
-                      <div style={{
-                        marginBottom: '1.5rem',
-                        padding: '0.75rem 1rem',
-                        background: 'rgba(239, 68, 68, 0.1)',
-                        border: '1px solid rgba(239, 68, 68, 0.2)',
-                        borderRadius: '0.5rem',
-                        color: '#dc2626',
-                        fontSize: '0.875rem',
-                      }}>
+                      <div className="mb-8 p-4 bg-red-50 border border-red-200 text-red-600 text-sm">
                         {error}
                       </div>
                     )}
 
-                    <form onSubmit={handleSubmit}>
-                      <div style={{
-                        display: 'grid',
-                        gap: '1rem',
-                      }}>
-                        <div style={{
-                          display: 'grid',
-                          gridTemplateColumns: '1fr 1fr',
-                          gap: '1rem',
-                        }} className="form-row">
-                          <div>
-                            <label style={{
-                              display: 'block',
-                              fontSize: '0.875rem',
-                              fontWeight: 500,
-                              color: 'var(--color-navy)',
-                              marginBottom: '0.5rem',
-                            }}>
-                              Full Name *
-                            </label>
-                            <input
-                              type="text"
-                              name="name"
-                              value={formData.name}
-                              onChange={handleChange}
-                              className="input"
-                              placeholder="John Doe"
-                              required
-                              minLength={2}
-                            />
-                          </div>
-                          <div>
-                            <label style={{
-                              display: 'block',
-                              fontSize: '0.875rem',
-                              fontWeight: 500,
-                              color: 'var(--color-navy)',
-                              marginBottom: '0.5rem',
-                            }}>
-                              Email *
-                            </label>
-                            <input
-                              type="email"
-                              name="email"
-                              value={formData.email}
-                              onChange={handleChange}
-                              className="input"
-                              placeholder="john@hospital.com"
-                              required
-                            />
-                          </div>
-                        </div>
-
-                        <div style={{
-                          display: 'grid',
-                          gridTemplateColumns: '1fr 1fr',
-                          gap: '1rem',
-                        }} className="form-row">
-                          <div>
-                            <label style={{
-                              display: 'block',
-                              fontSize: '0.875rem',
-                              fontWeight: 500,
-                              color: 'var(--color-navy)',
-                              marginBottom: '0.5rem',
-                            }}>
-                              Company / Hospital
-                            </label>
-                            <input
-                              type="text"
-                              name="company"
-                              value={formData.company}
-                              onChange={handleChange}
-                              className="input"
-                              placeholder="Metro Medical Center"
-                            />
-                          </div>
-                          <div>
-                            <label style={{
-                              display: 'block',
-                              fontSize: '0.875rem',
-                              fontWeight: 500,
-                              color: 'var(--color-navy)',
-                              marginBottom: '0.5rem',
-                            }}>
-                              Phone
-                            </label>
-                            <input
-                              type="tel"
-                              name="phone"
-                              value={formData.phone}
-                              onChange={handleChange}
-                              className="input"
-                              placeholder="+1 (555) 123-4567"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label style={{
-                            display: 'block',
-                            fontSize: '0.875rem',
-                            fontWeight: 500,
-                            color: 'var(--color-navy)',
-                            marginBottom: '0.5rem',
-                            }}>
-                            Subject *
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="flex flex-col gap-2">
+                          <label className="text-xs font-mono font-bold text-[#0F4534] uppercase tracking-widest">
+                            Full Name *
                           </label>
-                          <select
-                            name="subject"
-                            value={formData.subject}
+                          <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
                             onChange={handleChange}
-                            className="input"
+                            className="w-full bg-white border border-[#E2DDD3] px-4 py-3 text-[#06231A] focus:outline-none focus:border-[#06231A] transition-colors"
+                            placeholder="John Doe"
                             required
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <option value="">Select a subject</option>
-                            <option value="quote">Request a Product</option>
-                            <option value="product">Product Inquiry</option>
-                            <option value="support">Technical Support</option>
-                            <option value="partnership">Partnership Opportunity</option>
-                            <option value="other">Other</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label style={{
-                            display: 'block',
-                            fontSize: '0.875rem',
-                            fontWeight: 500,
-                            color: 'var(--color-navy)',
-                            marginBottom: '0.5rem',
-                          }}>
-                            Message *
-                          </label>
-                          <textarea
-                            name="message"
-                            value={formData.message}
-                            onChange={handleChange}
-                            className="input"
-                            rows={5}
-                            placeholder="How can we help you? (Minimum 10 characters)"
-                            required
-                            minLength={10}
-                            style={{ resize: 'vertical' }}
+                            minLength={2}
                           />
                         </div>
+                        <div className="flex flex-col gap-2">
+                          <label className="text-xs font-mono font-bold text-[#0F4534] uppercase tracking-widest">
+                            Email *
+                          </label>
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="w-full bg-white border border-[#E2DDD3] px-4 py-3 text-[#06231A] focus:outline-none focus:border-[#06231A] transition-colors"
+                            placeholder="john@example.com"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="flex flex-col gap-2">
+                          <label className="text-xs font-mono font-bold text-[#0F4534] uppercase tracking-widest">
+                            Company
+                          </label>
+                          <input
+                            type="text"
+                            name="company"
+                            value={formData.company}
+                            onChange={handleChange}
+                            className="w-full bg-white border border-[#E2DDD3] px-4 py-3 text-[#06231A] focus:outline-none focus:border-[#06231A] transition-colors"
+                            placeholder="Acme Corp"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <label className="text-xs font-mono font-bold text-[#0F4534] uppercase tracking-widest">
+                            Phone
+                          </label>
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            className="w-full bg-white border border-[#E2DDD3] px-4 py-3 text-[#06231A] focus:outline-none focus:border-[#06231A] transition-colors"
+                            placeholder="+1 (555) 000-0000"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs font-mono font-bold text-[#0F4534] uppercase tracking-widest">
+                          Subject *
+                        </label>
+                        <select
+                          name="subject"
+                          value={formData.subject}
+                          onChange={handleChange}
+                          className="w-full bg-white border border-[#E2DDD3] px-4 py-3 text-[#06231A] focus:outline-none focus:border-[#06231A] transition-colors appearance-none cursor-pointer"
+                          required
+                        >
+                          <option value="">Select a subject</option>
+                          <option value="quote">Request a Product</option>
+                          <option value="product">Product Inquiry</option>
+                          <option value="support">Technical Support</option>
+                          <option value="partnership">Partnership Opportunity</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs font-mono font-bold text-[#0F4534] uppercase tracking-widest">
+                          Message *
+                        </label>
+                        <textarea
+                          name="message"
+                          value={formData.message}
+                          onChange={handleChange}
+                          className="w-full bg-white border border-[#E2DDD3] px-4 py-3 text-[#06231A] focus:outline-none focus:border-[#06231A] transition-colors resize-y min-h-[160px]"
+                          placeholder="How can we help you?"
+                          required
+                          minLength={10}
+                        />
                       </div>
 
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="btn btn-primary"
-                        style={{
-                          width: '100%',
-                          marginTop: '1.5rem',
-                          height: '3rem',
-                          opacity: isSubmitting ? 0.7 : 1,
-                        }}
+                        className="mt-4 w-full flex items-center justify-center gap-2 px-8 py-4 bg-[#06231A] border border-[#06231A] text-white font-medium uppercase tracking-widest text-sm hover:bg-[#0F4534] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? (
                           <>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{
-                              animation: 'spin 1s linear infinite',
-                            }}>
-                              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                            <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24" fill="none">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
                             Sending...
                           </>
                         ) : (
-                          <>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-                            </svg>
-                            Send Message
-                          </>
+                          'Send Message'
                         )}
                       </button>
                     </form>
                   </>
                 )}
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>
-
-        <style jsx global>{`
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-          @media (min-width: 1024px) {
-            .contact-grid {
-              grid-template-columns: 1fr 1.5fr !important;
-            }
-          }
-          @media (max-width: 480px) {
-            .form-row {
-              grid-template-columns: 1fr !important;
-            }
-          }
-        `}</style>
       </main>
 
       <Footer />
