@@ -97,7 +97,7 @@ export default function AboutPage() {
                 <motion.h2 
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-100px" }}
+                  viewport={{ once: true }}
                   variants={fadeUpVariant}
                   className="text-4xl sm:text-5xl md:text-7xl font-medium tracking-tight"
                 >
@@ -110,7 +110,7 @@ export default function AboutPage() {
                 <motion.div 
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-100px" }}
+                  viewport={{ once: true }}
                   variants={fadeUpVariant}
                   className="max-w-3xl"
                 >
@@ -125,7 +125,7 @@ export default function AboutPage() {
                 <motion.div 
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-100px" }}
+                  viewport={{ once: true }}
                   variants={fadeUpVariant}
                   className="max-w-3xl"
                 >
@@ -149,7 +149,7 @@ export default function AboutPage() {
             <motion.div 
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true }}
               variants={fadeUpVariant}
               className="mb-24 lg:mb-32"
             >
@@ -164,7 +164,7 @@ export default function AboutPage() {
                   key={index}
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
+                  viewport={{ once: true }}
                   variants={staggerVariant}
                   className="relative flex flex-col md:flex-row md:items-end justify-between py-12 lg:py-16 border-t border-[#E2DDD3] last:border-b group hover:bg-[#F8F7F3] transition-colors duration-500"
                 >
@@ -198,7 +198,7 @@ export default function AboutPage() {
             <motion.div 
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true }}
               variants={fadeUpVariant}
               className="mb-24 lg:mb-32 flex flex-col md:flex-row md:items-end justify-between gap-8"
             >
@@ -223,7 +223,7 @@ export default function AboutPage() {
                   key={idx}
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
+                  viewport={{ once: true }}
                   variants={fadeUpVariant}
                   className="flex flex-col"
                 >
@@ -245,7 +245,7 @@ export default function AboutPage() {
           <motion.div 
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true }}
             variants={{
               hidden: { scale: 0.95, opacity: 0 },
               visible: { scale: 1, opacity: 1, transition: { duration: 1, ease: [0.16, 1, 0.3, 1] as const } }
