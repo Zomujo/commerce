@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,8 +8,15 @@ const inter = Inter({
   display: "swap",
 });
 
+const playfair = Playfair_Display({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
 const siteTitle =
-  "WG Trade - Africa's Critical Minerals & Industrial Supply Infrastructure";
+  "WG Trade - Connecting African Industry to the World";
 
 export const metadata: Metadata = {
   title: {
@@ -17,9 +24,9 @@ export const metadata: Metadata = {
     template: "%s | WG Trade",
   },
   description:
-    "Africa's critical minerals and industrial supply infrastructure. Your trusted B2B marketplace for industrial chemicals and raw materials — request quotes from verified suppliers.",
+    "WG Trade connects businesses to the materials, markets and commercial capabilities required to produce, build and grow across Africa and global markets.",
   keywords:
-    "WG Trade, Africa, critical minerals, industrial supply, industrial chemicals, raw materials, polymers, solvents, B2B, chemical suppliers, bulk chemicals, manufacturing materials",
+    "WG Trade, Africa trade, industrial sourcing, critical minerals, industrial chemicals, polymers, metals, trade execution, trade finance, market access",
   icons: {
     icon: '/logo.png?v=3',
     shortcut: '/logo.png?v=3',
@@ -28,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteTitle,
     description:
-      "Africa's critical minerals and industrial supply infrastructure. B2B marketplace for industrial chemicals and raw materials.",
+      "WG Trade connects businesses to the materials, markets and commercial capabilities required to produce, build and grow.",
     type: "website",
   },
 };
@@ -40,7 +47,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} antialiased`}>
         {children}
       </body>
     </html>
