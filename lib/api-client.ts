@@ -1,4 +1,4 @@
-import { ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, CreateVerticalRequest, UpdateVerticalRequest, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, VerificationStatus, Coa, CreateCoaRequest, ContactSubject } from '@/types/api';
+import { AdminProduct, AdminProductRequest, AdminSupplier, AdminSupplierRequest, ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, CreateVerticalRequest, UpdateVerticalRequest, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, UpdateAdminProductRequest, Coa, CreateCoaRequest, ContactSubject } from '@/types/api';
 import { Auth } from './auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
@@ -68,7 +68,9 @@ async function fetchHelper<T>(endpoint: string, options?: RequestInit, token?: s
     throw new Error(errorData.message || `API Error: ${res.status} ${res.statusText}`);
   }
 
-  const response: ApiResponse<T> = await res.json();
+  const responseText = await res.text();
+  if (!responseText) return undefined as T;
+  const response: ApiResponse<T> = JSON.parse(responseText);
   return response.data;
 }
 
@@ -352,19 +354,69 @@ export const ApiClient = {
   },
 
   // Admin - Suppliers
-  getAdminSuppliers: async (status?: VerificationStatus, page = 0, limit = 20): Promise<Page<SupplierSummary>> => {
-    const statusParam = status ? `&status=${status}` : '';
-    return fetchHelper<Page<SupplierSummary>>(`/admin/suppliers?page=${page}&limit=${limit}${statusParam}`, {}, Auth.getAccessToken() ?? undefined);
+  getAdminSuppliers: async (page = 0, limit = 20): Promise<Page<AdminSupplier>> => {
+    return fetchHelper<Page<AdminSupplier>>(`/admin/suppliers?page=${page}&limit=${limit}`, {}, Auth.getAccessToken() ?? undefined);
   },
 
-  getAdminSupplierById: async (id: string): Promise<SupplierProfile> => {
-    return fetchHelper<SupplierProfile>(`/admin/suppliers/${id}`, {}, Auth.getAccessToken() ?? undefined);
+  getAdminSupplierById: async (id: string): Promise<AdminSupplier> => {
+    return fetchHelper<AdminSupplier>(`/admin/suppliers/${id}`, {}, Auth.getAccessToken() ?? undefined);
   },
 
-  updateSupplierStatus: async (id: string, status: VerificationStatus): Promise<SupplierProfile> => {
-    return fetchHelper<SupplierProfile>(`/admin/suppliers/${id}/status`, {
+  createAdminSupplier: async (data: AdminSupplierRequest): Promise<AdminSupplier> => {
+    return fetchHelper<AdminSupplier>('/admin/suppliers', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  updateAdminSupplier: async (id: string, data: Partial<AdminSupplierRequest>): Promise<AdminSupplier> => {
+    return fetchHelper<AdminSupplier>(`/admin/suppliers/${id}`, {
       method: 'PATCH',
-      body: JSON.stringify({ status }),
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  deleteAdminSupplier: async (id: string): Promise<void> => {
+    return fetchHelper<void>(`/admin/suppliers/${id}`, { method: 'DELETE' }, Auth.getAccessToken() ?? undefined);
+  },
+
+  // Admin - Products
+  getAdminProducts: async (params?: {
+    page?: number;
+    limit?: number;
+    sortBy?: 'name' | 'createdAt' | 'originCountry' | 'purityGrade';
+    sortDirection?: 'ASC' | 'DESC';
+  }): Promise<Page<AdminProduct>> => {
+    const query = new URLSearchParams({
+      page: (params?.page ?? 0).toString(),
+      limit: (params?.limit ?? 20).toString(),
+      sortBy: params?.sortBy ?? 'createdAt',
+      sortDirection: params?.sortDirection ?? 'DESC',
+    });
+    return fetchHelper<Page<AdminProduct>>(`/admin/products?${query.toString()}`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
+  getAdminProductById: async (id: string): Promise<AdminProduct> => {
+    return fetchHelper<AdminProduct>(`/admin/products/${id}`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
+  createAdminProduct: async (data: AdminProductRequest): Promise<AdminProduct> => {
+    return fetchHelper<AdminProduct>('/admin/products', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  updateAdminProduct: async (id: string, data: UpdateAdminProductRequest): Promise<AdminProduct> => {
+    return fetchHelper<AdminProduct>(`/admin/products/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  deleteAdminProduct: async (id: string): Promise<void> => {
+    return fetchHelper<void>(`/admin/products/${id}`, {
+      method: 'DELETE',
     }, Auth.getAccessToken() ?? undefined);
   },
 

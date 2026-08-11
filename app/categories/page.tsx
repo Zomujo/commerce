@@ -6,11 +6,7 @@ import Header from '../components/Header';
 import PageSpinner from '../components/PageSpinner';
 import CategoryCard from '../components/CategoryCard';
 import { ApiClient } from '@/lib/api-client';
-import { Product, StrategicVertical } from '@/types/api';
-
-function normalize(value?: string) {
-  return (value || '').trim().toLowerCase();
-}
+import { StrategicVertical } from '@/types/api';
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<StrategicVertical[]>([]);
@@ -21,30 +17,17 @@ export default function CategoriesPage() {
       try {
         const [verticals, productsPage] = await Promise.all([
           ApiClient.getVerticals(),
-          ApiClient.getProducts({ limit: 100 }).catch(() => null),
+          ApiClient.getProducts({ limit: 1000 }),
         ]);
-
-        const products = productsPage?.content || [];
-        const productsByVerticalName = new Map<string, number>();
-
-        products.forEach((product: Product) => {
-          const key = normalize(product.vertical?.name || product.verticalName);
-          if (!key) return;
-          productsByVerticalName.set(key, (productsByVerticalName.get(key) || 0) + 1);
+        const countByName = new Map<string, number>();
+        productsPage.content.forEach((product) => {
+          const name = product.vertical?.name || product.verticalName;
+          if (name) countByName.set(name, (countByName.get(name) || 0) + 1);
         });
-
-        const verticalsWithCounts = verticals.map((vertical) => {
-          const existingCount = vertical.productCount;
-          if (typeof existingCount === 'number' && existingCount > 0) {
-            return vertical;
-          }
-
-          const derivedCount = productsByVerticalName.get(normalize(vertical.name)) || 0;
-          return {
-            ...vertical,
-            productCount: derivedCount,
-          };
-        });
+        const verticalsWithCounts = verticals.map((vertical) => ({
+          ...vertical,
+          productCount: countByName.get(vertical.name) || 0,
+        }));
 
         setCategories(verticalsWithCounts);
       } catch (error) {
@@ -61,14 +44,12 @@ export default function CategoriesPage() {
       <div
         style={{
           minHeight: '100vh',
-          display: 'grid',
-          gridTemplateRows: 'auto 1fr',
         }}
       >
         <Header />
         <main
           style={{
-            minHeight: 0,
+            minHeight: '100vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

@@ -1,31 +1,32 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 
 const tradePoints = [
   {
     id: '01',
     title: 'Factories',
     description: 'Need raw materials to maintain continuous production cycles.',
-    image: '/images/landing/factory_production_line.png',
+    image: '/images/landing/factory_production_line.webp',
   },
   {
     id: '02',
     title: 'Infrastructure',
     description: 'Requires steady supplies of steel, chemicals, machinery and energy.',
-    image: '/images/landing/steel_infrastructure.png',
+    image: '/images/landing/steel_infrastructure.webp',
   },
   {
     id: '03',
     title: 'Mines',
     description: 'Depend heavily on specialized equipment and essential operating inputs.',
-    image: '/images/landing/mining_excavation.png',
+    image: '/images/landing/mining_excavation.webp',
   },
   {
     id: '04',
     title: 'Manufacturers',
     description: 'Rely on thousands of products moving continuously between businesses, countries and continents.',
-    image: '/images/landing/global_freight.png',
+    image: '/images/landing/global_freight.webp',
   }
 ];
 
@@ -83,11 +84,7 @@ export default function SectionFixedImage() {
                     : 'opacity-0 scale-105 z-10'
                 }`}
               >
-                <img 
-                  src={point.image} 
-                  alt={point.title}
-                  className="w-full h-full object-cover"
-                />
+                <Image src={point.image} alt={point.title} fill sizes="(max-width: 640px) 112px, (max-width: 1024px) 160px, 50vw" className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#E6FFE6]/90 via-transparent to-transparent" />
               </div>
             ))}

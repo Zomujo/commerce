@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ApiClient } from '@/lib/api-client';
 import { Auth } from '@/lib/auth';
@@ -57,6 +58,9 @@ export default function AdminLoginPage() {
             {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
+        <Link href="/" className="block mt-5 text-center text-sm font-medium text-slate-500 hover:text-blue-500 transition">
+          ← Back to website
+        </Link>
       </div>
     </div>
   );
