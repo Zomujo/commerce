@@ -264,6 +264,40 @@ export interface UpdateProductRequest {
   badge?: string;
 }
 
+export interface AdminSupplierSummary {
+  id: string;
+  companyName: string;
+  country: string;
+  contactEmail: string;
+  contactPhone?: string;
+}
+
+export interface AdminProduct {
+  id: string;
+  name: string;
+  description?: string;
+  verticalName?: string;
+  originCountry: string;
+  originSite?: string;
+  purityGrade: string;
+  qaPartner?: string;
+  certifications: string[];
+  specifications: Record<string, string>;
+  image: string;
+  badge?: string;
+  supplier?: AdminSupplierSummary;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface AdminProductRequest extends CreateProductRequest {
+  supplierId?: string;
+}
+
+export interface UpdateAdminProductRequest extends UpdateProductRequest {
+  supplierId?: string | null;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
@@ -303,13 +337,20 @@ export interface CreateCoaRequest {
 
 export interface Page<T> {
   content: T[];
-  pageable: {
+  page?: {
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
+  };
+  // Admin endpoints return pagination fields at the top level.
+  totalPages: number;
+  totalElements: number;
+  pageable?: {
     pageNumber: number;
     pageSize: number;
   };
-  totalPages: number;
-  totalElements: number;
-  last: boolean;
-  first: boolean;
-  empty: boolean;
+  last?: boolean;
+  first?: boolean;
+  empty?: boolean;
 }

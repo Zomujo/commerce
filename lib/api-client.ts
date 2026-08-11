@@ -1,4 +1,4 @@
-import { ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, CreateVerticalRequest, UpdateVerticalRequest, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, VerificationStatus, Coa, CreateCoaRequest, ContactSubject } from '@/types/api';
+import { AdminProduct, AdminProductRequest, ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, CreateVerticalRequest, UpdateVerticalRequest, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, UpdateAdminProductRequest, VerificationStatus, Coa, CreateCoaRequest, ContactSubject } from '@/types/api';
 import { Auth } from './auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
@@ -68,7 +68,9 @@ async function fetchHelper<T>(endpoint: string, options?: RequestInit, token?: s
     throw new Error(errorData.message || `API Error: ${res.status} ${res.statusText}`);
   }
 
-  const response: ApiResponse<T> = await res.json();
+  const responseText = await res.text();
+  if (!responseText) return undefined as T;
+  const response: ApiResponse<T> = JSON.parse(responseText);
   return response.data;
 }
 
@@ -365,6 +367,46 @@ export const ApiClient = {
     return fetchHelper<SupplierProfile>(`/admin/suppliers/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status }),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  // Admin - Products
+  getAdminProducts: async (params?: {
+    page?: number;
+    limit?: number;
+    sortBy?: 'name' | 'createdAt' | 'originCountry' | 'purityGrade';
+    sortDirection?: 'ASC' | 'DESC';
+  }): Promise<Page<AdminProduct>> => {
+    const query = new URLSearchParams({
+      page: (params?.page ?? 0).toString(),
+      limit: (params?.limit ?? 20).toString(),
+      sortBy: params?.sortBy ?? 'createdAt',
+      sortDirection: params?.sortDirection ?? 'DESC',
+    });
+    return fetchHelper<Page<AdminProduct>>(`/admin/products?${query.toString()}`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
+  getAdminProductById: async (id: string): Promise<AdminProduct> => {
+    return fetchHelper<AdminProduct>(`/admin/products/${id}`, {}, Auth.getAccessToken() ?? undefined);
+  },
+
+  createAdminProduct: async (data: AdminProductRequest): Promise<AdminProduct> => {
+    return fetchHelper<AdminProduct>('/admin/products', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  updateAdminProduct: async (id: string, data: UpdateAdminProductRequest): Promise<AdminProduct> => {
+    return fetchHelper<AdminProduct>(`/admin/products/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  deleteAdminProduct: async (id: string): Promise<void> => {
+    return fetchHelper<void>(`/admin/products/${id}`, {
+      method: 'DELETE',
     }, Auth.getAccessToken() ?? undefined);
   },
 

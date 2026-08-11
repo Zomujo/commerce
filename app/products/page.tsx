@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Header from '../components/Header';
 import PageSpinner from '../components/PageSpinner';
 import ProductCard from '../components/ProductCard';
@@ -8,57 +9,52 @@ import QuoteRequestModal from '../components/QuoteRequestModal';
 import { ApiClient } from '@/lib/api-client';
 import { Product, StrategicVertical } from '@/types/api';
 
-function normalize(value?: string) {
-  return (value || '').trim().toLowerCase();
-}
-
-export default function ProductsPage() {
+function ProductsContent() {
+  const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('search') || '');
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | undefined>();
   const [products, setProducts] = useState<Product[]>([]);
   const [verticals, setVerticals] = useState<StrategicVertical[]>([]);
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchVerticals = async () => {
       try {
-        const [productsData, verticalsData] = await Promise.all([
-          ApiClient.getProducts({ limit: 100 }),
-          ApiClient.getVerticals().catch(() => []),
-        ]);
-        setProducts(productsData.content);
+        const verticalsData = await ApiClient.getVerticals();
         setVerticals(verticalsData);
+        const counts = await Promise.all(verticalsData.map(async (vertical) => {
+          const page = await ApiClient.getProducts({ verticalId: vertical.id, limit: 1 });
+          return [vertical.id, page.page?.totalElements || 0] as const;
+        }));
+        setCategoryCounts(Object.fromEntries(counts));
       } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error('Failed to fetch categories:', error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchData();
+    fetchVerticals();
   }, []);
 
-  const filteredProducts = useMemo(() => {
-    const verticalIdByName = new Map<string, string>();
-    verticals.forEach((vertical) => {
-      verticalIdByName.set(normalize(vertical.name), vertical.id);
-    });
+  useEffect(() => {
+    const timeout = window.setTimeout(async () => {
+      try {
+        const page = await ApiClient.getProducts({
+          verticalId: selectedCategory === 'all' ? undefined : selectedCategory,
+          search: searchQuery.trim() || undefined,
+          limit: 100,
+        });
+        setProducts(page.content);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    }, 250);
 
-    const getProductVerticalId = (product: Product) => {
-      if (product.vertical?.id) return product.vertical.id;
-      const productVerticalName = normalize(product.vertical?.name || product.verticalName);
-      return verticalIdByName.get(productVerticalName);
-    };
-
-    return products.filter((product) => {
-      const matchesCategory = selectedCategory === 'all' || getProductVerticalId(product) === selectedCategory;
-      const matchesSearch = !searchQuery || 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (product.description || '').toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
-  }, [selectedCategory, searchQuery, products, verticals]);
+    return () => window.clearTimeout(timeout);
+  }, [selectedCategory, searchQuery]);
 
   const handleRequestQuote = (productId: string, productName: string) => {
     setSelectedProduct({ id: productId, name: productName });
@@ -165,15 +161,11 @@ export default function ProductsPage() {
                     >
                       All Categories
                       <span className={`text-xs ${selectedCategory === 'all' ? 'text-[#E6FFE6]' : 'text-gray-400'}`}>
-                        {products.length}
+                        {Object.values(categoryCounts).reduce((total, count) => total + count, 0)}
                       </span>
                     </button>
                     {verticals.map((vertical) => {
-                      const count = products.filter((p) => {
-                        if (p.vertical?.id) return p.vertical.id === vertical.id;
-                        const productVerticalName = normalize(p.vertical?.name || p.verticalName);
-                        return productVerticalName === normalize(vertical.name);
-                      }).length;
+                      const count = categoryCounts[vertical.id] || 0;
                       
                       const isActive = selectedCategory === vertical.id;
                       
@@ -203,14 +195,14 @@ export default function ProductsPage() {
                 {/* Results Count */}
                 <div className="flex justify-between items-center mb-8 border-b border-[#E2DDD3] pb-4">
                   <p className="text-sm font-mono tracking-widest text-[#0F4534]">
-                    SHOWING <strong className="text-[#06231A] font-bold mx-1">{filteredProducts.length}</strong> RESULTS
+                    SHOWING <strong className="text-[#06231A] font-bold mx-1">{products.length}</strong> RESULTS
                   </p>
                 </div>
 
                 {/* Grid */}
-                {filteredProducts.length > 0 ? (
+                {products.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
-                    {filteredProducts.map((product) => (
+                    {products.map((product) => (
                       <ProductCard
                         key={product.id}
                         product={product}
@@ -255,5 +247,13 @@ export default function ProductsPage() {
         productName={selectedProduct?.name}
       />
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<PageSpinner />}>
+      <ProductsContent />
+    </Suspense>
   );
 }
