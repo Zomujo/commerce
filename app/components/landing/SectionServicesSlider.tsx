@@ -7,7 +7,7 @@ const services = [
     id: '01',
     title: 'Industrial Sourcing',
     description: 'Access manufacturers, producers and distributors of essential materials, equipment and commodities across African and international markets.',
-    bgImage: '/images/landing/hero_logistics_cargo.png',
+    bgImage: '/images/landing/hero_logistics_cargo.webp',
     overlayColor: 'bg-[#06231A]',
     textColor: 'text-white',
   },
@@ -15,7 +15,7 @@ const services = [
     id: '02',
     title: 'Market Access',
     description: 'Reach credible buyers, enter new countries and establish stronger commercial and distribution relationships within Africa and globally.',
-    bgImage: '/images/landing/african_manufacturing.png',
+    bgImage: '/images/landing/african_manufacturing.webp',
     overlayColor: 'bg-[#155B45]',
     textColor: 'text-white',
   },
@@ -23,7 +23,7 @@ const services = [
     id: '03',
     title: 'Trade Execution',
     description: 'Move from opportunity to completed transaction with support across negotiation, documentation, payments, logistics and delivery.',
-    bgImage: '/images/landing/hero_industrial_port.png',
+    bgImage: '/images/landing/hero_industrial_port.webp',
     overlayColor: 'bg-[#0F4534]',
     textColor: 'text-white',
   },
@@ -31,7 +31,7 @@ const services = [
     id: '04',
     title: 'Trade Finance',
     description: 'Connect eligible transactions to financing and structured payment solutions designed to keep commerce moving.',
-    bgImage: '/images/landing/hero_mining_machinery.png',
+    bgImage: '/images/landing/hero_mining_machinery.webp',
     overlayColor: 'bg-[#FDF7EA]',
     textColor: 'text-[#06231A]',
   },
@@ -39,7 +39,7 @@ const services = [
     id: '05',
     title: 'Market Intelligence',
     description: 'Understand pricing, supply conditions, product availability and emerging opportunities across key industrial markets.',
-    bgImage: '/images/landing/african_manufacturing.png',
+    bgImage: '/images/landing/african_manufacturing.webp',
     overlayColor: 'bg-[#D4C9A8]',
     textColor: 'text-[#06231A]',
   },
@@ -47,7 +47,7 @@ const services = [
     id: '06',
     title: 'Responsible Trade',
     description: 'Build more transparent, traceable and sustainable supply relationships from source to destination.',
-    bgImage: '/images/landing/hero_industrial_port.png',
+    bgImage: '/images/landing/hero_industrial_port.webp',
     overlayColor: 'bg-[#111815]',
     textColor: 'text-white',
   }
@@ -82,6 +82,7 @@ export default function SectionServicesSlider() {
                   src={service.bgImage}
                   alt={service.title}
                   fill
+                  sizes="(max-width: 640px) 85vw, (max-width: 1024px) 500px, 600px"
                   className="object-cover transition-transform duration-[10000ms] group-hover/card:scale-110"
                 />
                 <div className={`absolute inset-0 ${service.overlayColor} opacity-90 transition-opacity duration-500 group-hover/card:opacity-95`} />

@@ -15,10 +15,18 @@ export default function CategoriesPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const verticals = await ApiClient.getVerticals();
-        const verticalsWithCounts = await Promise.all(verticals.map(async (vertical) => {
-          const productsPage = await ApiClient.getProducts({ verticalId: vertical.id, limit: 1 });
-          return { ...vertical, productCount: productsPage.page?.totalElements || 0 };
+        const [verticals, productsPage] = await Promise.all([
+          ApiClient.getVerticals(),
+          ApiClient.getProducts({ limit: 1000 }),
+        ]);
+        const countByName = new Map<string, number>();
+        productsPage.content.forEach((product) => {
+          const name = product.vertical?.name || product.verticalName;
+          if (name) countByName.set(name, (countByName.get(name) || 0) + 1);
+        });
+        const verticalsWithCounts = verticals.map((vertical) => ({
+          ...vertical,
+          productCount: countByName.get(vertical.name) || 0,
         }));
 
         setCategories(verticalsWithCounts);

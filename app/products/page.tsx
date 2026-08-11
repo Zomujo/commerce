@@ -23,12 +23,17 @@ function ProductsContent() {
   useEffect(() => {
     const fetchVerticals = async () => {
       try {
-        const verticalsData = await ApiClient.getVerticals();
+        const [verticalsData, productsPage] = await Promise.all([
+          ApiClient.getVerticals(),
+          ApiClient.getProducts({ limit: 1000 }),
+        ]);
         setVerticals(verticalsData);
-        const counts = await Promise.all(verticalsData.map(async (vertical) => {
-          const page = await ApiClient.getProducts({ verticalId: vertical.id, limit: 1 });
-          return [vertical.id, page.page?.totalElements || 0] as const;
-        }));
+        const countByName = new Map<string, number>();
+        productsPage.content.forEach((product) => {
+          const name = product.vertical?.name || product.verticalName;
+          if (name) countByName.set(name, (countByName.get(name) || 0) + 1);
+        });
+        const counts = verticalsData.map((vertical) => [vertical.id, countByName.get(vertical.name) || 0] as const);
         setCategoryCounts(Object.fromEntries(counts));
       } catch (error) {
         console.error('Failed to fetch categories:', error);
