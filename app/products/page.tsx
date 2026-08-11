@@ -66,14 +66,12 @@ function ProductsContent() {
       <div
         style={{
           minHeight: '100vh',
-          display: 'grid',
-          gridTemplateRows: 'auto 1fr auto',
         }}
       >
         <Header />
         <main
           style={{
-            minHeight: 0,
+            minHeight: '100vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -252,7 +250,7 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<PageSpinner />}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white"><PageSpinner /></div>}>
       <ProductsContent />
     </Suspense>
   );

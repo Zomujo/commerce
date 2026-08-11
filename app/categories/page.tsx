@@ -36,14 +36,12 @@ export default function CategoriesPage() {
       <div
         style={{
           minHeight: '100vh',
-          display: 'grid',
-          gridTemplateRows: 'auto 1fr',
         }}
       >
         <Header />
         <main
           style={{
-            minHeight: 0,
+            minHeight: '100vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
