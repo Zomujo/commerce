@@ -5,9 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const backgroundImages = [
-  '/images/landing/hero_industrial_port.png',
-  '/images/landing/hero_logistics_cargo.png',
-  '/images/landing/hero_mining_machinery.png',
+  '/images/landing/hero_industrial_port.webp',
+  '/images/landing/hero_logistics_cargo.webp',
+  '/images/landing/hero_mining_machinery.webp',
 ];
 
 interface HeroProps {
@@ -43,6 +43,7 @@ export default function Hero({ onExploreClick, onTradeWithUsClick }: HeroProps) 
                 alt={`Hero background ${index + 1}`}
                 fill
                 priority={index === 0}
+                sizes="100vw"
                 className={`object-cover object-center transition-transform duration-[8000ms] ease-out ${
                   isActive ? 'scale-105' : 'scale-100'
                 }`}

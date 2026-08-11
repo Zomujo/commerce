@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 export default function SectionFeaturedPost() {
   return (
     <section className="py-24 sm:py-32 bg-[#F8F7F3] border-y border-[#E2DDD3]">
@@ -8,11 +10,7 @@ export default function SectionFeaturedPost() {
           
           <div className="order-2 lg:order-1 relative group">
             <div className="aspect-[4/3] bg-gray-200 overflow-hidden relative">
-              <img 
-                src="/images/landing/hero_industrial_port.png" 
-                alt="Industrial port operations"
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-              />
+              <Image src="/images/landing/hero_industrial_port.webp" alt="Industrial port operations" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover transition-transform duration-1000 group-hover:scale-105" />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
             </div>
 

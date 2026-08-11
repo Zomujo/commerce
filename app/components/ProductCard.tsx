@@ -32,6 +32,8 @@ export default function ProductCard({
           <img 
             src={image}
             alt={name}
+            loading="lazy"
+            decoding="async"
             className="group-hover:scale-105 transition-transform duration-700"
             style={{
               width: '100%',
