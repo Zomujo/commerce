@@ -1,4 +1,4 @@
-import { AdminProduct, AdminProductRequest, ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, CreateVerticalRequest, UpdateVerticalRequest, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, UpdateAdminProductRequest, VerificationStatus, Coa, CreateCoaRequest, ContactSubject } from '@/types/api';
+import { AdminProduct, AdminProductRequest, AdminSupplier, AdminSupplierRequest, ApiResponse, AuthResponse, LoginRequest, Page, Product, QuoteRequest, RefreshTokenRequest, RegisterRequest, StrategicVertical, CreateVerticalRequest, UpdateVerticalRequest, ContactMessage, PlatformStats, QuoteStatus, MessageStatus, SupplierSummary, SupplierProfile, CreateSupplierRequest, UpdateSupplierRequest, SupplierProductResponse, CreateProductRequest, UpdateAdminProductRequest, VerificationStatus, Coa, CreateCoaRequest, ContactSubject } from '@/types/api';
 import { Auth } from './auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
@@ -354,20 +354,30 @@ export const ApiClient = {
   },
 
   // Admin - Suppliers
-  getAdminSuppliers: async (status?: VerificationStatus, page = 0, limit = 20): Promise<Page<SupplierSummary>> => {
-    const statusParam = status ? `&status=${status}` : '';
-    return fetchHelper<Page<SupplierSummary>>(`/admin/suppliers?page=${page}&limit=${limit}${statusParam}`, {}, Auth.getAccessToken() ?? undefined);
+  getAdminSuppliers: async (page = 0, limit = 20): Promise<Page<AdminSupplier>> => {
+    return fetchHelper<Page<AdminSupplier>>(`/admin/suppliers?page=${page}&limit=${limit}`, {}, Auth.getAccessToken() ?? undefined);
   },
 
-  getAdminSupplierById: async (id: string): Promise<SupplierProfile> => {
-    return fetchHelper<SupplierProfile>(`/admin/suppliers/${id}`, {}, Auth.getAccessToken() ?? undefined);
+  getAdminSupplierById: async (id: string): Promise<AdminSupplier> => {
+    return fetchHelper<AdminSupplier>(`/admin/suppliers/${id}`, {}, Auth.getAccessToken() ?? undefined);
   },
 
-  updateSupplierStatus: async (id: string, status: VerificationStatus): Promise<SupplierProfile> => {
-    return fetchHelper<SupplierProfile>(`/admin/suppliers/${id}/status`, {
-      method: 'PATCH',
-      body: JSON.stringify({ status }),
+  createAdminSupplier: async (data: AdminSupplierRequest): Promise<AdminSupplier> => {
+    return fetchHelper<AdminSupplier>('/admin/suppliers', {
+      method: 'POST',
+      body: JSON.stringify(data),
     }, Auth.getAccessToken() ?? undefined);
+  },
+
+  updateAdminSupplier: async (id: string, data: Partial<AdminSupplierRequest>): Promise<AdminSupplier> => {
+    return fetchHelper<AdminSupplier>(`/admin/suppliers/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }, Auth.getAccessToken() ?? undefined);
+  },
+
+  deleteAdminSupplier: async (id: string): Promise<void> => {
+    return fetchHelper<void>(`/admin/suppliers/${id}`, { method: 'DELETE' }, Auth.getAccessToken() ?? undefined);
   },
 
   // Admin - Products

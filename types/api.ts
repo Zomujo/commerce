@@ -272,6 +272,18 @@ export interface AdminSupplierSummary {
   contactPhone?: string;
 }
 
+export interface AdminSupplier extends AdminSupplierSummary {
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface AdminSupplierRequest {
+  companyName: string;
+  country: string;
+  contactEmail: string;
+  contactPhone?: string;
+}
+
 export interface AdminProduct {
   id: string;
   name: string;
