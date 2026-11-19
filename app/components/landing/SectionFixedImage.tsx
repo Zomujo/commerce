@@ -71,10 +71,10 @@ export default function SectionFixedImage() {
         </div>
 
         {/* Sticky Scroll Container */}
-        <div ref={containerRef} className="relative flex flex-row-reverse lg:flex-row items-start gap-6 sm:gap-10 lg:gap-24">
+        <div ref={containerRef} className="relative flex flex-col lg:flex-row items-stretch lg:items-start gap-6 sm:gap-10 lg:gap-24">
           
-          {/* Left (Desktop) / Right (Mobile): Sticky Image Crossfade Area */}
-          <div className="sticky top-28 lg:top-32 z-10 flex-shrink-0 w-28 h-28 sm:w-40 sm:h-40 lg:w-1/2 lg:h-[70vh] rounded-2xl overflow-hidden shadow-xl lg:shadow-2xl">
+          {/* Left (Desktop) / Top (Mobile): Sticky Image Crossfade Area */}
+          <div className="sticky top-6 lg:top-32 z-20 flex-shrink-0 w-full h-[32vh] sm:h-[36vh] lg:w-1/2 lg:h-[70vh] rounded-2xl overflow-hidden shadow-xl lg:shadow-2xl">
             {tradePoints.map((point, idx) => (
               <div 
                 key={point.id}
@@ -84,14 +84,14 @@ export default function SectionFixedImage() {
                     : 'opacity-0 scale-105 z-10'
                 }`}
               >
-                <Image src={point.image} alt={point.title} fill sizes="(max-width: 640px) 112px, (max-width: 1024px) 160px, 50vw" className="object-cover" />
+                <Image src={point.image} alt={point.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#E6FFE6]/90 via-transparent to-transparent" />
               </div>
             ))}
           </div>
 
-          {/* Right (Desktop) / Left (Mobile): Scrolling Text Items */}
-          <div className="flex-1 w-full lg:w-1/2 flex flex-col pt-8 lg:pt-0 pb-[30vh]">
+          {/* Right (Desktop) / Below image (Mobile): Scrolling Text Items */}
+          <div className="flex-1 w-full lg:w-1/2 flex flex-col pt-0 pb-[30vh]">
             {tradePoints.map((point, idx) => (
               <div 
                 key={point.id}
